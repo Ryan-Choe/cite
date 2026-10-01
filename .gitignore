@@ -1,0 +1,29 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/coverage
+
+# secrets — .env.example is committed, real keys never are
+.env
+.env.*
+!.env.example
+*.pem
+
+# embedding model download cache (transformers.js)
+/.cache/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# debug logs
+npm-debug.log*
