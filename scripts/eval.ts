@@ -10,9 +10,10 @@
  * answered with a citation from an expected section. Out-of-scope questions pass if declined; if
  * instead they get a partial answer (allowed by the prompt: answer what the handbook says, name
  * what it doesn't), they're marked "review" and printed for a person to check. Results are also
- * written to eval/results/.
+ * written to eval/results/<mode>-<set>.json.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
 import type { AskResponse } from "../src/lib/answer/types";
 import { embed } from "../src/lib/search/embed";
@@ -41,8 +42,9 @@ async function main() {
   const index = await loadIndex();
   checkExpectations(index, questions);
 
-  if (args.includes("--answers")) await answerEval(questions);
-  else await retrievalEval(index, questions);
+  const set = path.basename(file, ".json"); // results are saved per question set, e.g. answers-holdout.json
+  if (args.includes("--answers")) await answerEval(questions, set);
+  else await retrievalEval(index, questions, set);
 }
 
 /** Fail fast on typos: every expected section must exist in the index. */
@@ -68,7 +70,7 @@ function firstHit(index: HandbookIndex, ranking: string[], expected: string[]): 
   return position === -1 ? null : position + 1;
 }
 
-async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[]) {
+async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[], set: string) {
   const answerable = questions.filter((q) => q.expect !== "not-covered");
   console.log(`Retrieval eval — ${answerable.length} answerable questions, hit@${TOP_K}\n`);
   console.log(`${"question".padEnd(32)} ${METHODS.map((m) => m.padStart(9)).join(" ")}`);
@@ -95,7 +97,7 @@ async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[]) {
   const pct = (n: number) => `${n}/${answerable.length}`.padStart(9);
   console.log(`${"hit rate".padEnd(32)} ${METHODS.map((m) => pct(hits[m])).join(" ")}`);
   console.log(`\n#N = rank of the first chunk from an expected section; miss = not in the top ${TOP_K}.`);
-  await saveResults("retrieval", { topK: TOP_K, total: answerable.length, hits, rows });
+  await saveResults(`retrieval-${set}`, { topK: TOP_K, total: answerable.length, hits, rows });
 }
 
 // --- Answer eval -------------------------------------------------------------------------
@@ -134,7 +136,7 @@ function answerText(response: AskResponse): string {
   return response.parts.map((p) => p.text + p.citations.map((n) => `[${n}]`).join("")).join("");
 }
 
-async function answerEval(questions: EvalQuestion[]) {
+async function answerEval(questions: EvalQuestion[], set: string) {
   try {
     process.loadEnvFile(".env.local"); // tsx doesn't load Next.js env files
   } catch {
@@ -184,7 +186,7 @@ out-of-scope answered partially (review above): ${summary("out-of-scope", "revie
 answers with any uncited text:                  ${answered.filter((r) => (r.trace.uncitedChars ?? 0) > 0).length}/${answered.length}
 median time per question:                       ${(median(rows.map((r) => r.trace.ms.total)) / 1000).toFixed(1)}s
 answer-model cost for this run:                 $${cost.toFixed(3)} (${input} in / ${output} out tokens)`);
-  await saveResults("answers", { summary: { questions: summary("question"), followUps: summary("follow-up"), outOfScopeDeclined: summary("out-of-scope"), outOfScopeReview: summary("out-of-scope", "review"), cost }, rows });
+  await saveResults(`answers-${set}`, { summary: { questions: summary("question"), followUps: summary("follow-up"), outOfScopeDeclined: summary("out-of-scope"), outOfScopeReview: summary("out-of-scope", "review"), cost }, rows });
 }
 
 async function saveResults(name: string, data: unknown) {

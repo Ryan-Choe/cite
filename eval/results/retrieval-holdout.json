@@ -1,0 +1,71 @@
+{
+  "topK": 8,
+  "total": 10,
+  "hits": {
+    "keyword": 5,
+    "semantic": 6,
+    "hybrid": 6
+  },
+  "rows": [
+    {
+      "id": "customers-from-recommendations",
+      "keyword": null,
+      "semantic": null,
+      "hybrid": null
+    },
+    {
+      "id": "team-survey-anonymity",
+      "keyword": null,
+      "semantic": 5,
+      "hybrid": 2
+    },
+    {
+      "id": "propose-company-wide-tool",
+      "keyword": null,
+      "semantic": null,
+      "hybrid": null
+    },
+    {
+      "id": "workflow-pr-review",
+      "keyword": 2,
+      "semantic": 3,
+      "hybrid": 3
+    },
+    {
+      "id": "promotion-criteria",
+      "keyword": null,
+      "semantic": null,
+      "hybrid": null
+    },
+    {
+      "id": "browser-extension-billing",
+      "keyword": 1,
+      "semantic": 1,
+      "hybrid": 1
+    },
+    {
+      "id": "support-ticket-split",
+      "keyword": 3,
+      "semantic": 1,
+      "hybrid": 2
+    },
+    {
+      "id": "newsletter-owner",
+      "keyword": null,
+      "semantic": null,
+      "hybrid": null
+    },
+    {
+      "id": "sales-lead-threshold",
+      "keyword": 1,
+      "semantic": 1,
+      "hybrid": 1
+    },
+    {
+      "id": "case-study-customer-outreach",
+      "keyword": 3,
+      "semantic": 1,
+      "hybrid": 1
+    }
+  ]
+}
