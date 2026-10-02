@@ -16,8 +16,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
 import type { AskResponse } from "../src/lib/answer/types";
 import { embed } from "../src/lib/search/embed";
-import { reciprocalRankFusion } from "../src/lib/search/fuse";
-import { keywordRanking, loadIndex, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
+import { hybridRanking, keywordRanking, loadIndex, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
 
 /** "people/time-off" matches contents/handbook/people/time-off.md. */
 type Expectation = string[] | "not-covered";
@@ -80,7 +79,7 @@ async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[]) {
     const expected = q.expect as string[];
     const keyword = keywordRanking(index, q.question);
     const semantic = semanticRanking(index, await embed(q.question));
-    const hybrid = reciprocalRankFusion([keyword, semantic]).map((f) => f.id);
+    const hybrid = hybridRanking(keyword, semantic).map((f) => f.id);
 
     const ranks: Record<Method, number | null> = {
       keyword: firstHit(index, keyword, expected),

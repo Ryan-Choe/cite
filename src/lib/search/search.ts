@@ -1,12 +1,21 @@
 import MiniSearch from "minisearch";
 import { bodyText, type Chunk } from "../chunk";
 import { dot, embed } from "./embed";
-import { reciprocalRankFusion } from "./fuse";
+import { reciprocalRankFusion, type Fused } from "./fuse";
 import { readIndex, warnIfStale, type IndexFile } from "./index-file";
 
 /** How many chunks the answer step gets, and how deep each retriever looks before fusing. */
 export const TOP_K = 8;
 const CANDIDATES = 50;
+
+/**
+ * Keyword search counts half as much as semantic search in the fusion. Employees paraphrase
+ * ("freelance work" for "side gigs"), and on paraphrased questions BM25 ranks chunks that merely
+ * share common words ("work", "paid", "posthog") near the top. At equal weight that noise pushed
+ * correct chunks out of the top 8 (eval set A: hybrid 7/10 vs semantic-only 9/10). At half weight,
+ * keyword search still lifts exact-term matches ("Deel", "BAA") but can't crowd out semantic hits.
+ */
+export const KEYWORD_WEIGHT = 0.5;
 
 // Very common words carry no meaning for keyword search ("how", "do", "i", …). BM25 already
 // down-weights them, but dropping them keeps a question's filler from matching everything.
@@ -73,13 +82,21 @@ export function semanticRanking(index: HandbookIndex, queryVector: Float32Array,
     .map((r) => r.id);
 }
 
-/** Hybrid search: run both retrievers, fuse their rankings with RRF, return the top chunks. */
+/** Fuse the two rankings into the hybrid ranking (shared by search() and the eval). */
+export function hybridRanking(keyword: string[], semantic: string[]): Fused[] {
+  return reciprocalRankFusion([
+    { ids: keyword, weight: KEYWORD_WEIGHT },
+    { ids: semantic, weight: 1 },
+  ]);
+}
+
+/** Hybrid search: run both retrievers, fuse their rankings with weighted RRF, return the top chunks. */
 export async function search(index: HandbookIndex, query: string, limit = TOP_K): Promise<SearchHit[]> {
   const keyword = keywordRanking(index, query);
   const semantic = semanticRanking(index, await embed(query));
   const rankOf = (list: string[], id: string) => (list.includes(id) ? list.indexOf(id) + 1 : null);
 
-  return reciprocalRankFusion([keyword, semantic])
+  return hybridRanking(keyword, semantic)
     .slice(0, limit)
     .map(({ id, score }) => ({
       chunk: index.byId.get(id)!,
