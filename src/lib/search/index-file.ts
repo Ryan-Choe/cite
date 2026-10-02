@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Chunk } from "../chunk";
@@ -41,4 +42,19 @@ export async function readIndex(dir = INDEX_DIR): Promise<{ file: IndexFile; vec
   }
   const vectors = file.chunks.map((_, i) => packed.subarray(i * dim, (i + 1) * dim));
   return { file, vectors };
+}
+
+/**
+ * Warn if the PDF has changed since the index was built (e.g. someone dropped in a new
+ * handbook without running `npm run ingest`): answers would come from the old text.
+ */
+export async function warnIfStale(source: IndexMeta["source"]): Promise<void> {
+  try {
+    const sha256 = createHash("sha256").update(await readFile(path.join(process.cwd(), source.file))).digest("hex");
+    if (sha256 !== source.sha256) {
+      console.warn(`[index] ${source.file} has changed since the index was built. Run \`npm run ingest\` to rebuild it.`);
+    }
+  } catch {
+    console.warn(`[index] Couldn't read ${source.file} to check the index is up to date.`);
+  }
 }

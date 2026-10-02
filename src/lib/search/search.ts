@@ -2,7 +2,7 @@ import MiniSearch from "minisearch";
 import { bodyText, type Chunk } from "../chunk";
 import { dot, embed } from "./embed";
 import { reciprocalRankFusion } from "./fuse";
-import { readIndex, type IndexFile } from "./index-file";
+import { readIndex, warnIfStale, type IndexFile } from "./index-file";
 
 /** How many chunks the answer step gets, and how deep each retriever looks before fusing. */
 export const TOP_K = 8;
@@ -33,6 +33,7 @@ export interface SearchHit {
 
 export async function loadIndex(dir?: string): Promise<HandbookIndex> {
   const { file, vectors } = await readIndex(dir);
+  void warnIfStale(file.source); // runs in the background; only logs
   const keyword = new MiniSearch<{ id: string; title: string; body: string }>({
     fields: ["title", "body"],
     processTerm: (term) => (STOP_WORDS.has(term.toLowerCase()) ? null : term.toLowerCase()),
