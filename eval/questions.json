@@ -1,0 +1,124 @@
+[
+  {
+    "id": "freelance-work-allowed",
+    "question": "can I do some paid freelance work outside my job here?",
+    "expect": ["people/side-gigs"],
+    "answer": "Yes, a few hours a month of paid side work is fine if done in personal time and it doesn't affect your PostHog work.",
+    "evidence": "p965: A few hours a month on a paid side gig is acceptable.",
+    "pool": "policy",
+    "followUp": {
+      "question": "do I need to run it by anyone first?",
+      "standalone": "Do I need anyone's approval before doing paid freelance work outside PostHog?",
+      "expect": ["people/side-gigs"],
+      "answer": "Yes, check in with the relevant Exec team member for your team (James, Tim, or Charles) and get their confirmation first.",
+      "evidence": "p966: check in with the relevant Exec team member for your team (ie. James, Tim, or Charles)"
+    }
+  },
+  {
+    "id": "who-founded-posthog",
+    "question": "who started posthog and when?",
+    "expect": ["story", "brand/press"],
+    "answer": "James (Hawkins) and Tim (Glaser) founded PostHog on January 23, 2020.",
+    "evidence": "p1028: PostHog was founded by James and Tim on January 23, 2020.",
+    "pool": "policy"
+  },
+  {
+    "id": "contract-feature-deadline",
+    "question": "a big prospect wants a feature promised by Q3 written into their contract - is that ok?",
+    "expect": ["how-we-make-money", "growth/sales/overview"],
+    "answer": "No. PostHog doesn't contract deliverables, especially not by a date; it only builds for a big customer if others will use it too.",
+    "evidence": "p808: We don't contract deliverables, and we especially don't contract to provide deliverables by a certain date.",
+    "pool": "policy"
+  },
+  {
+    "id": "hogpatch-founder-access",
+    "question": "how does a YC founder get a desk at Hogpatch?",
+    "expect": ["people/hogpatch", "people/hogpatch-operations"],
+    "answer": "Only by invitation: it's invite-only, founders can't apply, PostHog handpicks from a waitlist when space opens, and invites last 3 months.",
+    "evidence": "p944: We do maintain a waitlist, but you can't apply - we handpick founders when there's room to welcome more.",
+    "pool": "policy"
+  },
+  {
+    "id": "logs-data-loss-cause",
+    "question": "why did US customers lose their older Logs data in February?",
+    "expect": ["company/post-mortems/2026-02-20-posthog-us-logs-data-loss"],
+    "answer": "A ClickHouse bug in experimental zero-copy replication deleted the S3-stored data parts for every replica of the Logs cluster.",
+    "evidence": "p137: A bug in ClickHouse caused it to unexpectedly attempt to delete almost all of the data parts in S3.",
+    "pool": "policy",
+    "followUp": {
+      "question": "did we get any of it back?",
+      "standalone": "Was any of the US Logs data lost in the February 2026 incident recovered?",
+      "expect": ["company/post-mortems/2026-02-20-posthog-us-logs-data-loss"],
+      "answer": "Only the most recent ~3 days, backfilled from Kafka's 3-day retention; data older than that was lost.",
+      "evidence": "p139: Configuring Kafka with 3 days of retention saved us from total data loss for recent activity."
+    }
+  },
+  {
+    "id": "product-intent-timing",
+    "question": "we're launching a beta soon - when do we need to start tracking which users are interested in our product?",
+    "expect": ["growth/growth-engineering/product-intents"],
+    "answer": "As soon as the product is in any kind of public beta, start capturing product intents, before any public release.",
+    "evidence": "p462: As soon as your product is in any sort of public beta you should start tracking product intents.",
+    "pool": "other"
+  },
+  {
+    "id": "onsite-visit-threshold",
+    "question": "which of my accounts are big enough to be worth visiting in person?",
+    "expect": ["growth/sales/customer-onsites", "growth/sales/expansion-and-retention"],
+    "answer": "Accounts paying or likely to pay $50k+/year with expansion, renewal or major hurdles; the expansion guide says regularly see $100k+ accounts.",
+    "evidence": "p561: In-person visits work best for accounts paying or likely to pay $50k+/year",
+    "pool": "other"
+  },
+  {
+    "id": "meetup-sponsorship-amount",
+    "question": "a customer is organizing a dev meetup and asked us for money - how much do we usually chip in?",
+    "expect": ["marketing/events"],
+    "answer": "Typically between $500 and $3,500, and the support usually comes with some added PostHog engagement.",
+    "evidence": "p822: Budgetary support typically falls in the range from $500 to $3,500.",
+    "pool": "other"
+  },
+  {
+    "id": "salesforce-org-ids",
+    "question": "how do I pull the posthog org IDs for all my accounts out of salesforce?",
+    "expect": ["cs-and-onboarding/new-hire-onboarding-exercise", "growth/sales/user-event-streams"],
+    "answer": "Run a SQL query on salesforce.account selecting distinct posthog_org_id_c where owner_id is your Salesforce ID, then export to CSV.",
+    "evidence": "p240: SELECT DISTINCT posthog_org_id_c, NULL as empty_column FROM salesforce.account WHERE owner_id = 'your_salesforce_id'",
+    "pool": "other"
+  },
+  {
+    "id": "customer-site-debug-mode",
+    "question": "how can I see what posthog is doing on a customer's live site?",
+    "expect": ["support/troubleshooting-tips", "cs-and-onboarding/foundation-check"],
+    "answer": "Add ?__posthog_debug=true to a page URL on their site to turn on debug mode, which shows PostHog logs and config.",
+    "evidence": "p1060: Debug mode: append ?__posthog_debug=true to a site that has posthog running",
+    "pool": "other",
+    "followUp": {
+      "question": "what about checking if they've set up a reverse proxy?",
+      "standalone": "How can I check whether a customer is using a reverse proxy?",
+      "expect": ["support/troubleshooting-tips", "cs-and-onboarding/foundation-check", "cs-and-onboarding/health-checks"],
+      "answer": "Look at api_host in their PostHog config; us.i.posthog.com or eu.i.posthog.com means no reverse proxy, their own domain means one.",
+      "evidence": "p1060: To check if a customer is using a reverse proxy, look at their api_host configuration."
+    }
+  },
+  {
+    "id": "oos-hogpatch-address",
+    "question": "what's the street address for Hogpatch? I'm in SF next week",
+    "expect": "not-covered",
+    "pool": "out-of-scope",
+    "checked": ["address", "street", "3rd Street", "third street", "location", "Dogpatch", "Hogpatch", "zip", "postcode", "office"]
+  },
+  {
+    "id": "oos-option-vesting",
+    "question": "how does vesting work for my stock options - is there a one-year cliff?",
+    "expect": "not-covered",
+    "pool": "out-of-scope",
+    "checked": ["vesting", "vested", "vests", "cliff", "4-year", "four year", "equity schedule", "vesting schedule", "share option", "stock option", "strike", "409A", "exercise", "equity", "grant"]
+  },
+  {
+    "id": "oos-oncall-pay",
+    "question": "do we get paid extra or get a day off for covering weekend on-call?",
+    "expect": "not-covered",
+    "pool": "out-of-scope",
+    "checked": ["on-call", "on call", "oncall", "pager", "paged", "weekend", "overtime", "extra pay", "additional pay", "stipend", "allowance", "bonus", "compensation", "in lieu", "TOIL", "comp time", "time back"]
+  }
+]

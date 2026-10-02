@@ -7,8 +7,10 @@
  *
  * Answer check (--answers, calls Claude, ~1-2¢ per question): runs each question through the real
  * pipeline (rewrite → search → Claude → grounding gate). Answerable questions and follow-ups must be
- * answered with a citation from an expected section; out-of-scope questions must come back
- * "not covered". Results are also written to eval/results/.
+ * answered with a citation from an expected section. Out-of-scope questions pass if declined; if
+ * instead they get a partial answer (allowed by the prompt: answer what the handbook says, name
+ * what it doesn't), they're marked "review" and printed for a person to check. Results are also
+ * written to eval/results/.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
@@ -102,21 +104,35 @@ async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[]) {
 // Sonnet 5.5 list prices, $ per million tokens (answer calls only; the Haiku rewrite is ~0.1¢).
 const PRICE = { input: 2, output: 10 };
 
+type Outcome = "pass" | "review" | "fail";
+
 interface Row {
   id: string;
   kind: "question" | "follow-up" | "out-of-scope";
-  pass: boolean;
+  outcome: Outcome;
   status: AskResponse["status"];
   searchedFor: string;
   citedSections: string[];
+  answer: string;
   trace: AskTrace;
 }
 
-function grade(response: AskResponse, expect: Expectation): { pass: boolean; citedSections: string[] } {
-  if (expect === "not-covered") return { pass: response.status === "not-covered", citedSections: [] };
-  if (response.status !== "answered") return { pass: false, citedSections: [] };
-  const citedSections = [...new Set(response.citations.map((c) => c.sectionPath.replace(/^contents\/handbook\/|\.md$/g, "")))];
-  return { pass: citedSections.some((path) => expect.some((e) => matchesSection(`contents/handbook/${path}.md`, e))), citedSections };
+function grade(response: AskResponse, expect: Expectation): { outcome: Outcome; citedSections: string[] } {
+  const citedSections =
+    response.status === "answered"
+      ? [...new Set(response.citations.map((c) => c.sectionPath.replace(/^contents\/handbook\/|\.md$/g, "")))]
+      : [];
+  if (expect === "not-covered") {
+    const outcome = response.status === "not-covered" ? "pass" : response.status === "answered" ? "review" : "fail";
+    return { outcome, citedSections };
+  }
+  const cited = citedSections.some((path) => expect.some((e) => matchesSection(`contents/handbook/${path}.md`, e)));
+  return { outcome: cited ? "pass" : "fail", citedSections };
+}
+
+function answerText(response: AskResponse): string {
+  if (response.status !== "answered") return "";
+  return response.parts.map((p) => p.text + p.citations.map((n) => `[${n}]`).join("")).join("");
 }
 
 async function answerEval(questions: EvalQuestion[]) {
@@ -128,13 +144,17 @@ async function answerEval(questions: EvalQuestion[]) {
   const rows: Row[] = [];
   const run = async (id: string, kind: Row["kind"], question: string, expect: Expectation, history: { question: string; searchedFor: string }[] = []) => {
     const { response, trace } = await ask({ question, history });
-    const { pass, citedSections } = grade(response, expect);
-    const row: Row = { id, kind, pass, status: response.status, searchedFor: trace.searchedFor, citedSections, trace };
+    const { outcome, citedSections } = grade(response, expect);
+    const row: Row = { id, kind, outcome, status: response.status, searchedFor: trace.searchedFor, citedSections, answer: answerText(response), trace };
     rows.push(row);
-    const mark = pass ? "pass" : "FAIL";
+    const mark = { pass: "pass", review: "REVIEW", fail: "FAIL" }[outcome].padEnd(6);
     const uncited = response.status === "answered" ? `  uncited ${trace.uncitedChars ?? 0}` : "";
     console.log(`${mark}  ${id.slice(0, 34).padEnd(34)} ${kind.padEnd(12)} ${response.status.padEnd(11)} ${(trace.ms.total / 1000).toFixed(1)}s${uncited}`);
-    if (!pass) console.log(`      searched for: ${trace.searchedFor}\n      cited: ${citedSections.join(", ") || "—"}${response.status === "error" ? `\n      error: ${response.message}` : ""}`);
+    if (outcome !== "pass") {
+      console.log(`      searched for: ${trace.searchedFor}\n      cited: ${citedSections.join(", ") || "—"}`);
+      if (response.status === "error") console.log(`      error: ${response.message}`);
+      if (outcome === "review") console.log(`      answer: ${row.answer.replace(/\n+/g, " ")}`);
+    }
     return trace;
   };
 
@@ -147,9 +167,9 @@ async function answerEval(questions: EvalQuestion[]) {
     }
   }
 
-  const summary = (kind: Row["kind"]) => {
+  const summary = (kind: Row["kind"], outcome: Outcome = "pass") => {
     const of = rows.filter((r) => r.kind === kind);
-    return `${of.filter((r) => r.pass).length}/${of.length}`;
+    return `${of.filter((r) => r.outcome === outcome).length}/${of.length}`;
   };
   const answered = rows.filter((r) => r.status === "answered");
   const input = rows.reduce((s, r) => s + (r.trace.usage?.input ?? 0), 0);
@@ -161,10 +181,11 @@ async function answerEval(questions: EvalQuestion[]) {
 questions answered with an expected citation:  ${summary("question")}
 follow-ups (rewritten) answered correctly:      ${summary("follow-up")}
 out-of-scope questions declined:                ${summary("out-of-scope")}
+out-of-scope answered partially (review above): ${summary("out-of-scope", "review")}
 answers with any uncited text:                  ${answered.filter((r) => (r.trace.uncitedChars ?? 0) > 0).length}/${answered.length}
 median time per question:                       ${(median(rows.map((r) => r.trace.ms.total)) / 1000).toFixed(1)}s
 answer-model cost for this run:                 $${cost.toFixed(3)} (${input} in / ${output} out tokens)`);
-  await saveResults("answers", { summary: { questions: summary("question"), followUps: summary("follow-up"), outOfScope: summary("out-of-scope"), cost }, rows });
+  await saveResults("answers", { summary: { questions: summary("question"), followUps: summary("follow-up"), outOfScopeDeclined: summary("out-of-scope"), outOfScopeReview: summary("out-of-scope", "review"), cost }, rows });
 }
 
 async function saveResults(name: string, data: unknown) {
