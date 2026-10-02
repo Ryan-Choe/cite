@@ -76,22 +76,25 @@ About 15 questions in `eval/questions.json`, written **before** looking at searc
 - Handbook content is trusted. There are no defenses against prompt-injection text inside the document.
 - Single user, local machine. No auth and no persistence.
 
-## Code layout (planned)
+## Code layout
 
 ```
-public/handbook.pdf            source document, served for "Open page" links
-scripts/ingest.ts              PDF → cleaned pages → chunks → embeddings → data/index/
-scripts/eval.ts                retrieval + answer checks over eval/questions.json
-src/lib/ingest/                PDF extraction and page cleaning
-src/lib/chunk.ts               section/paragraph chunker (rules agreed in design review; tests and code by Claude)
-src/lib/search/fuse.ts         ★ Reciprocal Rank Fusion
-src/lib/answer/prompt.ts       ★ system prompt and document blocks
-src/lib/answer/grounding.ts    ★ citation → section/page mapping, the no-citation rule
-src/app/api/ask/route.ts       rewrite → search → answer → gate
-src/app/page.tsx               chat UI
+public/handbook.pdf              source document, served for "Open page" links
+data/index/                      built index (committed): chunks.json + vectors.bin
+scripts/ingest.ts                PDF → sections → chunks → embeddings → data/index/
+scripts/search.ts                debug: show hybrid results with each retriever's rank
+scripts/eval.ts                  retrieval (and later answer) checks over eval/questions.json
+src/lib/ingest/                  PDF layout → sections of headings/paragraphs, per page
+src/lib/chunk.ts                 section → chunks (≤1,000 chars, heading-aware, per-page text)
+src/lib/search/embed.ts          local MiniLM embeddings
+src/lib/search/fuse.ts           Reciprocal Rank Fusion
+src/lib/search/search.ts         BM25 + semantic retrieval, fused
+src/lib/answer/                  prompt, Claude call with citations, grounding gate (planned)
+src/app/api/ask/route.ts         rewrite → search → answer → gate (planned)
+src/app/page.tsx                 chat UI (planned)
 ```
 
-★ = written by Ryan (with unit tests); everything else was pair-built with Claude Code. See the README's "How I used AI" section.
+Authorship: Ryan set the requirements and made every design decision in a structured design review (this doc). Claude Code wrote the code and tests and walked Ryan through each piece; Ryan chose to learn by reading and questioning working code rather than writing it line by line. See the README's "How I used AI" section.
 
 ## Build order (and cut line)
 
