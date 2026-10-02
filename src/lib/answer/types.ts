@@ -12,6 +12,7 @@ export interface AskRequest {
 export interface Citation {
   n: number; // the marker number, as in [1]
   sectionTitle: string;
+  sectionPath: string; // e.g. contents/handbook/people/time-off.md
   title: string; // full heading trail, e.g. "Time off › Permissionless time off"
   pages: number[];
   quote: string; // the exact handbook paragraph(s) Claude cited

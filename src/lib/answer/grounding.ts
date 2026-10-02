@@ -84,6 +84,7 @@ function resolveCitation(
     key: `${raw.document_index}:${start}:${end}`,
     value: {
       sectionTitle: source.chunk.sectionTitle,
+      sectionPath: source.chunk.sectionPath,
       title: source.chunk.title,
       pages: [...new Set(blocks.map((b) => b.page))],
       quote: blocks.map((b) => b.text).join("\n"),

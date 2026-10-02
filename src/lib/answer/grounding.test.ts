@@ -53,8 +53,8 @@ describe("applyGroundingGate", () => {
         { text: " Book it in PTO by Deel.", citations: [2] },
       ],
       citations: [
-        { n: 1, sectionTitle: "Time off", title: "Time off", pages: [980], quote: "Take at least 25 days a year." },
-        { n: 2, sectionTitle: "Time off", title: "Time off", pages: [981], quote: "Book it in PTO by Deel." },
+        { n: 1, sectionTitle: "Time off", sectionPath: "contents/handbook/people/time-off.md", title: "Time off", pages: [980], quote: "Take at least 25 days a year." },
+        { n: 2, sectionTitle: "Time off", sectionPath: "contents/handbook/people/time-off.md", title: "Time off", pages: [981], quote: "Book it in PTO by Deel." },
       ],
     });
   });
