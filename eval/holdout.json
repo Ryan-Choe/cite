@@ -1,0 +1,121 @@
+[
+  {
+    "id": "customers-from-recommendations",
+    "question": "roughly what share of our customers come from people recommending us?",
+    "expect": ["low-prices"],
+    "answer": "About 70% of customers find PostHog through word of mouth; nearly all sales are self-serve.",
+    "evidence": "p809: Nearly all our sales are self-serve and 70% of our customers find us through word-of-mouth growth.",
+    "pool": "policy"
+  },
+  {
+    "id": "team-survey-anonymity",
+    "question": "if I fill out the company engagement survey, can anyone see what I said?",
+    "expect": ["people/feedback"],
+    "answer": "Yes. Responses aren't anonymous; only the People & Ops and Exec teams can see the full list of responses.",
+    "evidence": "p906: the People & Ops and Exec teams have access to the full list of responses, which are not anonymous",
+    "pool": "policy",
+    "followUp": {
+      "question": "how often does that go out?",
+      "standalone": "How often does PostHog run its team engagement survey?",
+      "expect": ["people/feedback"],
+      "answer": "Every 6 months, run automatically through the Pulse Surveys by Deel Slack app.",
+      "evidence": "p906: We run team surveys every 6 months using the Pulse Surveys by Deel Slack app."
+    }
+  },
+  {
+    "id": "propose-company-wide-tool",
+    "question": "if I want the whole company to start using some new app, how do I get that approved?",
+    "expect": ["company/adding-tools"],
+    "answer": "Trial it somewhere low-risk, then open a PR plus issue in Company Internal making the case; if adopted, you coordinate terms and #legal review.",
+    "evidence": "p32: Open an pull request in Company Internal",
+    "pool": "policy"
+  },
+  {
+    "id": "workflow-pr-review",
+    "question": "if my PR touches a github actions workflow, does it need a special reviewer?",
+    "expect": ["company/post-mortems/2025-11-26-shai-hulud-attack"],
+    "answer": "Yes. Since the Shai-Hulud attack, any PR modifying a workflow file needs a specific review from someone on the security team.",
+    "evidence": "p128: any PR modifying a workflow file gets (requiring a specific review from someone on our security team)",
+    "pool": "policy"
+  },
+  {
+    "id": "promotion-criteria",
+    "question": "is there a rubric or list of criteria I need to hit to move up here?",
+    "expect": ["people/career-progression"],
+    "answer": "No. PostHog deliberately has no formal career progression framework or checklist; you progress by shipping toward team and company goals.",
+    "evidence": "p903: The benefits of frameworks only start to outweigh their drawbacks when you need to start coordinating 100s of people.",
+    "pool": "policy"
+  },
+  {
+    "id": "browser-extension-billing",
+    "question": "a customer runs posthog inside their browser extension and their bill is way higher than it should be, how do they fix it?",
+    "expect": ["onboarding/chrome-extension-billing-case-study-wildfire"],
+    "answer": "Persist one UUID in chrome.storage.local, bootstrap PostHog with it (and flag values) at init, and only call identify() when the ID changes.",
+    "evidence": "p856: Persisted a shared UUID via chrome.storage.local This ID was generated once, then reused across all extension contexts.",
+    "pool": "other"
+  },
+  {
+    "id": "support-ticket-split",
+    "question": "how do tickets get divvied up on the support team? does everyone work every product?",
+    "expect": ["support/support-smes"],
+    "answer": "Products are split into groups, each owned by one EU and one NA SME; everyone also shares Analytics and unclassified tickets.",
+    "evidence": "p1052: For each product group, we select one person from EU and one from NA to maintain timezone coverage",
+    "pool": "other"
+  },
+  {
+    "id": "newsletter-owner",
+    "question": "who runs Product for Engineers these days?",
+    "expect": ["content/newsletter"],
+    "answer": "Andy owns it; one person writes each issue, then Andy edits and publishes it on Substack.",
+    "evidence": "p177: Our newsletter is called Product for Engineers. It's owned by Andy.",
+    "pool": "other"
+  },
+  {
+    "id": "sales-lead-threshold",
+    "question": "what's the cutoff for a new lead to get worked by sales instead of just going self-serve?",
+    "expect": [
+      "growth/sales/accounts-overview",
+      "growth/sales/new-sales",
+      "growth/sales/crm",
+      "growth/sales/running-trials",
+      "growth/sales/overview",
+      "growth/sales/how-to-do-discovery",
+      "growth/sales/product-led-sales",
+      "growth/sales/customer-onboarding",
+      "people/hiring-process/sales-cs-hiring",
+      "brand/partners"
+    ],
+    "answer": "Roughly $20k/year in potential spend; the TAE judges this, and leads below it are routed to self-serve.",
+    "evidence": "p493: $20k+ potential? (TAE decides)",
+    "pool": "other"
+  },
+  {
+    "id": "case-study-customer-outreach",
+    "question": "I want to interview one of our customers for a story on the website, anyone I should check with before I email them?",
+    "expect": ["marketing/customer-case-studies"],
+    "answer": "Look them up in Vitally; if they have an assigned AE or CSM, give that person a heads-up first, otherwise reach out directly.",
+    "evidence": "p817: If they already have an assigned Account Executive or CSM, give that person a heads-up",
+    "pool": "other",
+    "followUp": {
+      "question": "do we give them anything for doing it?",
+      "standalone": "Do we give customers anything as a thank-you for doing a case study with us?",
+      "expect": ["marketing/customer-case-studies", "marketing/co-marketing"],
+      "answer": "Yes. Once the case study is live, send participants a merch credit (voucher) as a thank-you.",
+      "evidence": "p819: the last step is to send a merch credit to the participants as thank you."
+    }
+  },
+  {
+    "id": "oos-team-survey-score",
+    "question": "how did we score on the last staff survey compared to the benchmark?",
+    "expect": "not-covered",
+    "pool": "out-of-scope",
+    "checked": ["survey results", "latest survey", "score", "benchmark", "Culture Amp", "Pulse Surveys", "eNPS", "engagement score", "great place to work"]
+  },
+  {
+    "id": "oos-passport-renewal",
+    "question": "how do I renew my passport in time for the offsite?",
+    "expect": "not-covered",
+    "pool": "out-of-scope",
+    "checked": ["passport", "renew", "renewal", "travel document", "identity document", "embassy", "consulate", "ESTA", "visa"]
+  }
+]
