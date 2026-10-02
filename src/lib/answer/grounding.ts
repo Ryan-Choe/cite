@@ -6,6 +6,8 @@ export interface GateOutcome {
   result: AskResult;
   /** Citations that pointed outside the documents or whose quote didn't match our text. */
   droppedCitations: number;
+  /** Characters of answer text with no citation attached (whitespace and punctuation excluded). */
+  uncitedChars: number;
   /** Why the answer was withheld, if it was. */
   notCoveredReason?: "model-said-not-covered" | "no-citations";
 }
@@ -51,15 +53,19 @@ export function applyGroundingGate(
   }
 
   const text = parts.map((p) => p.text).join("").trim();
+  const uncitedChars = parts
+    .filter((p) => p.citations.length === 0)
+    .reduce((sum, p) => sum + p.text.replace(/[^\p{L}\p{N}]/gu, "").length, 0);
   const notCovered = (reason: GateOutcome["notCoveredReason"]): GateOutcome => ({
     result: { status: "not-covered", closest: closestSections(sources), searchedFor },
     droppedCitations,
+    uncitedChars,
     notCoveredReason: reason,
   });
 
   if (text === "" || text.startsWith(NOT_COVERED)) return notCovered("model-said-not-covered");
   if (citations.length === 0) return notCovered("no-citations");
-  return { result: { status: "answered", parts, citations, searchedFor }, droppedCitations };
+  return { result: { status: "answered", parts, citations, searchedFor }, droppedCitations, uncitedChars };
 }
 
 function resolveCitation(

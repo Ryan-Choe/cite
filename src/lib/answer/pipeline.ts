@@ -14,6 +14,7 @@ export interface AskTrace {
   notCoveredReason?: string;
   citations?: number;
   droppedCitations?: number;
+  uncitedChars?: number;
   model?: string;
   usage?: { input: number; output: number };
   ms: { search?: number; answer?: number; total: number };
@@ -74,6 +75,7 @@ export async function ask(request: AskRequest): Promise<{ response: AskResponse;
   const gate = applyGroundingGate(message.content, sources, searchedFor);
   if (gate.result.status === "answered") trace.citations = gate.result.citations.length;
   trace.droppedCitations = gate.droppedCitations;
+  trace.uncitedChars = gate.uncitedChars;
   trace.notCoveredReason = gate.notCoveredReason;
   return finish(gate.result);
 }

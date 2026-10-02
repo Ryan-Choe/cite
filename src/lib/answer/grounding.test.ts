@@ -128,3 +128,18 @@ describe("applyGroundingGate", () => {
     expect(result.status === "answered" && result.parts).toHaveLength(1);
   });
 });
+
+describe("uncitedChars", () => {
+  it("counts letters and digits in answer text that carries no citation", () => {
+    const { uncitedChars } = applyGroundingGate(
+      reply(
+        { text: "Take 25 days. " }, // uncited: "Take25days" = 10
+        { text: "We offer unlimited time off.", citations: [cite(0, 0, 1, "We offer unlimited time off.")] },
+        { text: "\n\n- " }, // punctuation only: 0
+      ),
+      sources,
+      "q",
+    );
+    expect(uncitedChars).toBe(10);
+  });
+});
