@@ -222,8 +222,13 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
         ))}
       </p>
       <ol className="space-y-1.5">
-        {response.citations.map((c) => (
-          <CitationCard key={c.n} id={cardId(c.n)} citation={c} />
+        {response.citations.map((c, i) => (
+          <CitationCard
+            key={c.n}
+            id={cardId(c.n)}
+            citation={c}
+            showTitle={i === 0 || response.citations[i - 1].title !== c.title}
+          />
         ))}
       </ol>
       {searchedFor}
@@ -231,14 +236,18 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
   );
 }
 
-function CitationCard({ id, citation }: { id: string; citation: Citation }) {
+/** A citation: the section title (only when it changes from the card above), then a one-line quote preview that expands to the full quote. */
+function CitationCard({ id, citation, showTitle }: { id: string; citation: Citation; showTitle: boolean }) {
   const pages = citation.pages.length > 1 ? `pp. ${citation.pages.join("–")}` : `p. ${citation.pages[0]}`;
   return (
     <li>
-      <details id={id} className="rounded-md border border-zinc-200 text-sm dark:border-zinc-800">
+      {showTitle && <p className="mb-1 mt-3 text-xs font-medium text-zinc-500">{citation.title}</p>}
+      <details id={id} className="group rounded-md border border-zinc-200 text-sm dark:border-zinc-800">
         <summary className="flex cursor-pointer items-baseline gap-2 px-3 py-2">
           <span className="font-medium text-blue-700 dark:text-blue-400">[{citation.n}]</span>
-          <span className="flex-1">{citation.title}</span>
+          <span className="flex-1 truncate text-zinc-700 group-open:invisible dark:text-zinc-300">
+            {citation.quote.replace(/^\s*- /, "")}
+          </span>
           <PageLink page={citation.pages[0]}>{pages}</PageLink>
         </summary>
         <blockquote className="whitespace-pre-wrap border-t border-zinc-200 px-3 py-2 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
