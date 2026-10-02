@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bodyText, chunkSection, renderBlock, searchText } from "./chunk";
+import { bodyText, chunkSection, renderBlock, searchText, splitLongText } from "./chunk";
 import type { Block, Section } from "./ingest/types";
 
 // --- helpers to build test sections ---------------------------------------------------
@@ -25,7 +25,17 @@ describe("renderBlock", () => {
   });
 });
 
-// --- ★ chunkSection: make these pass ----------------------------------------------------
+describe("splitLongText", () => {
+  it("leaves short text alone", () => {
+    expect(splitLongText("Short.", 100)).toEqual(["Short."]);
+  });
+
+  it("cuts mid-word only when there is no space at all (e.g. a giant URL)", () => {
+    expect(splitLongText("x".repeat(25), 10)).toEqual(["x".repeat(10), "x".repeat(10), "x".repeat(5)]);
+  });
+});
+
+// --- chunkSection ----------------------------------------------------------------------
 describe("chunkSection", () => {
   it("puts a short section into one chunk, titled with the section title", () => {
     const chunks = chunkSection(section([para("We offer unlimited time off."), para("Take at least 25 days.")]));

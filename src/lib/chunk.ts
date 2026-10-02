@@ -46,19 +46,88 @@ export function searchText(chunk: Chunk): string {
 }
 
 /**
- * Split a section into chunks. ★ Ryan's to implement — the rules are the tests in chunk.test.ts.
+ * Split a section into chunks:
  *
  *   1. Walk the blocks in order, packing paragraphs into the current chunk.
  *   2. A heading always closes the current chunk; the next chunk sits under the updated headings.
  *      An h2 replaces the heading trail; an h3 goes under the latest h2.
  *   3. Start a new chunk when adding the next paragraph would push bodyText past maxChars.
- *   4. A single paragraph longer than maxChars is split at sentence ends (or, failing that,
- *      at the last space) into pieces of at most maxChars.
+ *   4. A single paragraph longer than maxChars is first split into pieces (see splitLongText).
  *   5. Paragraphs on the same page are joined with "\n" inside that page's ChunkPage.
  *   6. Chunks with no body text are dropped.
  */
 export function chunkSection(section: Section, maxChars: number = MAX_CHUNK_CHARS): Chunk[] {
-  void section;
-  void maxChars;
-  throw new Error("TODO(Ryan): implement chunkSection — see the rules above and chunk.test.ts");
+  const chunks: Chunk[] = []; // finished chunks
+  let headings: string[] = []; // heading trail the current chunk sits under
+  let currentH2: string | undefined; // the latest h2, so an h3 knows what it sits under
+  let pages: ChunkPage[] = []; // the current chunk's body, still being filled
+
+  // Close the current chunk: save it if it has any body text, then start an empty one.
+  function flush() {
+    if (pages.length > 0) {
+      chunks.push({
+        id: `${section.path}#${chunks.length}`,
+        sectionTitle: section.title,
+        sectionPath: section.path,
+        headings,
+        title: [section.title, ...headings].join(" › "),
+        pages,
+      });
+    }
+    pages = [];
+  }
+
+  // Add one piece of text (at most maxChars long), closing the current chunk first if it would overflow.
+  function add(text: string, page: number) {
+    const lengthIfAdded = pages.length === 0 ? text.length : bodyText({ pages }).length + 1 + text.length; // +1 for the "\n"
+    if (lengthIfAdded > maxChars) flush();
+
+    const last = pages.at(-1);
+    if (last && last.page === page) last.text += "\n" + text;
+    else pages.push({ page, text });
+  }
+
+  for (const block of section.blocks) {
+    if (block.kind === "heading") {
+      flush();
+      // Replace the trail rather than editing it in place: chunks already saved keep their own array.
+      if (block.level === 2) {
+        currentH2 = block.text;
+        headings = [block.text];
+      } else {
+        headings = currentH2 ? [currentH2, block.text] : [block.text];
+      }
+    } else {
+      for (const piece of splitLongText(renderBlock(block), maxChars)) add(piece, block.page);
+    }
+  }
+
+  flush(); // the last chunk is still open when the loop ends
+  return chunks;
+}
+
+/**
+ * Split text into pieces of at most maxChars, cutting at the last sentence end that fits,
+ * else the last space, else mid-word (e.g. a giant URL). The space at each cut is dropped.
+ */
+export function splitLongText(text: string, maxChars: number): string[] {
+  const pieces: string[] = [];
+  let rest = text;
+  while (rest.length > maxChars) {
+    const cut = lastBreak(rest, maxChars);
+    pieces.push(rest.slice(0, cut).trimEnd());
+    rest = rest.slice(cut).trimStart();
+  }
+  if (rest) pieces.push(rest);
+  return pieces;
+}
+
+/** Where to cut `text` so the first piece is at most maxChars long. */
+function lastBreak(text: string, maxChars: number): number {
+  const window = text.slice(0, maxChars + 1); // +1: a space exactly at the limit is still a valid cut
+  const sentenceEnd = Math.max(window.lastIndexOf(". "), window.lastIndexOf("! "), window.lastIndexOf("? "));
+  if (sentenceEnd > 0) return sentenceEnd + 1; // cut just after the punctuation
+  const space = window.lastIndexOf(" ");
+  if (space > 0) return space;
+  return maxChars;
 }

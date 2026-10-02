@@ -83,7 +83,7 @@ public/handbook.pdf            source document, served for "Open page" links
 scripts/ingest.ts              PDF → cleaned pages → chunks → embeddings → data/index/
 scripts/eval.ts                retrieval + answer checks over eval/questions.json
 src/lib/ingest/                PDF extraction and page cleaning
-src/lib/chunk.ts               ★ section/paragraph chunker
+src/lib/chunk.ts               section/paragraph chunker (rules agreed in design review; tests and code by Claude)
 src/lib/search/fuse.ts         ★ Reciprocal Rank Fusion
 src/lib/answer/prompt.ts       ★ system prompt and document blocks
 src/lib/answer/grounding.ts    ★ citation → section/page mapping, the no-citation rule
