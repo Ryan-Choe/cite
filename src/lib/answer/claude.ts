@@ -9,7 +9,7 @@ export const ANSWER_MODEL = process.env.CITE_ANSWER_MODEL || "claude-sonnet-5-5"
 const ANSWER_MAX_TOKENS = 4096;
 
 let client: Anthropic | undefined;
-function getClient(): Anthropic {
+export function getClient(): Anthropic {
   client ??= new Anthropic(); // reads ANTHROPIC_API_KEY; retries 429/5xx twice on its own
   return client;
 }

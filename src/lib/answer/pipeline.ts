@@ -2,6 +2,7 @@ import { getIndex, search } from "../search/search";
 import { answerWithCitations, ANSWER_MODEL, hasApiKey, toAskError } from "./claude";
 import { applyGroundingGate } from "./grounding";
 import { buildDocuments } from "./prompt";
+import { rewriteFollowUp } from "./rewrite";
 import type { AskRequest, AskResponse } from "./types";
 
 /** Everything worth logging about one question (no API key, no full answer text). */
@@ -17,7 +18,7 @@ export interface AskTrace {
   uncitedChars?: number;
   model?: string;
   usage?: { input: number; output: number };
-  ms: { search?: number; answer?: number; total: number };
+  ms: { rewrite?: number; search?: number; answer?: number; total: number };
 }
 
 /** Question → search → Claude with citations → grounding gate. Used by the API route and the eval. */
@@ -25,8 +26,7 @@ export async function ask(request: AskRequest): Promise<{ response: AskResponse;
   const started = performance.now();
   const elapsed = (since: number) => Math.round(performance.now() - since);
   const question = request.question.trim();
-  const searchedFor = question; // follow-up rewriting arrives in build step 6
-  const trace: AskTrace = { question, searchedFor, retrieved: [], status: "error", ms: { total: 0 } };
+  const trace: AskTrace = { question, searchedFor: question, retrieved: [], status: "error", ms: { total: 0 } };
   const finish = (response: AskResponse) => {
     trace.status = response.status;
     if (response.status === "error") trace.errorCode = response.code;
@@ -42,6 +42,12 @@ export async function ask(request: AskRequest): Promise<{ response: AskResponse;
       retryable: false,
     });
   }
+
+  // The standalone question is used for both search and answering; Claude never sees the raw history.
+  const rewriteStarted = performance.now();
+  const searchedFor = await rewriteFollowUp(question, request.history);
+  trace.searchedFor = searchedFor;
+  if (request.history?.length) trace.ms.rewrite = elapsed(rewriteStarted);
 
   const searchStarted = performance.now();
   const hits = await search(await getIndex(), searchedFor);
