@@ -205,21 +205,27 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
   return (
     <div className="space-y-3">
       <p className="whitespace-pre-wrap leading-relaxed">
-        {response.parts.map((part, i) => (
-          <span key={i}>
-            {part.text}
-            {part.citations.map((n) => (
-              <a
-                key={n}
-                href={`#${cardId(n)}`}
-                onClick={() => openCard(cardId(n))}
-                className="ml-0.5 align-super text-xs font-medium text-blue-700 no-underline hover:underline dark:text-blue-400"
-              >
-                [{n}]
-              </a>
-            ))}
-          </span>
-        ))}
+        {response.parts.map((part, i) => {
+          // Put markers right after the cited words, before any trailing line break.
+          const text = part.text.trimEnd();
+          const trailing = part.text.slice(text.length);
+          return (
+            <span key={i}>
+              {text}
+              {part.citations.map((n) => (
+                <a
+                  key={n}
+                  href={`#${cardId(n)}`}
+                  onClick={() => openCard(cardId(n))}
+                  className="ml-0.5 align-super text-xs font-medium text-blue-700 no-underline hover:underline dark:text-blue-400"
+                >
+                  [{n}]
+                </a>
+              ))}
+              {trailing}
+            </span>
+          );
+        })}
       </p>
       <ol className="space-y-1.5">
         {response.citations.map((c, i) => (
