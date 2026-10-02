@@ -27,3 +27,6 @@ next-env.d.ts
 
 # debug logs
 npm-debug.log*
+
+# local Claude Code tooling
+/.claude/
