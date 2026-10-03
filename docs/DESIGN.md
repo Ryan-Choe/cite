@@ -4,7 +4,7 @@ Cite answers natural-language questions about a company handbook. Every answer i
 
 ## The source document
 
-`public/handbook.pdf` is PostHog's public handbook, printed from the web on 2026-04-20.
+`public/handbook.pdf` is PostHog's public handbook, built from its `contents/handbook/` pages as of 2026-04-20 (see [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)).
 
 | Fact | Value | Consequence |
 |---|---|---|

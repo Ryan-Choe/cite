@@ -2,7 +2,7 @@
 
 Ask questions about the company handbook and get answers grounded in it. Every answer cites the exact handbook passages it came from, with page numbers that open the PDF at the right page. If the handbook doesn't cover a question, Cite says so instead of guessing.
 
-The handbook is PostHog's public handbook (`public/handbook.pdf`, printed 2026-04-20; 1,076 pages, ~500k tokens).
+The handbook is PostHog's public handbook (`public/handbook.pdf`, a snapshot from 2026-04-20; 1,076 pages, ~500k tokens), used under PostHog's MIT license: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Cite is not affiliated with PostHog.
 
 | A follow-up, rewritten and answered with citations | A question the handbook doesn't answer |
 |---|---|
@@ -135,3 +135,7 @@ Each column is a single run, so a one-question change is 10 points. Runs 1 and 2
 2. **Grow the answer eval.** The search sets have 96 questions, but the answer eval still runs on sets A and B (20 answerable questions), so a one-question difference there is 5–10 points.
 3. **Check grounding per sentence.** For each uncited sentence that makes a claim, check with a cheap model call that it follows from the quotes cited next to it, and label the ones that pass "summary of [n]" instead of greying them. Dropping them instead would often drop the answer itself.
 4. **Hosting.** Deploy with auth and a spend cap. It was skipped because a public URL spends the owner's API credit, and the embedding runtime may exceed Vercel's function size limit.
+
+## License
+
+The code is MIT-licensed ([LICENSE](LICENSE)). The handbook content (`public/handbook.pdf`, `data/index/`, and quotes in `eval/` and `docs/screenshots/`) is PostHog's, under PostHog's own MIT notice: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

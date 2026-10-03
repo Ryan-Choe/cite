@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Ask questions about the company handbook and get answers grounded in it, with page citations.",
+  "license": "MIT",
   "engines": {
     "node": ">=22"
   },
