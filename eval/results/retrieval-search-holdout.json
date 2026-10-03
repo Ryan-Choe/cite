@@ -1,10 +1,10 @@
 {
-  "topK": 8,
+  "topK": 12,
   "total": 24,
   "hits": {
-    "semantic": 20,
-    "search": 20,
-    "section": 21
+    "semantic": 21,
+    "search": 21,
+    "section": 22
   },
   "keywordNet": {
     "used": 5,
@@ -57,9 +57,9 @@
     {
       "id": "quarterly-meetup-travel-budget",
       "semanticRank": 11,
-      "searchRank": null,
+      "searchRank": 11,
       "keywordNet": "added another passage",
-      "sectionHit": false
+      "sectionHit": true
     },
     {
       "id": "linkedin-links-in-posts",

@@ -1,14 +1,14 @@
 {
-  "topK": 8,
+  "topK": 12,
   "total": 32,
   "hits": {
-    "semantic": 27,
-    "search": 30,
+    "semantic": 29,
+    "search": 31,
     "section": 31
   },
   "keywordNet": {
-    "used": 8,
-    "addedAnswer": 3,
+    "used": 7,
+    "addedAnswer": 2,
     "pushedOutAnswer": 0
   },
   "rows": [
@@ -29,8 +29,8 @@
     {
       "id": "security-internal-email-use",
       "semanticRank": 10,
-      "searchRank": 8,
-      "keywordNet": "added the answer",
+      "searchRank": 10,
+      "keywordNet": null,
       "sectionHit": true
     },
     {
@@ -71,14 +71,14 @@
     {
       "id": "hedgehouse-for-new-starter",
       "semanticRank": 46,
-      "searchRank": 8,
+      "searchRank": 12,
       "keywordNet": "added the answer",
       "sectionHit": true
     },
     {
       "id": "search-insights-tool-replaced",
       "semanticRank": 46,
-      "searchRank": 8,
+      "searchRank": 12,
       "keywordNet": "added the answer",
       "sectionHit": true
     },
@@ -134,7 +134,7 @@
     {
       "id": "cta-after-customer-raise",
       "semanticRank": 11,
-      "searchRank": null,
+      "searchRank": 11,
       "keywordNet": "added another passage",
       "sectionHit": true
     },

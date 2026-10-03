@@ -1,10 +1,10 @@
 {
-  "topK": 8,
+  "topK": 12,
   "total": 10,
   "hits": {
-    "semantic": 4,
-    "search": 4,
-    "section": 7
+    "semantic": 5,
+    "search": 5,
+    "section": 8
   },
   "keywordNet": {
     "used": 1,
@@ -43,9 +43,9 @@
     {
       "id": "promotion-criteria",
       "semanticRank": 12,
-      "searchRank": null,
+      "searchRank": 12,
       "keywordNet": null,
-      "sectionHit": false
+      "sectionHit": true
     },
     {
       "id": "browser-extension-billing",

@@ -2,9 +2,9 @@
  * npm run eval [-- --answers | --regrade] [-- path/to/questions.json]
  *
  * Retrieval check (default, no API calls): for each answerable question, is the passage holding its
- * evidence quote among the top 8? Reported for semantic search alone and for the full search (with
+ * evidence quote among the top 12 (TOP_K)? Reported for semantic search alone and for the full search (with
  * the keyword safety net), so the net's value is measured rather than assumed. The older,
- * looser check (any chunk of an expected section in the top 8) is reported too.
+ * looser check (any chunk of an expected section in the top 12) is reported too.
  *
  * Answer check (--answers, calls Claude, ~1-2¢ per question): runs each question through the real
  * pipeline (rewrite → search → Claude → grounding gate → gap re-search). Answerable questions and
@@ -78,10 +78,10 @@ interface RetrievalRow {
   id: string;
   /** Rank of the passage holding the answer among all chunks, by semantic search alone. */
   semanticRank: number | null;
-  /** Its rank in the final search results (with the keyword safety net), or null if not in the top 8. */
+  /** Its rank in the final search results (with the keyword safety net), or null if not in the top TOP_K. */
   searchRank: number | null;
   keywordNet: "added the answer" | "added another passage" | null;
-  /** The older, looser check: any chunk of an expected section in the top 8. */
+  /** The older, looser check: any chunk of an expected section in the top TOP_K. */
   sectionHit: boolean;
 }
 

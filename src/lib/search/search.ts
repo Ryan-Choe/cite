@@ -3,8 +3,13 @@ import { dot, EMBEDDING, embedQuery } from "./embed";
 import { readIndex, warnIfStale, type IndexFile } from "./index-file";
 import { buildKeywordIndex, rareWordMatch, withKeywordMatch, type KeywordIndex } from "./keyword";
 
-/** How many chunks the answer step gets. */
-export const TOP_K = 8;
+/**
+ * How many chunks the answer step gets. Across the 116 search-eval questions, the passage with the
+ * answer is in the top 8 for 94, the top 12 for 97 and the top 16 for 99. The top 12 costs about a
+ * quarter more input per answer than the top 8, for questions where the answer ranks just below
+ * passages that share its words ("criteria to move up" ranks sales stage criteria first).
+ */
+export const TOP_K = 12;
 
 export interface HandbookIndex {
   source: IndexFile["source"];

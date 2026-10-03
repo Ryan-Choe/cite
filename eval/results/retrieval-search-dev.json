@@ -1,5 +1,5 @@
 {
-  "topK": 8,
+  "topK": 12,
   "total": 40,
   "hits": {
     "semantic": 32,

@@ -166,7 +166,7 @@ async function answerFrom(
 }
 
 /**
- * The gap re-search. Claude sees only the top 8 search results, so a gap it names ("notice period when
+ * The gap re-search. Claude sees only the top 12 search results, so a gap it names ("notice period when
  * resigning") may be answered by a passage that search ranked lower. Search each gap
  * on its own and, if that finds passages Claude hasn't seen, answer once more with them added.
  * Returns null to keep the first answer.
