@@ -1,16 +1,16 @@
 {
   "summary": {
-    "questions": "7/10",
+    "questions": "8/10",
     "questionsReview": "2/10",
     "followUps": "2/2",
     "followUpsReview": "0/2",
     "outOfScopeDeclined": "1/2",
     "outOfScopeReview": "1/2",
-    "opensUncited": "2/13",
-    "aboutPassages": "1/13",
+    "opensUncited": "1/13",
+    "aboutPassages": "0/13",
     "notCoveredSearchedAgain": "1/1",
     "notFoundThenAnswered": "2/3",
-    "cost": 0.323108
+    "cost": 0.352268
   },
   "rows": [
     {
@@ -22,20 +22,10 @@
       "citedSections": [
         "low-prices"
       ],
-      "answer": "Roughly 70% of PostHog's customers find the company through word-of-mouth growth.[1] The same passage adds that nearly all of its sales are self-serve.[1]",
+      "answer": "Roughly 70% of PostHog's customers find the company through word-of-mouth growth, and nearly all sales are self-serve.[1]",
       "parts": [
         {
-          "text": "Roughly 70% of PostHog's customers find the company through word-of-mouth growth.",
-          "citations": [
-            1
-          ]
-        },
-        {
-          "text": " The same passage adds that ",
-          "citations": []
-        },
-        {
-          "text": "nearly all of its sales are self-serve.",
+          "text": "Roughly 70% of PostHog's customers find the company through word-of-mouth growth, and nearly all sales are self-serve.",
           "citations": [
             1
           ]
@@ -53,42 +43,45 @@
           "contents/handbook/growth/sales/overview.md#1",
           "contents/handbook/how-we-get-users.md#1",
           "contents/handbook/cs-and-onboarding/customer-success.md#7",
-          "contents/handbook/how-we-get-users.md#3"
+          "contents/handbook/how-we-get-users.md#3",
+          "contents/handbook/story.md#12",
+          "contents/handbook/brand/testimonials.md#0",
+          "contents/handbook/story.md#24",
+          "contents/handbook/story.md#23"
         ],
         "status": "answered",
         "ms": {
-          "total": 4757,
-          "search": 13,
-          "answer": 2320,
-          "research": 60,
-          "reanswer": 1487
+          "total": 4686,
+          "search": 21,
+          "answer": 2372,
+          "research": 47,
+          "reanswer": 1489
         },
         "usage": {
-          "input": 11621,
-          "output": 162
+          "input": 13257,
+          "output": 116
         },
         "research": {
           "first": "not-covered",
           "queries": [
-            "percentage of customers acquired through word of mouth",
-            "share of signups from referrals or recommendations",
-            "how customers find PostHog, acquisition channels breakdown"
+            "percentage of customers acquired through word-of-mouth or referrals",
+            "customer acquisition channels breakdown"
           ],
           "added": [
-            "contents/handbook/low-prices.md#2",
-            "contents/handbook/brand/partners.md#3",
-            "contents/handbook/growth/sales/utilization-by-business-type.md#46",
             "contents/handbook/growth/cross-selling/cross-sell-motions.md#3",
+            "contents/handbook/growth/use-case-selling/customer-experience.md#3",
+            "contents/handbook/low-prices.md#2",
+            "contents/handbook/onboarding/onboarding-data.md#5",
             "contents/handbook/growth/sales/utilization-by-business-type.md#15",
-            "contents/handbook/growth/sales/utilization-by-business-type.md#6",
-            "contents/handbook/marketing/index.md#4",
-            "contents/handbook/content/newsletter-ads.md#6"
+            "contents/handbook/onboarding/onboarding-team.md#4",
+            "contents/handbook/growth/sales/expansion-and-retention.md#7",
+            "contents/handbook/cs-and-onboarding/getting-started-with-customers.md#10"
           ],
           "outcome": "used-second"
         },
         "citations": 1,
         "droppedCitations": 0,
-        "uncitedChars": 22,
+        "uncitedChars": 0,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -104,20 +97,20 @@
       "citedSections": [
         "people/feedback"
       ],
-      "answer": "Yes. Only the People & Ops and Exec teams have access to the full list of responses, and those responses are not anonymous.[1]\n\nThe handbook also says a summary of the results is reported in an Issue, following a template.[2]",
+      "answer": "Yes, but only the People & Ops and Exec teams can see the full list of responses, and those responses are not anonymous.[1]\n\nA summary of the results is reported in an Issue, following a template.[2]",
       "parts": [
         {
-          "text": "Yes. Only the People & Ops and Exec teams have access to the full list of responses, and those responses are not anonymous.",
+          "text": "Yes, but only the People & Ops and Exec teams can see the full list of responses, and those responses are not anonymous.",
           "citations": [
             1
           ]
         },
         {
-          "text": "\n\nThe handbook also says ",
+          "text": "\n\n",
           "citations": []
         },
         {
-          "text": "a summary of the results is reported in an Issue, following a template.",
+          "text": "A summary of the results is reported in an Issue, following a template.",
           "citations": [
             2
           ]
@@ -135,21 +128,25 @@
           "contents/handbook/onboarding/onboarding-team.md#4",
           "contents/handbook/growth/sales/running-trials.md#11",
           "contents/handbook/growth/use-case-selling/product-intelligence.md#16",
-          "contents/handbook/cs-and-onboarding/customer-success.md#7"
+          "contents/handbook/cs-and-onboarding/customer-success.md#7",
+          "contents/handbook/company/management.md#13",
+          "contents/handbook/people/spending-money.md#3",
+          "contents/handbook/onboarding/new-hire-onboarding.md#8",
+          "contents/handbook/growth/use-case-selling/product-intelligence.md#12"
         ],
         "status": "answered",
         "ms": {
-          "total": 1694,
-          "search": 28,
-          "answer": 1665
+          "total": 1544,
+          "search": 22,
+          "answer": 1521
         },
         "usage": {
-          "input": 4316,
-          "output": 105
+          "input": 5529,
+          "output": 98
         },
         "citations": 2,
         "droppedCitations": 0,
-        "uncitedChars": 19,
+        "uncitedChars": 0,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -165,10 +162,20 @@
       "citedSections": [
         "people/feedback"
       ],
-      "answer": "The handbook says team surveys run every 6 months using the Pulse Surveys by Deel Slack app, set up to run automatically with reminder messages in Slack.[1]",
+      "answer": "The handbook says team surveys run every 6 months using the Pulse Surveys by Deel Slack app.[1] They are set up to run automatically, including reminder messages in Slack, so nobody needs to chase people manually.[1]",
       "parts": [
         {
-          "text": "The handbook says team surveys run every 6 months using the Pulse Surveys by Deel Slack app, set up to run automatically with reminder messages in Slack.",
+          "text": "The handbook says team surveys run every 6 months using the Pulse Surveys by Deel Slack app.",
+          "citations": [
+            1
+          ]
+        },
+        {
+          "text": " ",
+          "citations": []
+        },
+        {
+          "text": "They are set up to run automatically, including reminder messages in Slack, so nobody needs to chase people manually.",
           "citations": [
             1
           ]
@@ -186,18 +193,22 @@
           "contents/handbook/cs-and-onboarding/health-tracking.md#6",
           "contents/handbook/growth/sales/running-trials.md#12",
           "contents/handbook/growth/use-case-selling/product-intelligence.md#16",
-          "contents/handbook/company/security.md#10"
+          "contents/handbook/company/security.md#10",
+          "contents/handbook/cs-and-onboarding/health-tracking.md#3",
+          "contents/handbook/cs-and-onboarding/health-tracking.md#5",
+          "contents/handbook/growth/cross-selling/cross-sell-motions.md#4",
+          "contents/handbook/growth/sales/expansion-strategies.md#20"
         ],
         "status": "answered",
         "ms": {
-          "total": 3264,
-          "rewrite": 583,
-          "search": 26,
-          "answer": 2655
+          "total": 2186,
+          "rewrite": 547,
+          "search": 49,
+          "answer": 1589
         },
         "usage": {
-          "input": 4162,
-          "output": 73
+          "input": 5224,
+          "output": 108
         },
         "citations": 1,
         "droppedCitations": 0,
@@ -217,14 +228,10 @@
       "citedSections": [
         "company/adding-tools"
       ],
-      "answer": "The handbook says the process starts with trying the tool, then proposing it, then (once approved) legal and business follow-up.\n\nFirst, try the tool in a low-risk context where it is easily replaced and doesn't involve sensitive data, checking with #legal first if you're unsure what information can be shared.[1] The goal is to check it works as expected, understand the consequences of introducing it, learn what data it may access, and let others see it in action.[2]\n\nNext, open a pull request in Company Internal and, at the same time, an issue describing why we should adopt the tool. Think about the impact on the whole company, not just your team.[3] The proposal should consider a set of guidelines (not a rigid checklist) so the risks can be weighed holistically against the benefits.[4] Those include:\n- Whether other engineers were consulted and relevant teams are supportive.[5]\n- Whether security/infra and legal have reviewed it, including whether it would be a subprocessor.[6]\n- Whether it affects how sales pitches PostHog or how we communicate with existing customers.[7]\n- Whether we could clearly justify to a customer why we use the tool and send data to it.[8]\n\nMany proposals won't make it past this stage, which the handbook says is good.[9]\n\nIf approved, the proposer is responsible for coordinating next steps.[10]\n- Negotiate business terms with the vendor: cost, licenses or usage limits, contract length, and implementation/onboarding details.[11]\n- Once terms are mostly settled, the vendor's documents go through legal review before anything is signed.[12]\n- As soon as it looks like you'll move forward, post in #legal that a decision has been made, terms are being negotiated, and contract documents will follow.[13]\n- The tool can be used in production once legal review is complete, contracts are signed, and any required subprocessor notice period has passed.[14]\n\nFor new subprocessors, customers must get 14 days' notice after the agreement is finalized before the vendor can be used in production.[15]\n\nThis process doesn't apply to \"cheap decisions\" that are easily reversed or only affect your own work; those follow the software guidance on the spending money page.[16]",
+      "answer": "The handbook says you start by trying the tool in a low-risk context.[1] That means a context where it is easily replaced and doesn't involve sensitive data, and if you're unsure what information can be shared, check with #legal first.[2]\n\nNext steps:\n- Open a pull request in Company Internal and, at the same time, open an issue describing why we should adopt the tool.[3] Think about the impact on the whole company, not just your team or use case.[4]\n- Your proposal should consider the \"what to think about\" guidelines, which are not a rigid checklist; the aim is a holistic review of risks against benefits.[5] Many proposals will not make it past this stage, and the handbook says that's good.[6]\n\nIf the decision is to adopt it:\n- The person proposing the tool is responsible for coordinating the next steps.[7]\n- You negotiate business terms with the vendor, such as cost, licenses or usage limits, contract length, and implementation or onboarding details.[8]\n- As soon as it looks like you'll move forward, post in #legal to say a decision has been made, business terms are being negotiated, and contract documents will be shared shortly.[9]\n- Once documents are available, send them to #legal in an editable format such as .docx.[10]\n- Legal review usually takes a few business days, and negotiations can take longer, so involve legal early and tell them ahead of time if you have a deadline.[11]\n- If the vendor qualifies as a subprocessor, the review will usually be more involved.[12]\n- The tool can be used in production once legal review is complete, contracts are finalized and signed, and any required subprocessor notice period has passed.[13]\n\nThis process doesn't apply to \"cheap decisions\" that are easily completed or reversed, or that only affect your own work. For those, follow the software section of the spending money page.[14]",
       "parts": [
         {
-          "text": "The handbook says the process starts with trying the tool, then proposing it, then (once approved) legal and business follow-up.\n\n",
-          "citations": []
-        },
-        {
-          "text": "First, try the tool in a low-risk context where it is easily replaced and doesn't involve sensitive data, checking with #legal first if you're unsure what information can be shared.",
+          "text": "The handbook says you start by trying the tool in a low-risk context.",
           "citations": [
             1
           ]
@@ -234,17 +241,17 @@
           "citations": []
         },
         {
-          "text": "The goal is to check it works as expected, understand the consequences of introducing it, learn what data it may access, and let others see it in action.",
+          "text": "That means a context where it is easily replaced and doesn't involve sensitive data, and if you're unsure what information can be shared, check with #legal first.",
           "citations": [
             2
           ]
         },
         {
-          "text": "\n\n",
+          "text": "\n\nNext steps:\n- ",
           "citations": []
         },
         {
-          "text": "Next, open a pull request in Company Internal and, at the same time, an issue describing why we should adopt the tool. Think about the impact on the whole company, not just your team.",
+          "text": "Open a pull request in Company Internal and, at the same time, open an issue describing why we should adopt the tool.",
           "citations": [
             3
           ]
@@ -254,37 +261,37 @@
           "citations": []
         },
         {
-          "text": "The proposal should consider a set of guidelines (not a rigid checklist) so the risks can be weighed holistically against the benefits.",
+          "text": "Think about the impact on the whole company, not just your team or use case.",
           "citations": [
             4
           ]
         },
         {
-          "text": " Those include:\n- ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "Whether other engineers were consulted and relevant teams are supportive.",
+          "text": "Your proposal should consider the \"what to think about\" guidelines, which are not a rigid checklist; the aim is a holistic review of risks against benefits.",
           "citations": [
             5
           ]
         },
         {
-          "text": "\n- ",
+          "text": " ",
           "citations": []
         },
         {
-          "text": "Whether security/infra and legal have reviewed it, including whether it would be a subprocessor.",
+          "text": "Many proposals will not make it past this stage, and the handbook says that's good.",
           "citations": [
             6
           ]
         },
         {
-          "text": "\n- ",
+          "text": "\n\nIf the decision is to adopt it:\n- ",
           "citations": []
         },
         {
-          "text": "Whether it affects how sales pitches PostHog or how we communicate with existing customers.",
+          "text": "The person proposing the tool is responsible for coordinating the next steps.",
           "citations": [
             7
           ]
@@ -294,27 +301,27 @@
           "citations": []
         },
         {
-          "text": "Whether we could clearly justify to a customer why we use the tool and send data to it.",
+          "text": "You negotiate business terms with the vendor, such as cost, licenses or usage limits, contract length, and implementation or onboarding details.",
           "citations": [
             8
           ]
         },
         {
-          "text": "\n\n",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "Many proposals won't make it past this stage, which the handbook says is good.",
+          "text": "As soon as it looks like you'll move forward, post in #legal to say a decision has been made, business terms are being negotiated, and contract documents will be shared shortly.",
           "citations": [
             9
           ]
         },
         {
-          "text": "\n\nIf approved, ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "the proposer is responsible for coordinating next steps.",
+          "text": "Once documents are available, send them to #legal in an editable format such as .docx.",
           "citations": [
             10
           ]
@@ -324,7 +331,7 @@
           "citations": []
         },
         {
-          "text": "Negotiate business terms with the vendor: cost, licenses or usage limits, contract length, and implementation/onboarding details.",
+          "text": "Legal review usually takes a few business days, and negotiations can take longer, so involve legal early and tell them ahead of time if you have a deadline.",
           "citations": [
             11
           ]
@@ -334,7 +341,7 @@
           "citations": []
         },
         {
-          "text": "Once terms are mostly settled, the vendor's documents go through legal review before anything is signed.",
+          "text": "If the vendor qualifies as a subprocessor, the review will usually be more involved.",
           "citations": [
             12
           ]
@@ -344,39 +351,19 @@
           "citations": []
         },
         {
-          "text": "As soon as it looks like you'll move forward, post in #legal that a decision has been made, terms are being negotiated, and contract documents will follow.",
+          "text": "The tool can be used in production once legal review is complete, contracts are finalized and signed, and any required subprocessor notice period has passed.",
           "citations": [
             13
           ]
         },
         {
-          "text": "\n- ",
+          "text": "\n\n",
           "citations": []
         },
         {
-          "text": "The tool can be used in production once legal review is complete, contracts are signed, and any required subprocessor notice period has passed.",
+          "text": "This process doesn't apply to \"cheap decisions\" that are easily completed or reversed, or that only affect your own work. For those, follow the software section of the spending money page.",
           "citations": [
             14
-          ]
-        },
-        {
-          "text": "\n\n",
-          "citations": []
-        },
-        {
-          "text": "For new subprocessors, customers must get 14 days' notice after the agreement is finalized before the vendor can be used in production.",
-          "citations": [
-            15
-          ]
-        },
-        {
-          "text": "\n\n",
-          "citations": []
-        },
-        {
-          "text": "This process doesn't apply to \"cheap decisions\" that are easily reversed or only affect your own work; those follow the software guidance on the spending money page.",
-          "citations": [
-            16
           ]
         }
       ],
@@ -392,41 +379,45 @@
           "contents/handbook/brand/startups.md#4",
           "contents/handbook/growth/sales/product-led-sales.md#5",
           "contents/handbook/growth/sales/expansion-strategies.md#15",
-          "contents/handbook/growth/sales/product-enablement.md#8"
+          "contents/handbook/growth/sales/product-enablement.md#8",
+          "contents/handbook/growth/sales/contracts.md#18",
+          "contents/handbook/growth/sales/new-sales.md#14",
+          "contents/handbook/cs-and-onboarding/foundation-check.md#7",
+          "contents/handbook/growth/sales/how-to-do-discovery.md#12"
         ],
         "status": "answered",
         "ms": {
-          "total": 10172,
+          "total": 9180,
           "search": 34,
-          "answer": 3430,
-          "research": 34,
-          "reanswer": 6672
+          "answer": 3583,
+          "research": 51,
+          "reanswer": 5507
         },
         "usage": {
-          "input": 11509,
-          "output": 1401
+          "input": 13963,
+          "output": 1251
         },
         "research": {
           "first": "answered",
           "queries": [
-            "who approves a new company-wide tool or vendor",
-            "factors a new tool proposal should consider (impact, security, cost)"
+            "who approves new company-wide tool or vendor proposals",
+            "considerations to include in a new vendor proposal"
           ],
           "added": [
             "contents/handbook/company/adding-tools.md#7",
             "contents/handbook/company/adding-tools.md#6",
-            "contents/handbook/company/adding-tools.md#9",
-            "contents/handbook/company/adding-tools.md#0",
             "contents/handbook/company/adding-tools.md#1",
-            "contents/handbook/company/adding-tools.md#5",
+            "contents/handbook/growth/sales/new-sales.md#34",
+            "contents/handbook/company/adding-tools.md#8",
+            "contents/handbook/growth/sales/expansion-strategies.md#22",
             "contents/handbook/company/adding-tools.md#10",
             "contents/handbook/which-products.md#2"
           ],
           "outcome": "used-second"
         },
-        "citations": 16,
+        "citations": 14,
         "droppedCitations": 0,
-        "uncitedChars": 125,
+        "uncitedChars": 33,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -441,33 +432,32 @@
       "status": "answered",
       "citedSections": [
         "engineering/security",
-        "engineering/how-we-review",
         "company/post-mortems/2025-11-26-shai-hulud-attack"
       ],
-      "answer": "Great care should be taken when writing or modifying a GitHub Actions workflow, since Actions can access (and exfiltrate) secrets scoped to the repo.[1] Workflows are also scanned with Semgrep and CodeQL for common misconfigurations.[1]\n\nSome related points:\n- Almost all PRs made to PostHog repositories need a review from another engineer.[2]\n- If you need help setting up a new GitHub App for an Action, you can message #team-security.[3]\n- In the Shai-Hulud incident, a workflow was changed to check out the PR head commit, so code controlled by the PR author ran in a trusted CI run and could steal the bot token.[4]",
+      "answer": "Great care should be taken when writing or modifying a GitHub Actions workflow, because Actions can access (and exfiltrate) secrets scoped to the repo.[1]\n\n- Workflows are scanned with Semgrep and CodeQL for common misconfigurations.[1]\n- In the Shai-Hulud incident, a workflow change was flagged by a static analysis tool before merge, but the alert was dismissed because the team mistakenly thought the usage was safe.[2]\n- If you need help setting up a new GitHub App for an Action, you can send a message in #team-security.[3]",
       "parts": [
         {
-          "text": "Great care should be taken when writing or modifying a GitHub Actions workflow, since Actions can access (and exfiltrate) secrets scoped to the repo.",
+          "text": "Great care should be taken when writing or modifying a GitHub Actions workflow, because Actions can access (and exfiltrate) secrets scoped to the repo.",
           "citations": [
             1
           ]
         },
         {
-          "text": " ",
+          "text": "\n\n- ",
           "citations": []
         },
         {
-          "text": "Workflows are also scanned with Semgrep and CodeQL for common misconfigurations.",
+          "text": "Workflows are scanned with Semgrep and CodeQL for common misconfigurations.",
           "citations": [
             1
           ]
         },
         {
-          "text": "\n\nSome related points:\n- ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "Almost all PRs made to PostHog repositories need a review from another engineer.",
+          "text": "In the Shai-Hulud incident, a workflow change was flagged by a static analysis tool before merge, but the alert was dismissed because the team mistakenly thought the usage was safe.",
           "citations": [
             2
           ]
@@ -477,24 +467,14 @@
           "citations": []
         },
         {
-          "text": "If you need help setting up a new GitHub App for an Action, you can message #team-security.",
+          "text": "If you need help setting up a new GitHub App for an Action, you can send a message in #team-security.",
           "citations": [
             3
-          ]
-        },
-        {
-          "text": "\n- ",
-          "citations": []
-        },
-        {
-          "text": "In the Shai-Hulud incident, a workflow was changed to check out the PR head commit, so code controlled by the PR author ran in a trusted CI run and could steal the bot token.",
-          "citations": [
-            4
           ]
         }
       ],
       "gaps": [
-        "required reviewer or CODEOWNERS for .github/workflows changes"
+        "required reviewer or code owner for GitHub Actions workflow changes"
       ],
       "trace": {
         "question": "if my PR touches a github actions workflow, does it need a special reviewer?",
@@ -507,19 +487,23 @@
           "contents/handbook/company/post-mortems/2025-11-26-shai-hulud-attack.md#8",
           "contents/handbook/company/post-mortems/2025-11-26-shai-hulud-attack.md#10",
           "contents/handbook/engineering/how-we-review.md#6",
-          "contents/handbook/engineering/how-we-review.md#0"
+          "contents/handbook/engineering/how-we-review.md#0",
+          "contents/handbook/marketing/customer-case-studies.md#6",
+          "contents/handbook/engineering/how-we-review.md#4",
+          "contents/handbook/company/post-mortems/2025-11-26-shai-hulud-attack.md#11",
+          "contents/handbook/engineering/how-we-review.md#5"
         ],
         "status": "answered",
         "ms": {
-          "total": 6098,
-          "search": 22,
-          "answer": 2797,
-          "research": 18,
-          "reanswer": 3260
+          "total": 5781,
+          "search": 33,
+          "answer": 2931,
+          "research": 12,
+          "reanswer": 2802
         },
         "usage": {
-          "input": 9383,
-          "output": 677
+          "input": 12319,
+          "output": 690
         },
         "research": {
           "first": "answered",
@@ -529,13 +513,15 @@
           "added": [
             "contents/handbook/docs-and-wizard/docs-ownership.md#4",
             "contents/handbook/company/communication.md#12",
+            "contents/handbook/content/index.md#5",
+            "contents/handbook/people/onboarding.md#1",
             "contents/handbook/engineering/operations/support-hero.md#8"
           ],
           "outcome": "used-second"
         },
-        "citations": 4,
+        "citations": 3,
         "droppedCitations": 0,
-        "uncitedChars": 17,
+        "uncitedChars": 0,
         "restatements": 0,
         "passageRemarks": 1,
         "gaps": 1,
@@ -545,123 +531,72 @@
     {
       "id": "promotion-criteria",
       "kind": "question",
-      "outcome": "fail",
+      "outcome": "pass",
       "searchedFor": "is there a rubric or list of criteria I need to hit to move up here?",
       "status": "answered",
       "citedSections": [
-        "growth/sales/crm",
-        "growth/cross-selling/tracking-cross-sells"
+        "people/career-progression"
       ],
-      "answer": "Yes, the handbook gives exit criteria for each Salesforce opportunity stage. Bolded exit criteria indicate the minimum standard for the opportunity to advance stages (for typically smaller, more transactional deals).[1] Stages differ by Opportunity Record Type; the following are for the New and Existing Business Record Types[2]:\n\n- Problem Agreement: identified and implicated pain with specific, quantifiable metrics (time/money/risk), and an answer to \"What happens if you do nothing?\" documented with a real consequence[3]. Also the buyer explicitly said \"This is a problem we need to solve\" (not just \"interesting\")[4].\n- Solution Agreement: active product usage or a completed POC/trial; a clear, documentable decision made for PostHog; the Economic Buyer identified (name + title); and the Champion identified (name)[5].\n- Priority Agreement: budget confirmed; decision process mapped; Economic Buyer said this is a priority (exact quote documented); champion tested; and compelling event known[6].\n- Commercial Agreement: price agreed in writing, and all commercial terms agreed (payment terms, contract length, prepaid amount), with the paper process mapped (legal, security, procurement steps + owners + timeline)[7].\n- Vendor Approval: contract signed[8].\n\nMore detail on each stage's exit criteria is in a spreadsheet the handbook references.[1]\n\nFor cross-sells, the stages are different: Discovery, Demo, Trial, and Closed Won (customer paying ≥$100/month on the product)[9]. Not every deal needs every stage.[10]",
+      "answer": "The handbook says there is no checklist or formal framework: it describes a checklist or formal career progression framework as self-interested by nature, so it creates the wrong incentives, and says the benefits of frameworks only start to outweigh their drawbacks when you need to coordinate 100s of people.[1]\n\nWhat it does say about progressing:\n- The best way to progress is to understand your team's and PostHog's objectives, then ship fast towards them, give and receive direct feedback, and fix problems when you see them.[2]\n- The inputs that lead to progression are caring about your work, your team, and your users. The handbook says that if you consistently care, PostHog will progress you.[3]\n- If the company is succeeding, it is easy to justify, and to afford, pay rises where people are performing very well.[4]\n- It also says that getting a manager to progress you isn't the route, because that gives too much power to managers, and that your motivation to progress has to be intrinsic.[5]\n- There is no wide range of fancy titles, because the aim is for people to be as equal as possible.[6]",
       "parts": [
         {
-          "text": "Yes, the handbook gives exit criteria for each Salesforce opportunity stage. ",
+          "text": "The handbook says there is no checklist or formal framework: ",
           "citations": []
         },
         {
-          "text": "Bolded exit criteria indicate the minimum standard for the opportunity to advance stages (for typically smaller, more transactional deals).",
+          "text": "it describes a checklist or formal career progression framework as self-interested by nature, so it creates the wrong incentives, and says the benefits of frameworks only start to outweigh their drawbacks when you need to coordinate 100s of people.",
           "citations": [
             1
           ]
         },
         {
-          "text": " Stages differ by Opportunity Record Type; ",
+          "text": "\n\nWhat it does say about progressing:\n- ",
           "citations": []
         },
         {
-          "text": "the following are for the New and Existing Business Record Types",
+          "text": "The best way to progress is to understand your team's and PostHog's objectives, then ship fast towards them, give and receive direct feedback, and fix problems when you see them.",
           "citations": [
             2
           ]
         },
         {
-          "text": ":\n\n- Problem Agreement: ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "identified and implicated pain with specific, quantifiable metrics (time/money/risk), and an answer to \"What happens if you do nothing?\" documented with a real consequence",
+          "text": "The inputs that lead to progression are caring about your work, your team, and your users. The handbook says that if you consistently care, PostHog will progress you.",
           "citations": [
             3
           ]
         },
         {
-          "text": ". Also ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "the buyer explicitly said \"This is a problem we need to solve\" (not just \"interesting\")",
+          "text": "If the company is succeeding, it is easy to justify, and to afford, pay rises where people are performing very well.",
           "citations": [
             4
           ]
         },
         {
-          "text": ".\n- Solution Agreement: ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "active product usage or a completed POC/trial; a clear, documentable decision made for PostHog; the Economic Buyer identified (name + title); and the Champion identified (name)",
+          "text": "It also says that getting a manager to progress you isn't the route, because that gives too much power to managers, and that your motivation to progress has to be intrinsic.",
           "citations": [
             5
           ]
         },
         {
-          "text": ".\n- Priority Agreement: ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "budget confirmed; decision process mapped; Economic Buyer said this is a priority (exact quote documented); champion tested; and compelling event known",
+          "text": "There is no wide range of fancy titles, because the aim is for people to be as equal as possible.",
           "citations": [
             6
-          ]
-        },
-        {
-          "text": ".\n- Commercial Agreement: ",
-          "citations": []
-        },
-        {
-          "text": "price agreed in writing, and all commercial terms agreed (payment terms, contract length, prepaid amount), with the paper process mapped (legal, security, procurement steps + owners + timeline)",
-          "citations": [
-            7
-          ]
-        },
-        {
-          "text": ".\n- Vendor Approval: ",
-          "citations": []
-        },
-        {
-          "text": "contract signed",
-          "citations": [
-            8
-          ]
-        },
-        {
-          "text": ".\n\n",
-          "citations": []
-        },
-        {
-          "text": "More detail on each stage's exit criteria is in a spreadsheet the handbook references.",
-          "citations": [
-            1
-          ]
-        },
-        {
-          "text": "\n\nFor cross-sells, the stages are different: ",
-          "citations": []
-        },
-        {
-          "text": "Discovery, Demo, Trial, and Closed Won (customer paying ≥$100/month on the product)",
-          "citations": [
-            9
-          ]
-        },
-        {
-          "text": ". ",
-          "citations": []
-        },
-        {
-          "text": "Not every deal needs every stage.",
-          "citations": [
-            10
           ]
         }
       ],
@@ -677,39 +612,44 @@
           "contents/handbook/onboarding/sales-handover.md#4",
           "contents/handbook/growth/sales/expansion-strategies.md#1",
           "contents/handbook/growth/sales/outbound-sales.md#9",
-          "contents/handbook/growth/sales/expansion-strategies.md#19"
+          "contents/handbook/growth/sales/expansion-strategies.md#19",
+          "contents/handbook/growth/cross-selling/error-tracking-cross-sell.md#3",
+          "contents/handbook/growth/sales/outbound-sales.md#10",
+          "contents/handbook/growth/sales/crm.md#13",
+          "contents/handbook/people/career-progression.md#4"
         ],
         "status": "answered",
         "ms": {
-          "total": 10151,
-          "search": 18,
-          "answer": 4897,
-          "research": 17,
-          "reanswer": 5217
+          "total": 6559,
+          "search": 38,
+          "answer": 2660,
+          "research": 24,
+          "reanswer": 3835
         },
         "usage": {
-          "input": 10736,
-          "output": 1458
+          "input": 14627,
+          "output": 734
         },
         "research": {
           "first": "answered",
           "queries": [
-            "stage exit criteria for Problem Agreement opportunity stage"
+            "how people progress at PostHog career progression"
           ],
           "added": [
-            "contents/handbook/growth/sales/crm.md#27",
-            "contents/handbook/growth/sales/crm.md#29",
-            "contents/handbook/growth/sales/crm.md#28",
-            "contents/handbook/growth/cross-selling/tracking-cross-sells.md#3",
-            "contents/handbook/growth/sales/crm.md#34",
-            "contents/handbook/growth/sales/how-we-work.md#3",
-            "contents/handbook/growth/sales/crm.md#33"
+            "contents/handbook/people/career-progression.md#0",
+            "contents/handbook/people/career-progression.md#2",
+            "contents/handbook/strong-team.md#2",
+            "contents/handbook/people/feedback.md#9",
+            "contents/handbook/values.md#1",
+            "contents/handbook/people/hiring-process/sales-cs-hiring.md#0",
+            "contents/handbook/growth/sales/product-enablement.md#0",
+            "contents/handbook/people/offboarding.md#4"
           ],
           "outcome": "used-second"
         },
-        "citations": 10,
+        "citations": 6,
         "droppedCitations": 0,
-        "uncitedChars": 220,
+        "uncitedChars": 79,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -719,46 +659,50 @@
     {
       "id": "browser-extension-billing",
       "kind": "question",
-      "outcome": "pass",
+      "outcome": "review",
       "searchedFor": "a customer runs posthog inside their browser extension and their bill is way higher than it should be, how do they fix it?",
       "status": "answered",
       "citedSections": [
         "onboarding/chrome-extension-billing-case-study-wildfire"
       ],
-      "answer": "The handbook recommends that extension developers persist the ID manually with chrome.storage.local, pass the UUID during posthog.init() with bootstrap.distinctID, call identify() only if the ID has changed, and reduce /flags usage with bootstrap.featureFlags and by disabling polling if needed.[1]\n\nThe handbook gives the reason for the inflated bill: Chrome extensions create a new runtime context when waking from idle, and each context re-initialized PostHog without access to prior storage, so a new anonymous distinct_id was created on each wake cycle.[2] Each new ID led to a repeated identify() call, and each identify() call refreshed feature flags.[3]\n\nThe steps Wildfire Systems took:\n- They persisted a shared UUID via chrome.storage.local, generated once and reused across all extension contexts.[4]\n- They passed the distinct_id via bootstrap on every initialization.[5]\n- They checked whether the existing distinct_id matched the UUID before calling identify().[6]\n- They passed bootstrapped feature flag values during init, reducing the need for real-time flag fetches.[7]\n- They used the \"My PostHog Billable Usage\" dashboard to verify the fixes worked.[8]\n\nOne caveat: raising the billing limit mid-cycle did not retroactively unlock flags; only new requests after the monthly reset were allowed.[9]",
+      "answer": "The handbook's Wildfire Systems case study gives the fix. Persist the UUID manually using chrome.storage.local, and pass it during posthog.init() with bootstrap.distinctID.[1] This matters because local storage is isolated per context, so the SDK couldn't persist the ID and created a new anonymous ID on each wake cycle.[2]\n\nThe other recommendations for extension developers are:\n\n- Only call identify() if the ID has changed.[3] The cause was that each new ID triggered a comparison to the persisted UUID, and since they always differed, identify() was called each time.[4]\n- Reduce /flags usage by using bootstrap.featureFlags and disabling polling if needed.[5] This helps because every call to identify() refreshed feature flags[6], and /flags requests were billed even when quota-limited.[7]\n- Monitor proactively with the \"My PostHog Billable Usage\" dashboard.[8]\n- Customers should be aware that extensions require manual handling.[9]\n\nOne caveat: raising the billing limit mid-cycle did not retroactively unlock flags; only new requests after the monthly reset were allowed.[10]",
       "parts": [
         {
-          "text": "The handbook recommends that extension developers persist the ID manually with chrome.storage.local, pass the UUID during posthog.init() with bootstrap.distinctID, call identify() only if the ID has changed, and reduce /flags usage with bootstrap.featureFlags and by disabling polling if needed.",
+          "text": "The handbook's Wildfire Systems case study gives the fix. ",
+          "citations": []
+        },
+        {
+          "text": "Persist the UUID manually using chrome.storage.local, and pass it during posthog.init() with bootstrap.distinctID.",
           "citations": [
             1
           ]
         },
         {
-          "text": "\n\nThe handbook gives the reason for the inflated bill: ",
+          "text": " This matters because ",
           "citations": []
         },
         {
-          "text": "Chrome extensions create a new runtime context when waking from idle, and each context re-initialized PostHog without access to prior storage, so a new anonymous distinct_id was created on each wake cycle.",
+          "text": "local storage is isolated per context, so the SDK couldn't persist the ID and created a new anonymous ID on each wake cycle.",
           "citations": [
             2
           ]
         },
         {
-          "text": " ",
+          "text": "\n\nThe other recommendations for extension developers are:\n\n- ",
           "citations": []
         },
         {
-          "text": "Each new ID led to a repeated identify() call, and each identify() call refreshed feature flags.",
+          "text": "Only call identify() if the ID has changed.",
           "citations": [
             3
           ]
         },
         {
-          "text": "\n\nThe steps Wildfire Systems took:\n- ",
+          "text": " The cause was that ",
           "citations": []
         },
         {
-          "text": "They persisted a shared UUID via chrome.storage.local, generated once and reused across all extension contexts.",
+          "text": "each new ID triggered a comparison to the persisted UUID, and since they always differed, identify() was called each time.",
           "citations": [
             4
           ]
@@ -768,27 +712,27 @@
           "citations": []
         },
         {
-          "text": "They passed the distinct_id via bootstrap on every initialization.",
+          "text": "Reduce /flags usage by using bootstrap.featureFlags and disabling polling if needed.",
           "citations": [
             5
           ]
         },
         {
-          "text": "\n- ",
+          "text": " This helps because ",
           "citations": []
         },
         {
-          "text": "They checked whether the existing distinct_id matched the UUID before calling identify().",
+          "text": "every call to identify() refreshed feature flags",
           "citations": [
             6
           ]
         },
         {
-          "text": "\n- ",
+          "text": ", and ",
           "citations": []
         },
         {
-          "text": "They passed bootstrapped feature flag values during init, reducing the need for real-time flag fetches.",
+          "text": "/flags requests were billed even when quota-limited.",
           "citations": [
             7
           ]
@@ -798,9 +742,19 @@
           "citations": []
         },
         {
-          "text": "They used the \"My PostHog Billable Usage\" dashboard to verify the fixes worked.",
+          "text": "Monitor proactively with the \"My PostHog Billable Usage\" dashboard.",
           "citations": [
             8
+          ]
+        },
+        {
+          "text": "\n- ",
+          "citations": []
+        },
+        {
+          "text": "Customers should be aware that extensions require manual handling.",
+          "citations": [
+            9
           ]
         },
         {
@@ -810,11 +764,13 @@
         {
           "text": "raising the billing limit mid-cycle did not retroactively unlock flags; only new requests after the monthly reset were allowed.",
           "citations": [
-            9
+            10
           ]
         }
       ],
-      "gaps": [],
+      "gaps": [
+        "refund or credit for overage caused by browser extension misconfiguration"
+      ],
       "trace": {
         "question": "a customer runs posthog inside their browser extension and their bill is way higher than it should be, how do they fix it?",
         "searchedFor": "a customer runs posthog inside their browser extension and their bill is way higher than it should be, how do they fix it?",
@@ -826,44 +782,47 @@
           "contents/handbook/cs-and-onboarding/handling-customer-issues.md#4",
           "contents/handbook/onboarding/onboarding-team.md#3",
           "contents/handbook/growth/cross-selling/how-we-upsell-and-cross-sell.md#12",
-          "contents/handbook/cs-and-onboarding/health-checks.md#0"
+          "contents/handbook/cs-and-onboarding/health-checks.md#0",
+          "contents/handbook/onboarding/chrome-extension-billing-case-study-wildfire.md#5",
+          "contents/handbook/growth/sales/refunds.md#3",
+          "contents/handbook/growth/sales/new-hire-onboarding.md#1",
+          "contents/handbook/cs-and-onboarding/foundation-check.md#3"
         ],
         "status": "answered",
         "ms": {
-          "total": 7898,
-          "search": 19,
-          "answer": 3651,
-          "research": 45,
-          "reanswer": 4181
+          "total": 7924,
+          "search": 39,
+          "answer": 3787,
+          "research": 51,
+          "reanswer": 4032
         },
         "usage": {
-          "input": 11569,
-          "output": 1018
+          "input": 13688,
+          "output": 1096
         },
         "research": {
           "first": "answered",
           "queries": [
-            "Wildfire Systems customer solution for Chrome extension identity persistence",
-            "bootstrapping and identity persistence best practices for browser extensions"
+            "refund or credit for billing overage caused by extension misconfiguration"
           ],
           "added": [
-            "contents/handbook/onboarding/chrome-extension-billing-case-study-wildfire.md#2",
-            "contents/handbook/onboarding/chrome-extension-billing-case-study-wildfire.md#5",
-            "contents/handbook/growth/sales/account-planning.md#7",
-            "contents/handbook/onboarding/chrome-extension-billing-case-study-wildfire.md#3",
-            "contents/handbook/growth/sales/expansion-and-retention.md#6",
-            "contents/handbook/growth/sales/risk-mitigation-and-churn-prevention.md#9",
-            "contents/handbook/company/post-mortems/2025-10-03-surveys-sdk-bug.md#11",
-            "contents/handbook/content/seo-guide.md#6"
+            "contents/handbook/growth/sales/refunds.md#4",
+            "contents/handbook/growth/sales/refunds.md#17",
+            "contents/handbook/company/post-mortems/2025-10-03-surveys-sdk-bug.md#14",
+            "contents/handbook/company/post-mortems/2025-10-03-surveys-sdk-bug.md#13",
+            "contents/handbook/brand/startups.md#10",
+            "contents/handbook/growth/sales/refunds.md#12",
+            "contents/handbook/growth/sales/refunds.md#21",
+            "contents/handbook/company/post-mortems/2025-10-21-feature-flags-recurring-outages.md#7"
           ],
           "outcome": "used-second"
         },
-        "citations": 9,
+        "citations": 10,
         "droppedCitations": 0,
-        "uncitedChars": 79,
+        "uncitedChars": 156,
         "restatements": 0,
         "passageRemarks": 0,
-        "gaps": 0,
+        "gaps": 1,
         "model": "claude-sonnet-5-5"
       }
     },
@@ -875,19 +834,26 @@
       "status": "answered",
       "citedSections": [
         "support/support-smes",
-        "engineering/operations/support-hero",
-        "support/customer-support"
+        "support/customer-support",
+        "engineering/operations/support-hero"
       ],
-      "answer": "Not exactly: technical support engineers split work between shared areas and SME-owned product groups, but nobody is locked into one area.\n\n- All technical support engineers, regardless of SME ownership, work on Analytics products (shared because they make up the highest proportion of tickets) and on unclassified tickets, which should be updated with the correct product group where possible.[1]\n- Beyond that, SMEs own specific product groups, with one person from EU and one from NA selected for each group to maintain timezone coverage.[2]\n- The handbook lists the product groups as Flags, Data, Replay, Observability + AI & client libraries, and Analytics.[3][4][5][6][7]\n\nDay to day, SMEs start with their SME views, then move to the Technical support shared view, which has all tickets the technical support team is responsible for.[8] They aren't locked into only their SME products: if caught up, they can help with the shared queue, and if swamped, they can ask someone else to help with their SME queue.[9]\n\nWhen picking tickets, avoid cherry-picking and take the ticket closest to breaching response targets.[10] Also watch whether someone else is already viewing a ticket, to avoid duplicate work.[11]\n\nFor new hires, they usually spend the first few weeks focused just on product and web analytics tickets, until they've built more familiarity with the platform as a whole.[12]",
+      "answer": "Not entirely: all technical support engineers work on some shared areas, and beyond that SMEs own specific product groups, with one person from EU and one from NA per group for timezone coverage.[1][2]\n\n- Everyone works on Analytics products, since they make up the highest proportion of tickets, and on unclassified tickets, which should be updated with the correct product group where possible.[3]\n- The SME product groups listed are Flags, Data, Replay, Observability + AI & client libraries, and Analytics.[4][5][6][7][8]\n- Each SME has a dedicated Zendesk view with tickets from their own product groups plus the shared groups (analytics and unclassified).[9][10] These views also show tickets assigned to other team members, so you can jump in if you know something or see someone stuck.[11]\n- SMEs start with their SME views, then move to the Technical support shared view, which has all tickets the technical support team is responsible for.[12] They aren't locked into only their SME products: if caught up, they help with the shared queue, and if swamped, they can ask for help with their SME queue.[13]\n- New support engineers usually spend their first few weeks focused just on product and web analytics tickets.[14]\n- When picking tickets, avoid cherry-picking and take the one closest to breaching response targets.[15] For unassigned tickets, check whether someone else is already viewing a ticket to avoid duplicate work.[16]",
       "parts": [
         {
-          "text": "Not exactly: technical support engineers split work between shared areas and SME-owned product groups, but nobody is locked into one area.\n\n- ",
+          "text": "Not entirely: all technical support engineers work on some shared areas, and beyond that SMEs own specific product groups, with one person from EU and one from NA per group for timezone coverage.",
+          "citations": [
+            1,
+            2
+          ]
+        },
+        {
+          "text": "\n\n- ",
           "citations": []
         },
         {
-          "text": "All technical support engineers, regardless of SME ownership, work on Analytics products (shared because they make up the highest proportion of tickets) and on unclassified tickets, which should be updated with the correct product group where possible.",
+          "text": "Everyone works on Analytics products, since they make up the highest proportion of tickets, and on unclassified tickets, which should be updated with the correct product group where possible.",
           "citations": [
-            1
+            3
           ]
         },
         {
@@ -895,52 +861,23 @@
           "citations": []
         },
         {
-          "text": "Beyond that, SMEs own specific product groups, with one person from EU and one from NA selected for each group to maintain timezone coverage.",
+          "text": "The SME product groups listed are Flags, Data, Replay, Observability + AI & client libraries, and Analytics.",
           "citations": [
-            2
-          ]
-        },
-        {
-          "text": "\n- The handbook lists the product groups as ",
-          "citations": []
-        },
-        {
-          "text": "Flags, Data, Replay, Observability + AI & client libraries, and Analytics.",
-          "citations": [
-            3,
             4,
             5,
             6,
-            7
-          ]
-        },
-        {
-          "text": "\n\nDay to day, ",
-          "citations": []
-        },
-        {
-          "text": "SMEs start with their SME views, then move to the Technical support shared view, which has all tickets the technical support team is responsible for.",
-          "citations": [
+            7,
             8
           ]
         },
         {
-          "text": " ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "They aren't locked into only their SME products: if caught up, they can help with the shared queue, and if swamped, they can ask someone else to help with their SME queue.",
+          "text": "Each SME has a dedicated Zendesk view with tickets from their own product groups plus the shared groups (analytics and unclassified).",
           "citations": [
-            9
-          ]
-        },
-        {
-          "text": "\n\nWhen picking tickets, ",
-          "citations": []
-        },
-        {
-          "text": "avoid cherry-picking and take the ticket closest to breaching response targets.",
-          "citations": [
+            9,
             10
           ]
         },
@@ -949,19 +886,59 @@
           "citations": []
         },
         {
-          "text": "Also watch whether someone else is already viewing a ticket, to avoid duplicate work.",
+          "text": "These views also show tickets assigned to other team members, so you can jump in if you know something or see someone stuck.",
           "citations": [
             11
           ]
         },
         {
-          "text": "\n\nFor new hires, ",
+          "text": "\n- ",
           "citations": []
         },
         {
-          "text": "they usually spend the first few weeks focused just on product and web analytics tickets, until they've built more familiarity with the platform as a whole.",
+          "text": "SMEs start with their SME views, then move to the Technical support shared view, which has all tickets the technical support team is responsible for.",
           "citations": [
             12
+          ]
+        },
+        {
+          "text": " ",
+          "citations": []
+        },
+        {
+          "text": "They aren't locked into only their SME products: if caught up, they help with the shared queue, and if swamped, they can ask for help with their SME queue.",
+          "citations": [
+            13
+          ]
+        },
+        {
+          "text": "\n- ",
+          "citations": []
+        },
+        {
+          "text": "New support engineers usually spend their first few weeks focused just on product and web analytics tickets.",
+          "citations": [
+            14
+          ]
+        },
+        {
+          "text": "\n- ",
+          "citations": []
+        },
+        {
+          "text": "When picking tickets, avoid cherry-picking and take the one closest to breaching response targets.",
+          "citations": [
+            15
+          ]
+        },
+        {
+          "text": " ",
+          "citations": []
+        },
+        {
+          "text": "For unassigned tickets, check whether someone else is already viewing a ticket to avoid duplicate work.",
+          "citations": [
+            16
           ]
         }
       ],
@@ -977,21 +954,25 @@
           "contents/handbook/engineering/operations/support-hero.md#31",
           "contents/handbook/support/support-smes.md#6",
           "contents/handbook/support/customer-support.md#6",
-          "contents/handbook/support/support-smes.md#8"
+          "contents/handbook/support/support-smes.md#8",
+          "contents/handbook/support/support-team.md#0",
+          "contents/handbook/support/support-zero.md#5",
+          "contents/handbook/support/support-smes.md#7",
+          "contents/handbook/people/onboarding.md#24"
         ],
         "status": "answered",
         "ms": {
-          "total": 4369,
-          "search": 39,
-          "answer": 4329
+          "total": 4383,
+          "search": 134,
+          "answer": 4247
         },
         "usage": {
-          "input": 4166,
-          "output": 583
+          "input": 5509,
+          "output": 635
         },
-        "citations": 12,
+        "citations": 16,
         "droppedCitations": 0,
-        "uncitedChars": 185,
+        "uncitedChars": 0,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -1007,10 +988,10 @@
       "citedSections": [
         "content/newsletter"
       ],
-      "answer": "Andy owns Product for Engineers, PostHog's newsletter.[1] One person writes each issue, and Andy edits and publishes it.[2]",
+      "answer": "Product for Engineers is PostHog's newsletter, and it's owned by Andy.[1] One person writes each issue, and Andy edits and publishes it, with the newsletter sent and managed via Substack.[2]",
       "parts": [
         {
-          "text": "Andy owns Product for Engineers, PostHog's newsletter.",
+          "text": "Product for Engineers is PostHog's newsletter, and it's owned by Andy.",
           "citations": [
             1
           ]
@@ -1020,7 +1001,7 @@
           "citations": []
         },
         {
-          "text": "One person writes each issue, and Andy edits and publishes it.",
+          "text": "One person writes each issue, and Andy edits and publishes it, with the newsletter sent and managed via Substack.",
           "citations": [
             2
           ]
@@ -1038,36 +1019,40 @@
           "contents/handbook/story.md#3",
           "contents/handbook/engineering/ai/products.md#29",
           "contents/handbook/people/hiring-process/engineering-superday.md#3",
-          "contents/handbook/who-we-build-for.md#3"
+          "contents/handbook/who-we-build-for.md#3",
+          "contents/handbook/engineering/product-engineering.md#0",
+          "contents/handbook/engineering/product-engineering.md#1",
+          "contents/handbook/why-does-posthog-exist.md#1",
+          "contents/handbook/product/product-manager-role.md#14"
         ],
         "status": "answered",
         "ms": {
-          "total": 3884,
-          "search": 19,
-          "answer": 2179,
-          "research": 37,
-          "reanswer": 1649
+          "total": 3380,
+          "search": 86,
+          "answer": 1524,
+          "research": 76,
+          "reanswer": 1686
         },
         "usage": {
-          "input": 12023,
-          "output": 220
+          "input": 15219,
+          "output": 163
         },
         "research": {
           "first": "not-covered",
           "queries": [
             "Product for Engineers team lead",
             "Product for Engineers team page",
-            "team structure and who leads each team"
+            "who owns the Product for Engineers newsletter"
           ],
           "added": [
-            "contents/handbook/product/product-manager-role.md#14",
             "contents/handbook/content/newsletter-ads.md#8",
-            "contents/handbook/company/small-teams.md#11",
-            "contents/handbook/growth/sales/expansion-strategies.md#13",
             "contents/handbook/content/newsletter.md#0",
-            "contents/handbook/company/small-teams.md#5",
-            "contents/handbook/company/management.md#3",
-            "contents/handbook/product/product-team.md#1"
+            "contents/handbook/growth/sales/expansion-strategies.md#13",
+            "contents/handbook/brand/startups.md#7",
+            "contents/handbook/product/product-team.md#1",
+            "contents/handbook/support/support-smes.md#5",
+            "contents/handbook/engineering/feature-ownership.md#0",
+            "contents/handbook/company/small-teams.md#12"
           ],
           "outcome": "used-second"
         },
@@ -1083,64 +1068,39 @@
     {
       "id": "sales-lead-threshold",
       "kind": "question",
-      "outcome": "review",
+      "outcome": "pass",
       "searchedFor": "what's the cutoff for a new lead to get worked by sales instead of just going self-serve?",
       "status": "answered",
       "citedSections": [
         "growth/sales/new-sales",
-        "growth/sales/how-to-do-discovery",
         "growth/sales/crm"
       ],
-      "answer": "The handbook gives a $20k annual spend threshold: when qualifying a new lead, you consider company size, revenue and funding, i.e. whether they will pay more than $20k for PostHog[1]. Leads below it are covered under \"Leads below the sales assist threshold (less than $20K ARR)\"[2]. Discovery uses the same line: a qualifier is a path to $2k/mo or $20k/year in spend[3], and having no path to $20k or more in annual spend is a disqualifier[4].\n\nBeyond spend, the handbook lists other factors for deciding between self-serve and hands-on:\n- If usage is around 5 million monthly events and 100,000 recordings, they should be hands-on.[5]\n- If they want an annual commitment, keep them in the hands-on pipeline.[6]\n- If they need help with a guided evaluation and their potential value is high enough, create a Slack Connect channel and keep them in the hands-on pipeline.[6]\n- If none of these apply, move them to self-serve.[7]\n\nQualification also looks at fit and technical capability: qualify if they have the technical capability to succeed, engineers will be involved in the sales process, and there's product/solution fit[8].",
+      "answer": "The handbook's cutoff is about $20k: if a lead will be too small (<$20k) for the sales-led process and you can't get the information from them, you should route them to self-serve.[1] When qualifying, you consider company size, revenue, and funding, i.e. whether they will pay >$20k for PostHog.[2]\n\nThe handbook also lists points to consider when deciding whether to mark a lead self-serve:\n- If their usage volume is around 5 million monthly events and 100,000 recordings, they should be hands-on.[3]\n- If they want an annual commitment, keep them in the hands-on pipeline.[4]\n- If they need help with a guided evaluation and their potential value is high enough, create a Slack Connect channel and keep them in the hands-on pipeline.[4]\n- If none of these apply, move them to self-serve.[5]",
       "parts": [
         {
-          "text": "The handbook gives a $20k annual spend threshold: ",
-          "citations": []
-        },
-        {
-          "text": "when qualifying a new lead, you consider company size, revenue and funding, i.e. whether they will pay more than $20k for PostHog",
+          "text": "The handbook's cutoff is about $20k: if a lead will be too small (<$20k) for the sales-led process and you can't get the information from them, you should route them to self-serve.",
           "citations": [
             1
           ]
         },
         {
-          "text": ". Leads below it are covered under ",
+          "text": " ",
           "citations": []
         },
         {
-          "text": "\"Leads below the sales assist threshold (less than $20K ARR)\"",
+          "text": "When qualifying, you consider company size, revenue, and funding, i.e. whether they will pay >$20k for PostHog.",
           "citations": [
             2
           ]
         },
         {
-          "text": ". Discovery uses the same line: ",
+          "text": "\n\nThe handbook also lists points to consider when deciding whether to mark a lead self-serve:\n- ",
           "citations": []
         },
         {
-          "text": "a qualifier is a path to $2k/mo or $20k/year in spend",
+          "text": "If their usage volume is around 5 million monthly events and 100,000 recordings, they should be hands-on.",
           "citations": [
             3
-          ]
-        },
-        {
-          "text": ", and ",
-          "citations": []
-        },
-        {
-          "text": "having no path to $20k or more in annual spend is a disqualifier",
-          "citations": [
-            4
-          ]
-        },
-        {
-          "text": ".\n\nBeyond spend, the handbook lists other factors for deciding between self-serve and hands-on:\n- ",
-          "citations": []
-        },
-        {
-          "text": "If usage is around 5 million monthly events and 100,000 recordings, they should be hands-on.",
-          "citations": [
-            5
           ]
         },
         {
@@ -1150,7 +1110,7 @@
         {
           "text": "If they want an annual commitment, keep them in the hands-on pipeline.",
           "citations": [
-            6
+            4
           ]
         },
         {
@@ -1160,7 +1120,7 @@
         {
           "text": "If they need help with a guided evaluation and their potential value is high enough, create a Slack Connect channel and keep them in the hands-on pipeline.",
           "citations": [
-            6
+            4
           ]
         },
         {
@@ -1170,27 +1130,11 @@
         {
           "text": "If none of these apply, move them to self-serve.",
           "citations": [
-            7
+            5
           ]
-        },
-        {
-          "text": "\n\nQualification also looks at fit and technical capability: ",
-          "citations": []
-        },
-        {
-          "text": "qualify if they have the technical capability to succeed, engineers will be involved in the sales process, and there's product/solution fit",
-          "citations": [
-            8
-          ]
-        },
-        {
-          "text": ".",
-          "citations": []
         }
       ],
-      "gaps": [
-        "how leads below the $20K ARR sales assist threshold are handled"
-      ],
+      "gaps": [],
       "trace": {
         "question": "what's the cutoff for a new lead to get worked by sales instead of just going self-serve?",
         "searchedFor": "what's the cutoff for a new lead to get worked by sales instead of just going self-serve?",
@@ -1202,43 +1146,28 @@
           "contents/handbook/growth/sales/contract-rules.md#10",
           "contents/handbook/growth/sales/new-sales.md#5",
           "contents/handbook/growth/sales/crm.md#37",
+          "contents/handbook/growth/sales/lead-scoring.md#1",
+          "contents/handbook/growth/sales/new-sales.md#16",
+          "contents/handbook/growth/sales/new-sales.md#6",
+          "contents/handbook/how-we-get-users.md#4",
           "contents/handbook/growth/sales/how-we-work.md#12"
         ],
         "status": "answered",
         "ms": {
-          "total": 8714,
-          "search": 23,
-          "answer": 3769,
-          "research": 16,
-          "reanswer": 4904
+          "total": 2953,
+          "search": 98,
+          "answer": 2854
         },
         "usage": {
-          "input": 12883,
-          "output": 1061
+          "input": 6566,
+          "output": 369
         },
-        "research": {
-          "first": "answered",
-          "queries": [
-            "qualification criteria for new business leads to be worked by sales"
-          ],
-          "added": [
-            "contents/handbook/growth/sales/new-sales.md#12",
-            "contents/handbook/growth/sales/new-sales.md#6",
-            "contents/handbook/growth/sales/how-to-do-discovery.md#11",
-            "contents/handbook/growth/sales/new-sales.md#14",
-            "contents/handbook/growth/sales/new-sales.md#26",
-            "contents/handbook/growth/sales/crm.md#19",
-            "contents/handbook/growth/sales/new-sales.md#13",
-            "contents/handbook/growth/sales/new-sales.md#19"
-          ],
-          "outcome": "used-second"
-        },
-        "citations": 8,
+        "citations": 5,
         "droppedCitations": 0,
-        "uncitedChars": 219,
+        "uncitedChars": 75,
         "restatements": 0,
         "passageRemarks": 0,
-        "gaps": 1,
+        "gaps": 0,
         "model": "claude-sonnet-5-5"
       }
     },
@@ -1251,10 +1180,10 @@
       "citedSections": [
         "marketing/customer-case-studies"
       ],
-      "answer": "Yes: before reaching out, search for the company in Vitally, and if they already have an assigned Account Executive or CSM, give that person a heads-up, since they might already be working on something with the customer or have extra context on what to ask.[1] If no one is assigned in Vitally, you're clear to reach out directly.[2]\n\n- Some customers have a dedicated Slack channel, which is usually the fastest way to coordinate; otherwise, send an email.[3]\n- If you're still looking for the right customer, the handbook suggests starting by asking the PM for that product, since PMs do lots of user interviews and can suggest warm leads.[4]",
+      "answer": "Yes, before reaching out, search for the company in Vitally; if they already have an assigned Account Executive or CSM, give that person a heads-up, since they might already be working on something with the customer or have extra context on what to ask.[1] If no one is assigned in Vitally, you're clear to reach out directly.[2]\n\nAlso, some customers have a dedicated Slack channel, which is usually the fastest way to coordinate; otherwise, send an email.[3]",
       "parts": [
         {
-          "text": "Yes: before reaching out, search for the company in Vitally, and if they already have an assigned Account Executive or CSM, give that person a heads-up, since they might already be working on something with the customer or have extra context on what to ask.",
+          "text": "Yes, before reaching out, search for the company in Vitally; if they already have an assigned Account Executive or CSM, give that person a heads-up, since they might already be working on something with the customer or have extra context on what to ask.",
           "citations": [
             1
           ]
@@ -1270,23 +1199,13 @@
           ]
         },
         {
-          "text": "\n\n- ",
+          "text": "\n\nAlso, ",
           "citations": []
         },
         {
-          "text": "Some customers have a dedicated Slack channel, which is usually the fastest way to coordinate; otherwise, send an email.",
+          "text": "some customers have a dedicated Slack channel, which is usually the fastest way to coordinate; otherwise, send an email.",
           "citations": [
             3
-          ]
-        },
-        {
-          "text": "\n- ",
-          "citations": []
-        },
-        {
-          "text": "If you're still looking for the right customer, the handbook suggests starting by asking the PM for that product, since PMs do lots of user interviews and can suggest warm leads.",
-          "citations": [
-            4
           ]
         }
       ],
@@ -1302,21 +1221,25 @@
           "contents/handbook/marketing/customer-case-studies.md#1",
           "contents/handbook/marketing/customer-case-studies.md#5",
           "contents/handbook/product/user-feedback.md#4",
-          "contents/handbook/cs-and-onboarding/getting-started-with-customers.md#11"
+          "contents/handbook/cs-and-onboarding/getting-started-with-customers.md#11",
+          "contents/handbook/engineering/product-engineering.md#7",
+          "contents/handbook/growth/sales/new-sales.md#32",
+          "contents/handbook/cs-and-onboarding/getting-started-with-customers.md#3",
+          "contents/handbook/people/hiring-process/engineering-hiring.md#11"
         ],
         "status": "answered",
         "ms": {
-          "total": 2581,
-          "search": 34,
-          "answer": 2547
+          "total": 2479,
+          "search": 300,
+          "answer": 2176
         },
         "usage": {
-          "input": 4171,
-          "output": 270
+          "input": 5384,
+          "output": 196
         },
-        "citations": 4,
+        "citations": 3,
         "droppedCitations": 0,
-        "uncitedChars": 0,
+        "uncitedChars": 4,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -1331,28 +1254,39 @@
       "status": "answered",
       "citedSections": [
         "marketing/customer-case-studies",
+        "marketing/co-marketing",
         "growth/sales/contract-rules"
       ],
-      "answer": "Yes, the handbook says the last step after the case study is live is a merch credit: once the case study is merged and live on the website, the last step is to send a merch credit to the participants as thank you.[1]\n\nIt does not offer discounts in exchange for a case study: we don't offer additional discounts in exchange for a case study, as paying for case studies can devalue them.[2]",
+      "answer": "Yes, the handbook says once the case study is merged and live on the website, the last step is to send a merch credit to the participants as a thank you.[1] It also says PostHog will typically thank customers who participate in case studies and collab content by sending them a merch voucher.[2]\n\nDiscounts are not part of this. PostHog doesn't offer additional discounts in exchange for a case study, as paying for case studies can devalue them.[3]",
       "parts": [
         {
-          "text": "Yes, the handbook says the last step after the case study is live is a merch credit: ",
+          "text": "Yes, the handbook says ",
           "citations": []
         },
         {
-          "text": "once the case study is merged and live on the website, the last step is to send a merch credit to the participants as thank you.",
+          "text": "once the case study is merged and live on the website, the last step is to send a merch credit to the participants as a thank you.",
           "citations": [
             1
           ]
         },
         {
-          "text": "\n\nIt does not offer discounts in exchange for a case study: ",
+          "text": " It also says ",
           "citations": []
         },
         {
-          "text": "we don't offer additional discounts in exchange for a case study, as paying for case studies can devalue them.",
+          "text": "PostHog will typically thank customers who participate in case studies and collab content by sending them a merch voucher.",
           "citations": [
             2
+          ]
+        },
+        {
+          "text": "\n\nDiscounts are not part of this. ",
+          "citations": []
+        },
+        {
+          "text": "PostHog doesn't offer additional discounts in exchange for a case study, as paying for case studies can devalue them.",
+          "citations": [
+            3
           ]
         }
       ],
@@ -1368,22 +1302,26 @@
           "contents/handbook/growth/sales/contract-rules.md#9",
           "contents/handbook/engineering/product-engineering.md#7",
           "contents/handbook/marketing/customer-case-studies.md#3",
+          "contents/handbook/marketing/customer-case-studies.md#0",
+          "contents/handbook/product/user-feedback.md#1",
+          "contents/handbook/growth/sales/who-we-do-business-with.md#4",
+          "contents/handbook/marketing/co-marketing.md#5",
           "contents/handbook/company/offsites.md#5"
         ],
         "status": "answered",
         "ms": {
-          "total": 2528,
-          "rewrite": 693,
-          "search": 19,
-          "answer": 1815
+          "total": 2769,
+          "rewrite": 682,
+          "search": 53,
+          "answer": 2031
         },
         "usage": {
-          "input": 3454,
-          "output": 148
+          "input": 5043,
+          "output": 186
         },
-        "citations": 2,
+        "citations": 3,
         "droppedCitations": 0,
-        "uncitedChars": 112,
+        "uncitedChars": 53,
         "restatements": 0,
         "passageRemarks": 0,
         "gaps": 0,
@@ -1399,14 +1337,14 @@
       "citedSections": [
         "people/feedback"
       ],
-      "answer": "- The benchmark is Culture Amp's 'new tech' companies with fewer than 200 people.[1]\n- We take the average score out of 5 and multiply it by 20 to get a % number, which the handbook calls \"a bit rough, but close enough\" to compare with the benchmark.[1]\n- A summary of the results is reported in an Issue, following a template.[2]",
+      "answer": "- The benchmark is Culture Amp's \"new tech\" companies with fewer than 200 people.[1]\n- To get a percentage, the average score out of 5 is multiplied by 20, which the handbook calls \"a bit rough, but close enough\" for comparing with the benchmark.[1]\n- A summary of results is reported in an Issue following a template, and the latest survey results are linked from the handbook.[2]",
       "parts": [
         {
           "text": "- ",
           "citations": []
         },
         {
-          "text": "The benchmark is Culture Amp's 'new tech' companies with fewer than 200 people.",
+          "text": "The benchmark is Culture Amp's \"new tech\" companies with fewer than 200 people.",
           "citations": [
             1
           ]
@@ -1416,7 +1354,7 @@
           "citations": []
         },
         {
-          "text": "We take the average score out of 5 and multiply it by 20 to get a % number, which the handbook calls \"a bit rough, but close enough\" to compare with the benchmark.",
+          "text": "To get a percentage, the average score out of 5 is multiplied by 20, which the handbook calls \"a bit rough, but close enough\" for comparing with the benchmark.",
           "citations": [
             1
           ]
@@ -1426,7 +1364,7 @@
           "citations": []
         },
         {
-          "text": "A summary of the results is reported in an Issue, following a template.",
+          "text": "A summary of results is reported in an Issue following a template, and the latest survey results are linked from the handbook.",
           "citations": [
             2
           ]
@@ -1446,19 +1384,23 @@
           "contents/handbook/cs-and-onboarding/health-tracking.md#6",
           "contents/handbook/story.md#17",
           "contents/handbook/growth/cross-selling/cross-sell-motions.md#4",
-          "contents/handbook/cs-and-onboarding/health-tracking.md#2"
+          "contents/handbook/cs-and-onboarding/health-tracking.md#2",
+          "contents/handbook/cs-and-onboarding/health-tracking.md#8",
+          "contents/handbook/growth/use-case-selling/customer-experience.md#16",
+          "contents/handbook/story.md#19",
+          "contents/handbook/growth/use-case-selling/release-engineering.md#18"
         ],
         "status": "answered",
         "ms": {
-          "total": 5005,
-          "search": 16,
-          "answer": 2340,
-          "research": 18,
-          "reanswer": 2631
+          "total": 5189,
+          "search": 75,
+          "answer": 2530,
+          "research": 36,
+          "reanswer": 2540
         },
         "usage": {
-          "input": 9828,
-          "output": 468
+          "input": 13188,
+          "output": 457
         },
         "research": {
           "first": "answered",
@@ -1466,11 +1408,12 @@
             "latest team survey results compared to Culture Amp benchmark"
           ],
           "added": [
-            "contents/handbook/growth/use-case-selling/release-engineering.md#18",
             "contents/handbook/growth/sales/expansion-strategies.md#6",
-            "contents/handbook/growth/use-case-selling/customer-experience.md#16",
             "contents/handbook/company/post-mortems/2025-10-03-surveys-sdk-bug.md#7",
-            "contents/handbook/story.md#15"
+            "contents/handbook/story.md#15",
+            "contents/handbook/cs-and-onboarding/customer-churn-retros.md#8",
+            "contents/handbook/growth/sales/how-we-work.md#28",
+            "contents/handbook/growth/use-case-selling/product-intelligence.md#19"
           ],
           "outcome": "used-second"
         },
@@ -1478,7 +1421,7 @@
         "droppedCitations": 0,
         "uncitedChars": 0,
         "restatements": 0,
-        "passageRemarks": 2,
+        "passageRemarks": 1,
         "gaps": 1,
         "model": "claude-sonnet-5-5"
       }
@@ -1503,36 +1446,40 @@
           "contents/handbook/company/offsites.md#20",
           "contents/handbook/company/offsites.md#24",
           "contents/handbook/company/offsites.md#29",
-          "contents/handbook/company/offsites.md#21"
+          "contents/handbook/company/offsites.md#21",
+          "contents/handbook/company/offsites.md#5",
+          "contents/handbook/company/offsites.md#19",
+          "contents/handbook/company/offsites.md#9",
+          "contents/handbook/company/communication.md#35"
         ],
         "status": "not-covered",
         "ms": {
-          "total": 3038,
-          "search": 35,
-          "answer": 1824,
-          "research": 45,
-          "reanswer": 1133
+          "total": 3698,
+          "search": 106,
+          "answer": 1689,
+          "research": 172,
+          "reanswer": 1717
         },
         "usage": {
-          "input": 12893,
+          "input": 15503,
           "output": 124
         },
         "research": {
           "first": "not-covered",
           "queries": [
-            "passport renewal before travel",
-            "visa and travel document requirements for offsite attendees",
-            "travel expenses reimbursement for passport fees"
+            "passport renewal for offsite travel",
+            "visa and travel document requirements for offsites",
+            "expenses for passport or visa fees"
           ],
           "added": [
-            "contents/handbook/people/spending-money.md#22",
-            "contents/handbook/cs-and-onboarding/renewals.md#0",
             "contents/handbook/people/spending-money.md#5",
-            "contents/handbook/engineering/visiting-customers.md#5",
-            "contents/handbook/people/spending-money.md#13",
-            "contents/handbook/company/offsites.md#19",
-            "contents/handbook/people/spending-money.md#12",
-            "contents/handbook/growth/sales/contract-rules.md#6"
+            "contents/handbook/people/spending-money.md#22",
+            "contents/handbook/company/offsites.md#22",
+            "contents/handbook/company/offsites.md#25",
+            "contents/handbook/people/spending-money.md#7",
+            "contents/handbook/people/spending-money.md#9",
+            "contents/handbook/company/offsites.md#17",
+            "contents/handbook/people/spending-money.md#12"
           ],
           "outcome": "used-second"
         },

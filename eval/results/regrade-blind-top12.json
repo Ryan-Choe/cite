@@ -1,0 +1,363 @@
+{
+ "about": "Blind re-grade of the answers from the eval run of 2026-10-03 on commit 5e9f86e (run 5 in the README), which sends Claude the top 12 search results instead of 8. Two graders, separate Claude agents that saw the questions and reference answers, the answers as shown (with the text the app shows grey) and the parsed handbook, but not the README, the automated grades or earlier re-grades, graded every row independently, with the same instructions as run 4. They agreed on all 30 rows. promotion-criteria, answered with sales stage criteria in runs 3 and 4, is correct: its answer passage ranks 12th. customer-site-debug-mode is correct because the gap re-search found the troubleshooting page (its answer passage ranks 22nd), so that gain is partly luck. The one miss, workflow-pr-review, names the required reviewer as not found (its passage ranks 35th). Set B was run three times: the first two attempts stopped on network errors and hangs, and these are the answers of the complete third run. grade, metaRemark and note are grader 1's; grader2 and metaRemark2 are grader 2's.",
+ "answers": {
+  "eval/results/answers-questions.json": "1e3ca5260300daf737a0475d5cfffe4742346313526ef0ccfa8eb5f79d39abb6",
+  "eval/results/answers-holdout.json": "a87e292d103986db49129b2b5fbd11972e8381f282016eb75606f53fe6e53316"
+ },
+ "grades": {
+  "correct": "answers what was asked, consistent with the reference answer and the handbook",
+  "partially-correct": "right, but misses a material part of what was asked, or hedges where the handbook is clear",
+  "false-absence": "says or implies that the handbook (or the passages) doesn't say something it does say",
+  "missed-gap-named": "doesn't give the asked-for information, but lists it as not found instead of denying it (a safe miss)",
+  "declined-answerable": "said not found, though the handbook answers it (a safe failure)",
+  "declined-correctly": "out of scope, and said not found",
+  "oos-partial-gap-named": "out of scope; answered only with cited facts, and named what is missing",
+  "incorrect": "answers a different question than the one asked, or states something the handbook contradicts",
+  "oos-misleading": "out of scope; the partial answer misleads (irrelevant facts presented as the answer, or invents the missing detail)"
+ },
+ "summary": {
+  "setA": {
+   "questions": "10 correct",
+   "followUps": "3 correct",
+   "outOfScope": "3 oos-partial-gap-named"
+  },
+  "setB": {
+   "questions": "9 correct, 1 missed-gap-named",
+   "followUps": "2 correct",
+   "outOfScope": "1 oos-partial-gap-named, 1 declined-correctly"
+  },
+  "gradersAgree": "30/30"
+ },
+ "rows": [
+  {
+   "set": "A",
+   "id": "freelance-work-allowed",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says a few hours a month of paid side work in personal time is fine as long as it doesn't affect PostHog work. Matches p965."
+  },
+  {
+   "set": "A",
+   "id": "freelance-work-allowed → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says to check in with the relevant Exec (James, Tim or Charles) and get confirmation first. Matches p966."
+  },
+  {
+   "set": "A",
+   "id": "who-founded-posthog",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Names James Hawkins and Tim Glaser and gives the date January 23, 2020. Matches p1028 and p17."
+  },
+  {
+   "set": "A",
+   "id": "contract-feature-deadline",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says no: PostHog doesn't contract deliverables, especially not by a date, and builds for a big customer only if others will use it too. Matches p808 and p641-642. The grey lead-ins are only attribution."
+  },
+  {
+   "set": "A",
+   "id": "hogpatch-founder-access",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says access is invite-only, founders can't apply, PostHog handpicks from a waitlist, and invites last 3 months. Matches p944-945. The grey opening sentence is supported by p944."
+  },
+  {
+   "set": "A",
+   "id": "logs-data-loss-cause",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says a ClickHouse zero-copy replication bug deleted the S3 data, and explains why only older data was lost (S3 after 24h, Kafka kept 3 days). Matches p137-139."
+  },
+  {
+   "set": "A",
+   "id": "logs-data-loss-cause → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says only the most recent ~3 days were restored from Kafka and older data was lost. Matches p138-139. The grey first sentence is consistent with the handbook."
+  },
+  {
+   "set": "A",
+   "id": "product-intent-timing",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says to start tracking as soon as there is any public beta, before any public release. Matches p462. The coming-soon menu detail is supported by p1016-1017."
+  },
+  {
+   "set": "A",
+   "id": "onsite-visit-threshold",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives both thresholds: $50k+/year with expansion, renewal or hurdles (p561), and regularly seeing $100k+ accounts (p575). The grey framing sentence summarises the answer rather than commenting on coverage."
+  },
+  {
+   "set": "A",
+   "id": "meetup-sponsorship-amount",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives $500 to $3,500, usually with added engagement. Matches p822."
+  },
+  {
+   "set": "A",
+   "id": "salesforce-org-ids",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives the exact SQL query on salesforce.account, how to find your Salesforce ID, and the CSV export. Matches p240 and p693."
+  },
+  {
+   "set": "A",
+   "id": "customer-site-debug-mode",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Leads with appending ?__posthog_debug=true to see logs and config (p1060). The api_host and Doctor methods are taken from the reverse-proxy check on p209-210, but they are accurate."
+  },
+  {
+   "set": "A",
+   "id": "customer-site-debug-mode → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says to check api_host: us.i.posthog or eu.i.posthog means no reverse proxy (p1060). Also gives the Doctor/debug methods (p209-210) and the Library custom API host property (p223)."
+  },
+  {
+   "set": "A",
+   "id": "oos-hogpatch-address",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "metaRemark": true,
+   "metaRemark2": true,
+   "note": "No street address is invented. It gives relevant cited facts ('discreet door off 3rd Street', p945; teammate access, p942) and names the address as a gap. The grey lead-in 'What they do say is that' comments on coverage, and the 'your digital wallet pass' detail is for YC founders, not teammates."
+  },
+  {
+   "set": "A",
+   "id": "oos-option-vesting",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Cites only the share-options lines from the offboarding page (p949: vested count, 10-year exercise window, good leaver), which are accurate and related. It names the vesting schedule and cliff as gaps without inventing them."
+  },
+  {
+   "set": "A",
+   "id": "oos-oncall-pay",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "The cited facts are true but tangential: weekend on-call exists, the weekend layers, and how to request cover (p330-331). Nothing about pay is invented, and extra pay or time off in lieu is named as a gap."
+  },
+  {
+   "set": "B",
+   "id": "customers-from-recommendations",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says about 70% come through word of mouth, and nearly all sales are self-serve. Matches p809."
+  },
+  {
+   "set": "B",
+   "id": "team-survey-anonymity",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says responses aren't anonymous and only People & Ops and Exec see the full list. Matches p906."
+  },
+  {
+   "set": "B",
+   "id": "team-survey-anonymity → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says every 6 months, run automatically via Pulse Surveys by Deel. Matches p906."
+  },
+  {
+   "set": "B",
+   "id": "propose-company-wide-tool",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Covers the low-risk trial, the PR plus issue in Company Internal, the review guidelines, then business terms and #legal review. Matches p31-34. Long, but every point is supported."
+  },
+  {
+   "set": "B",
+   "id": "workflow-pr-review",
+   "kind": "question",
+   "status": "answered",
+   "grade": "missed-gap-named",
+   "grader2": "missed-gap-named",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "It omits that any PR modifying a workflow file needs a specific review from the security team (p128), even though it cites that same post-mortem. It lists the required reviewer under 'not found' rather than denying it."
+  },
+  {
+   "set": "B",
+   "id": "promotion-criteria",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says there is no checklist or formal framework by design, and you progress by shipping toward goals and caring about your work, team and users. Matches p902-903."
+  },
+  {
+   "set": "B",
+   "id": "browser-extension-billing",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives the fix: persist the UUID in chrome.storage.local, bootstrap distinctID, only call identify() when the ID changes, bootstrap flags. Matches p856-858. The grey parts are connective phrasing, and the refund gap is extra, not a denial."
+  },
+  {
+   "set": "B",
+   "id": "support-ticket-split",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says everyone shares Analytics and unclassified tickets, and one EU and one NA SME own each product group. Matches p1052-1054. The extra details (p1041, p346) are supported."
+  },
+  {
+   "set": "B",
+   "id": "newsletter-owner",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says Andy owns it, one person writes each issue and Andy edits and publishes it on Substack. Matches p177."
+  },
+  {
+   "set": "B",
+   "id": "sales-lead-threshold",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives the ~$20k cutoff, with leads below it routed to self-serve (p622, p619), plus the hands-on criteria from p554."
+  },
+  {
+   "set": "B",
+   "id": "case-study-customer-outreach",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says to check Vitally and give an assigned AE or CSM a heads-up, otherwise reach out directly. Matches p817."
+  },
+  {
+   "set": "B",
+   "id": "case-study-customer-outreach → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Says a merch credit or voucher is sent as a thank-you once the case study is live (p819, p814). The grey 'no discounts' line is supported by p526."
+  },
+  {
+   "set": "B",
+   "id": "oos-team-survey-score",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Gives the relevant cited facts on the benchmark and how scores are converted (p906-907), invents no score, and names the latest results as a gap."
+  },
+  {
+   "set": "B",
+   "id": "oos-passport-renewal",
+   "kind": "out-of-scope",
+   "status": "not-covered",
+   "grade": "declined-correctly",
+   "grader2": "declined-correctly",
+   "metaRemark": false,
+   "metaRemark2": false,
+   "note": "Out of scope. The app returned not-covered with an empty answer."
+  }
+ ]
+}
