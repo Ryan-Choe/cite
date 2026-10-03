@@ -26,7 +26,7 @@ The search index is committed (`data/index/`), so there is no build step. The fi
 question → [rewrite follow-up] → hybrid search → Claude (citations on) → grounding gate → [gap re-search] → answer + citation cards
 ```
 
-1. **Ingest (offline, `npm run ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, and indentation gives list nesting. The 254 sections are split into 3,205 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded with a local MiniLM model.
+1. **Ingest (offline, `npm run ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, indentation gives list nesting, and each indentation's own right margin tells a wrapped line from a deliberate break (text in callout boxes wraps early). The 254 sections are split into 3,211 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded with a local MiniLM model.
 2. **Follow-ups.** In a conversation, Claude Haiku 4.5 rewrites a follow-up such as "Is it paid?" into a standalone question ("Is the parental leave policy paid?"), shown in the UI as "Searched for: …". If the rewrite fails, the original question is used.
 3. **Hybrid search.** Keyword search (BM25) catches exact terms like "Deel" or "PTO". Semantic search (embeddings) catches paraphrases ("ill" → "sick"). The two rankings are merged with weighted Reciprocal Rank Fusion, with keyword search at half weight (see [Evaluation](#evaluation)), and the top 8 chunks go to Claude.
 4. **Answer with citations.** Claude Sonnet 5.5 answers using only those chunks, via Anthropic's citations feature. Each paragraph is a separate citable block, so every quote is an exact handbook paragraph with a known page.
@@ -90,7 +90,7 @@ Each set was committed before its first run. Set A was used for tuning. Set B wa
 | Out-of-scope: declined | 2/3 | 1/3 | 1/2 | 1/2 |
 | Out-of-scope: partial answer that names the gap | 1/3 | 2/3 | 1/2 | 1/2 |
 
-"Before" is the tuned pipeline (set A's first run cited the right section for 7/10). "Now" adds the gap re-search; each column is a single run, so a one-question change is 10 points.
+"Before" is the tuned pipeline (set A's first run cited the right section for 7/10). "Now" adds the gap re-search; each column is a single run, so a one-question change is 10 points. Both answer runs used the index from before the parser fixes (3,205 chunks); with the fixed index, the retrieval results above are unchanged.
 
 **What the eval showed:**
 - **Not every failure was safe.** Before the gap re-search, in 4 of the 25 answerable questions and follow-ups, search missed the passage with the answer, and Claude turned "not in my passages" into "the handbook doesn't say". It told the employee the handbook doesn't say a side gig needs approval (it says to get an exec's sign-off, p966), names no special reviewer for PRs that change a GitHub Actions workflow (they need a security-team review, p128), and doesn't say how support tickets are split (p1052). The automated check passed all four, because it only looked at which section was cited.

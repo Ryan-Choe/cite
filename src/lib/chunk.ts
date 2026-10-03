@@ -27,11 +27,13 @@ export const MAX_CHUNK_CHARS = 1000;
 
 /**
  * Render one paragraph block as a line of text. List items get a "- " bullet, indented two
- * spaces per extra nesting level; numbered items keep their number instead of a bullet.
+ * spaces per extra nesting level; numbered items keep their number instead of a bullet. The rest
+ * of a list item continued from the previous page gets no bullet: it lines up with the item's text.
  */
 export function renderBlock(block: Block): string {
   if (block.listLevel === 0) return block.text;
   const indent = "  ".repeat(block.listLevel - 1);
+  if (block.continued) return `${indent}  ${block.text}`;
   return /^\d+[.)]\s/.test(block.text) ? indent + block.text : `${indent}- ${block.text}`;
 }
 
@@ -50,7 +52,8 @@ export function searchText(chunk: Chunk): string {
  *
  *   1. Walk the blocks in order, packing paragraphs into the current chunk.
  *   2. A heading always closes the current chunk; the next chunk sits under the updated headings.
- *      An h2 replaces the heading trail; an h3 goes under the latest h2.
+ *      A level-1 heading replaces the heading trail; an h2 goes under the latest level-1 heading,
+ *      and an h3 under the latest of both.
  *   3. Start a new chunk when adding the next paragraph would push bodyText past maxChars.
  *   4. A single paragraph longer than maxChars is first split into pieces (see splitLongText).
  *   5. Paragraphs on the same page are joined with "\n" inside that page's ChunkPage.
@@ -59,6 +62,7 @@ export function searchText(chunk: Chunk): string {
 export function chunkSection(section: Section, maxChars: number = MAX_CHUNK_CHARS): Chunk[] {
   const chunks: Chunk[] = []; // finished chunks
   let headings: string[] = []; // heading trail the current chunk sits under
+  let currentH1: string | undefined; // the latest level-1 heading, so an h2 knows what it sits under
   let currentH2: string | undefined; // the latest h2, so an h3 knows what it sits under
   let pages: ChunkPage[] = []; // the current chunk's body, still being filled
 
@@ -91,11 +95,15 @@ export function chunkSection(section: Section, maxChars: number = MAX_CHUNK_CHAR
     if (block.kind === "heading") {
       flush();
       // Replace the trail rather than editing it in place: chunks already saved keep their own array.
-      if (block.level === 2) {
-        currentH2 = block.text;
+      if (block.level === 1) {
+        currentH1 = block.text;
+        currentH2 = undefined;
         headings = [block.text];
+      } else if (block.level === 2) {
+        currentH2 = block.text;
+        headings = currentH1 ? [currentH1, block.text] : [block.text];
       } else {
-        headings = currentH2 ? [currentH2, block.text] : [block.text];
+        headings = [currentH1, currentH2, block.text].filter((h) => h !== undefined);
       }
     } else {
       for (const piece of splitLongText(renderBlock(block), maxChars)) add(piece, block.page);

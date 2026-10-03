@@ -51,7 +51,7 @@ question ──► [rewrite follow-up] ──► hybrid search ──► Claude 
 
 - Split by section, then at headings and paragraph breaks, up to ~1,000 characters. MiniLM was trained on 256-token inputs and silently cuts off at 512.
 - Prefix each chunk with its section title so that a chunk saying "book it in Deel" still matches "vacation".
-- Rejoin lines broken mid-sentence. Apply NFKC normalization as a safety net for ligatures.
+- Rejoin lines broken mid-sentence, judging each indentation against its own right margin (text in callout boxes wraps ~30pt before the page margin). Keep title-size headings inside a section as top-level headings. Apply NFKC normalization as a safety net for ligatures.
 - Each chunk keeps: section title, source path, page range, and its text split per page (for exact-page citations).
 
 ## Product behavior

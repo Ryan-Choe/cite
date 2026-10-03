@@ -17,8 +17,8 @@ export type BlockKind = "heading" | "paragraph";
  */
 export interface Block {
   kind: BlockKind;
-  /** For headings: 2 (h2) or 3 (h3). Omitted for paragraphs. */
-  level?: 2 | 3;
+  /** For headings: 1 (a title-size heading inside a section), 2 (h2) or 3 (h3). Omitted for paragraphs. */
+  level?: 1 | 2 | 3;
   /** List nesting depth: 0 = normal paragraph, 1 = bullet, 2 = nested bullet. */
   listLevel: number;
   text: string;

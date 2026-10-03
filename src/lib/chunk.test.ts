@@ -4,6 +4,7 @@ import type { Block, Section } from "./ingest/types";
 
 // --- helpers to build test sections ---------------------------------------------------
 const para = (text: string, page = 1, listLevel = 0): Block => ({ kind: "paragraph", listLevel, text, page });
+const h1 = (text: string, page = 1): Block => ({ kind: "heading", level: 1, listLevel: 0, text, page });
 const h2 = (text: string, page = 1): Block => ({ kind: "heading", level: 2, listLevel: 0, text, page });
 const h3 = (text: string, page = 1): Block => ({ kind: "heading", level: 3, listLevel: 0, text, page });
 const section = (blocks: Block[]): Section => ({
@@ -22,6 +23,12 @@ describe("renderBlock", () => {
     expect(renderBlock(para("Branded merch", 1, 1))).toBe("- Branded merch");
     expect(renderBlock(para("Out Sick", 1, 2))).toBe("  - Out Sick");
     expect(renderBlock(para("1. Open the Figma file", 1, 1))).toBe("1. Open the Figma file");
+  });
+
+  it("gives the rest of an item continued from the previous page no bullet of its own", () => {
+    expect(renderBlock({ ...para("team calendar", 2, 1), continued: true })).toBe("  team calendar");
+    expect(renderBlock({ ...para("and slow queries", 2, 2), continued: true })).toBe("    and slow queries");
+    expect(renderBlock({ ...para("off a year.", 2, 0), continued: true })).toBe("off a year.");
   });
 });
 
@@ -84,6 +91,35 @@ describe("chunkSection", () => {
     ]);
     // Headings live in the title, not in the body.
     expect(bodyText(chunks[1])).toBe("No approval needed.");
+  });
+
+  it("puts h2s and h3s under the latest level-1 heading, which starts a fresh trail", () => {
+    const chunks = chunkSection(
+      section([
+        h2("Booking"),
+        para("Use Deel."),
+        h1("Load testing"),
+        para("Ask first."),
+        h2("Limits"),
+        para("Up to 1M events."),
+        h3("Bursts"),
+        para("Spread them out."),
+        h1("Refunds"),
+        para("Ask billing."),
+      ]),
+    );
+    expect(chunks.map((c) => c.headings)).toEqual([
+      ["Booking"],
+      ["Load testing"],
+      ["Load testing", "Limits"],
+      ["Load testing", "Limits", "Bursts"],
+      ["Refunds"],
+    ]);
+  });
+
+  it("forgets the previous h2 at a level-1 heading, so a following h3 sits directly under it", () => {
+    const chunks = chunkSection(section([h2("Prioritization"), para("Rank them."), h1("Introduce yourself"), h3("Examples"), para("Say hi.")]));
+    expect(chunks.map((c) => c.headings)).toEqual([["Prioritization"], ["Introduce yourself", "Examples"]]);
   });
 
   it("numbers chunk ids from 0 within the section", () => {
