@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { absenceTopic, extractGapLines, findAbsenceClaims, isSearchable, removeAbsenceClaims } from "./gaps";
+import { absenceTopic, dedupeGaps, extractGapLines, findAbsenceClaims, isSearchable, removeAbsenceClaims } from "./gaps";
 
 describe("extractGapLines", () => {
   it("removes GAP lines wherever they are and returns them in order, without quotes", () => {
@@ -26,6 +26,11 @@ describe("extractGapLines", () => {
 });
 
 describe("findAbsenceClaims", () => {
+  it("catches 'doesn't show' and 'doesn't confirm' too", () => {
+    expect(findAbsenceClaims("The handbook doesn't show that the older data was recovered.")).toHaveLength(1);
+    expect(findAbsenceClaims("These passages don't confirm the amount.")).toHaveLength(1);
+  });
+
   // The four false "the handbook doesn't say" answers from the eval (eval/results/regrade-blind.json).
   it.each([
     "The handbook passages I have don't say whether you need approval or must disclose a side gig, so they don't count.",
@@ -83,7 +88,63 @@ describe("removeAbsenceClaims", () => {
     expect(removeAbsenceClaims(" Ask IT.[1] The handbook doesn't say who pays. Then wait.\nThe passages don't mention monitors.")).toEqual({
       text: " Ask IT.[1] Then wait.\n",
       claims: ["The handbook doesn't say who pays.", "The passages don't mention monitors."],
+      remarks: [],
     });
+  });
+
+  it("removes remarks about the passages, with no gap topic, but keeps handbook framing", () => {
+    const text =
+      "The passages only partly cover this. Ask IT. None of these excerpts mention a cliff. There's no mention of monitors. " +
+      "Nothing here covers parking. The handbook lists three steps:";
+    expect(removeAbsenceClaims(text)).toEqual({
+      text: "Ask IT. The handbook lists three steps:",
+      claims: [],
+      remarks: [
+        "The passages only partly cover this.",
+        "None of these excerpts mention a cliff.",
+        "There's no mention of monitors.",
+        "Nothing here covers parking.",
+      ],
+    });
+  });
+
+  it("removes a 'what they cover' lead-in left dangling, and 'the handbook passages' remarks", () => {
+    expect(removeAbsenceClaims("The passages describe the schedule, but they don't say anything about pay.\n\nWhat they do cover:\n- ").text).toBe("- ");
+    expect(removeAbsenceClaims("The handbook passages only partly cover this. Ask HR.").text).toBe("Ask HR.");
+  });
+
+  it("turns an unfinished lead-in into cited text into 'The handbook says ', instead of cutting the sentence", () => {
+    expect(removeAbsenceClaims("The handbook doesn't give a street address. What they do say is that ", true).text).toBe("The handbook says ");
+    expect(removeAbsenceClaims("The passages say ", true).text).toBe("The handbook says ");
+    // Not followed by cited text: an unfinished remark just goes.
+    expect(removeAbsenceClaims("Ask HR. The passages only partly cover this").text).toBe("Ask HR. ");
+  });
+
+  it("removes a pronoun sentence left dangling by a removed one, and only then", () => {
+    const removed = removeAbsenceClaims("The passages don't give the scores. They only describe how the comparison works. Ask HR.");
+    expect(removed.text).toBe("Ask HR.");
+    expect(removed.remarks).toEqual(["They only describe how the comparison works."]);
+    expect(removeAbsenceClaims("Ask HR. They reply within a day.").text).toBe("Ask HR. They reply within a day.");
+  });
+});
+
+describe("absenceTopic: what the source does say is cut off", () => {
+  it("drops a ', but they …' tail", () => {
+    expect(absenceTopic("The passages don't say whether you get a day off for weekend on-call, but they do describe the schedule.")).toBe(
+      "you get a day off for weekend on-call",
+    );
+  });
+});
+
+describe("dedupeGaps", () => {
+  it("drops a gap whose meaningful words are all in an earlier one (or the reverse), keeping the first wording", () => {
+    expect(dedupeGaps(["the vesting schedule for share options", "vesting schedule"])).toEqual(["the vesting schedule for share options"]);
+    expect(dedupeGaps(["vesting schedule", "the vesting schedule for share options"])).toEqual(["vesting schedule"]);
+  });
+
+  it("keeps gaps that differ in a meaningful word, even when most words are shared", () => {
+    expect(dedupeGaps(["maximum days of sick leave", "maximum days of parental leave"])).toHaveLength(2);
+    expect(dedupeGaps(["the actual results of the last team survey", "team survey benchmark provider"])).toHaveLength(2);
   });
 });
 

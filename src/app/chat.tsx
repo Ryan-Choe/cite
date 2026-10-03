@@ -196,6 +196,9 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
               </li>
             ))}
           </ul>
+          {response.alsoSearchedFor.length > 0 && (
+            <p className="mt-2 text-xs text-zinc-500">Also searched for: {response.alsoSearchedFor.join("; ")}</p>
+          )}
         </div>
         {searchedFor}
       </div>
@@ -345,7 +348,7 @@ function isAskResponse(body: unknown): body is AskResponse {
     case "answered":
       return Array.isArray(response.parts) && Array.isArray(response.citations) && Array.isArray(response.gaps);
     case "not-covered":
-      return Array.isArray(response.closest);
+      return Array.isArray(response.closest) && Array.isArray(response.alsoSearchedFor);
     case "error":
       return typeof response.message === "string";
     default:

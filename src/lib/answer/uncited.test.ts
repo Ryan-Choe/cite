@@ -8,7 +8,7 @@ describe("isUncitedClaim", () => {
     expect(uncited(text)).toBe(true);
   });
 
-  it.each(["", " ", "\n\n- ", ", ", " and ", "; ", "What the handbook does cover:\n- ", "On intellectual property:\n  1. "])(
+  it.each(["", " ", "\n\n- ", ", ", " and ", "; ", "What the handbook does cover:\n- ", "On intellectual property:\n  1. ", "The handbook says ", " It also adds that "])(
     "doesn't flag %j",
     (text) => {
       expect(uncited(text)).toBe(false);

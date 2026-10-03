@@ -1,0 +1,302 @@
+{
+ "about": "Blind re-grade of the answers from the eval run of 2026-10-03, the first with the arctic-embed-s search and the keyword safety net, and with the answer changes that followed: \"not found\" replies name gaps that are searched again, the first sentence is asked to be cited, and remarks about the passages are removed. Both changes differ from the previous graded run (regrade-blind-gaps.json), so the difference can't be split between them. Two graders, separate Claude agents that saw the questions, the saved answers (including the gaps shown to the user) and the parsed handbook but not the README, the automated grades or earlier re-grades, graded every row independently: `grade` is grader 1's, `grader2` is grader 2's, and they agree on all 30 rows. The notes are grader 1's. The grades \"incorrect\" and \"oos-misleading\" were added for this run.",
+ "answers": {
+  "eval/results/answers-questions.json": "4441ce12cb6e838e10669bedf6cfd7b0c29373c81e7361c3223802360a3a09b6",
+  "eval/results/answers-holdout.json": "828e5ee97396a74414fe3b5d28b684dfa2da9905d943a2b95f8e6c51744d7a62"
+ },
+ "grades": {
+  "correct": "answers what was asked, consistent with the reference answer and the handbook",
+  "partially-correct": "right, but misses a material part of what was asked, or hedges where the handbook is clear",
+  "false-absence": "says or implies that the handbook (or the passages) doesn't say something it does say",
+  "missed-gap-named": "doesn't give the asked-for information, but lists it as not found instead of denying it (a safe miss)",
+  "declined-answerable": "said not found, though the handbook answers it (a safe failure)",
+  "declined-correctly": "out of scope, and said not found",
+  "oos-partial-gap-named": "out of scope; answered only with cited facts, and named what is missing",
+  "incorrect": "answers a different question than the one asked, or states something the handbook contradicts",
+  "oos-misleading": "out of scope; the partial answer misleads (irrelevant facts presented as the answer, or invents the missing detail)"
+ },
+ "summary": {
+  "setA": {
+   "questions": "9/10 correct, 1 partially correct",
+   "followUps": "3/3 correct",
+   "outOfScope": "3 partial answers that name the gap, 0 declined"
+  },
+  "setB": {
+   "questions": "7/10 correct, 1 incorrect (promotion-criteria), 1 missed with the gap named, 1 declined",
+   "followUps": "2/2 correct",
+   "outOfScope": "1 declined, 1 partial answer that names the gap"
+  }
+ },
+ "rows": [
+  {
+   "set": "A",
+   "id": "freelance-work-allowed",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Says a few hours a month of paid side work is fine if it's done in personal time and doesn't affect PostHog work, matching p965. Extra points (no part-time work, let us know if it might go full-time) are also on p965."
+  },
+  {
+   "set": "A",
+   "id": "freelance-work-allowed → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Check in with the relevant Exec (James, Tim or Charles) for confirmation first, matching p966. The pre-existing side gig and the sign-off for ideas that started at PostHog are also on p966."
+  },
+  {
+   "set": "A",
+   "id": "who-founded-posthog",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "James and Tim founded PostHog on January 23, 2020 (p1028), with full names from the press template. The August 2019 start and the W20 batch are also on p1028."
+  },
+  {
+   "set": "A",
+   "id": "contract-feature-deadline",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "No: PostHog doesn't contract deliverables, especially not by a date. It builds for a big customer only if others will use it too (p808); the walk-away point is also on p808."
+  },
+  {
+   "set": "A",
+   "id": "hogpatch-founder-access",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Invite-only, can't apply, handpicked from a waitlist when space opens, invites last 3 months (p944). The wallet-pass and no-booking details are on p945."
+  },
+  {
+   "set": "A",
+   "id": "logs-data-loss-cause",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "A ClickHouse zero-copy replication bug, triggered by a routine mutation, made replicas delete all S3-stored data parts (p137–138). The timeline and detection details match p137–138."
+  },
+  {
+   "set": "A",
+   "id": "logs-data-loss-cause → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Data older than 3 days was lost and only the most recent data was restored by backfill from Kafka's 3-day retention (p137–139). The gap about recovering older data is redundant but denies nothing."
+  },
+  {
+   "set": "A",
+   "id": "product-intent-timing",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Start tracking product intents as soon as the product is in any public beta, as a precursor to public release (p462). The coming-soon menu points are supported by p1016–1017."
+  },
+  {
+   "set": "A",
+   "id": "onsite-visit-threshold",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Gives both thresholds: $50k+/year with expansion, renewal or hurdle reasons (p561), and regularly seeing $100k+ accounts (p575), matching the reference."
+  },
+  {
+   "set": "A",
+   "id": "meetup-sponsorship-amount",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Typically $500 to $3,500, almost always with added engagement (p822)."
+  },
+  {
+   "set": "A",
+   "id": "salesforce-org-ids",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Gives the exact SQL on salesforce.account, how to find your Salesforce ID, and the CSV export (p240)."
+  },
+  {
+   "set": "A",
+   "id": "customer-site-debug-mode",
+   "kind": "question",
+   "status": "answered",
+   "grade": "partially-correct",
+   "grader2": "partially-correct",
+   "note": "Does give ?__posthog_debug=true with console logs/posthog.config and the replay Doctor config, but frames them only as a reverse-proxy check. It misses that debug mode generally shows PostHog logs and config (p1060) and wrongly lists general inspection methods as not found."
+  },
+  {
+   "set": "A",
+   "id": "customer-site-debug-mode → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Check api_host via replay Doctor or debug mode; us.i/eu.i.posthog means no reverse proxy (p209–210, p1060). The 'Library custom API host' and Metabase checks are on p223."
+  },
+  {
+   "set": "A",
+   "id": "oos-hogpatch-address",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "note": "Gives only relevant cited facts: behind a discreet door off 3rd Street with the exact location on the wallet pass (p945), plus teammate access steps (p942). It names the street address as missing and invents nothing."
+  },
+  {
+   "set": "A",
+   "id": "oos-option-vesting",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "note": "Handbook has no vesting schedule or cliff. The answer cites only the option-related offboarding facts, clearly framed as applying 'on leaving' (p949), and names the vesting schedule and cliff as gaps."
+  },
+  {
+   "set": "A",
+   "id": "oos-oncall-pay",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "note": "Handbook has nothing on on-call pay or time off in lieu. The answer cites the weekend layer hours (p330) and Request cover (p331), and names extra pay/time off as the gap without inventing it."
+  },
+  {
+   "set": "B",
+   "id": "customers-from-recommendations",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "About 70% find PostHog through word of mouth, and nearly all sales are self-serve (p809)."
+  },
+  {
+   "set": "B",
+   "id": "team-survey-anonymity",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Yes: responses aren't anonymous, and only People & Ops and Exec see the full list (p906). The 6-month cadence and Issue summary are on p906–907."
+  },
+  {
+   "set": "B",
+   "id": "team-survey-anonymity → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Every 6 months, run automatically via the Pulse Surveys by Deel Slack app with reminders (p906)."
+  },
+  {
+   "set": "B",
+   "id": "propose-company-wide-tool",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Low-risk trial, then a PR plus issue in Company Internal; once adopted, the proposer coordinates terms, legal review and #legal, with subprocessor notice rules (p31–35), matching the reference. One gap item wrongly says the proposal criteria weren't found, though p32–33 lists them."
+  },
+  {
+   "set": "B",
+   "id": "workflow-pr-review",
+   "kind": "question",
+   "status": "answered",
+   "grade": "missed-gap-named",
+   "grader2": "missed-gap-named",
+   "note": "Misses the asked-for rule that workflow-file PRs require a specific review from the security team (p128, Shai-Hulud post-mortem), listing it as a gap instead. Its body falls back to general review guidance (p320, p401)."
+  },
+  {
+   "set": "B",
+   "id": "promotion-criteria",
+   "kind": "question",
+   "status": "answered",
+   "grade": "incorrect",
+   "grader2": "incorrect",
+   "note": "Answers about Salesforce opportunity-stage exit criteria instead of career progression. The handbook says there is deliberately no checklist or formal progression framework (p903)."
+  },
+  {
+   "set": "B",
+   "id": "browser-extension-billing",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Persist a UUID in chrome.storage.local, bootstrap distinctID and feature flags at init, call identify() only when the ID changes, and monitor billable usage (p856–858). The causes match p856."
+  },
+  {
+   "set": "B",
+   "id": "support-ticket-split",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Everyone shares Analytics and unclassified tickets; other product groups are owned by one EU and one NA SME (p1052). The queue workflow and new-hire focus are supported by p1054, p346 and p1041."
+  },
+  {
+   "set": "B",
+   "id": "newsletter-owner",
+   "kind": "question",
+   "status": "not-covered",
+   "grade": "declined-answerable",
+   "grader2": "declined-answerable",
+   "note": "Returned not-covered, but p177 says Product for Engineers is owned by Andy, who edits and publishes each issue on Substack."
+  },
+  {
+   "set": "B",
+   "id": "sales-lead-threshold",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Gives the ~$20k potential threshold, with leads below it routed to self-serve (p622, p619, p493), plus supported extra routing factors (p554, p647). It doesn't explicitly say the TAE makes the call, which is a minor omission."
+  },
+  {
+   "set": "B",
+   "id": "case-study-customer-outreach",
+   "kind": "question",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "Look the company up in Vitally; if an AE or CSM is assigned, give them a heads-up first, otherwise reach out directly (p817)."
+  },
+  {
+   "set": "B",
+   "id": "case-study-customer-outreach → follow-up",
+   "kind": "follow-up",
+   "status": "answered",
+   "grade": "correct",
+   "grader2": "correct",
+   "note": "A merch credit/voucher as a thank-you once the case study is live (p819, p814). The 'no discounts for case studies' point is on p526."
+  },
+  {
+   "set": "B",
+   "id": "oos-team-survey-score",
+   "kind": "out-of-scope",
+   "status": "answered",
+   "grade": "oos-partial-gap-named",
+   "grader2": "oos-partial-gap-named",
+   "note": "Gives the relevant benchmark method (Culture Amp new-tech companies under 200 people, score x20) and says results are reported in an Issue (p906–907). It names the latest scores as missing and invents no numbers."
+  },
+  {
+   "set": "B",
+   "id": "oos-passport-renewal",
+   "kind": "out-of-scope",
+   "status": "not-covered",
+   "grade": "declined-correctly",
+   "grader2": "declined-correctly",
+   "note": "Out of scope and returned not-covered; the handbook has no passport renewal guidance."
+  }
+ ]
+}

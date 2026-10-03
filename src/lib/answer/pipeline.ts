@@ -2,7 +2,7 @@ import type { Chunk } from "../chunk";
 import { getIndex, search, type HandbookIndex, type SearchHit } from "../search/search";
 import { answerWithCitations, ANSWER_MODEL, hasApiKey, toAskError } from "./claude";
 import { absenceTopic, isSearchable } from "./gaps";
-import { applyGroundingGate, type GateOutcome } from "./grounding";
+import { applyGroundingGate, closestSections, type GateOutcome } from "./grounding";
 import { buildDocuments } from "./prompt";
 import { rewriteFollowUp } from "./rewrite";
 import { askError, type AskError, type AskRequest, type AskResponse } from "./types";
@@ -18,10 +18,16 @@ export interface AskTrace {
   citations?: number;
   droppedCitations?: number;
   uncitedChars?: number;
+  /** Uncited remarks about the passages, and uncited sentences repeated by the cited one after them, removed from the reply. */
+  sourceRemarks?: number;
+  restatements?: number;
   /** Gaps in the final reply, shown as "not found in the passages searched". */
   gaps?: number;
-  /** The gap re-search, if the first answer had gaps: what it searched for, the chunks it added, and how it ended. */
-  research?: { queries: string[]; added: string[]; outcome: ResearchOutcome };
+  /**
+   * The gap re-search, if the first reply had gaps: how the first reply ended (an answer with gaps, or
+   * not found), what it searched for, the chunks it added, and how it ended.
+   */
+  research?: { first: AskResponse["status"]; queries: string[]; added: string[]; outcome: ResearchOutcome };
   model?: string; // the model that wrote the answer shown
   usage?: { input: number; output: number }; // summed over the answer calls
   ms: { rewrite?: number; search?: number; answer?: number; research?: number; reanswer?: number; total: number };
@@ -108,9 +114,20 @@ async function answer(question: string, history: NonNullable<AskRequest["history
   if (gate.result.status === "answered") trace.citations = gate.result.citations.length;
   trace.droppedCitations = gate.droppedCitations;
   trace.uncitedChars = gate.uncitedChars;
+  trace.sourceRemarks = gate.sourceRemarks.length;
+  trace.restatements = gate.restatements;
   trace.notCoveredReason = gate.notCoveredReason;
   trace.gaps = gate.gaps.length;
   trace.model = gate.model;
+
+  // Not found even after searching the gaps: the gap searches' hits, worded like the handbook,
+  // are usually closer than the first search's, so list their sections first.
+  const research = trace.research;
+  if (gate.result.status === "not-covered" && research && research.outcome !== "failed") {
+    const added = research.added.flatMap((id) => index.byId.get(id) ?? []);
+    // Show what Claude asked to search for (its gap lines, merged for display), not every query.
+    return { ...gate.result, closest: closestSections([...added, ...chunks]), alsoSearchedFor: first.gate.gaps };
+  }
   return gate.result;
 }
 
@@ -161,11 +178,11 @@ async function answerGaps(
   trace: AskTrace,
 ): Promise<Answer | null> {
   // Absence claims left inside cited sentences get the same second look as the gaps.
-  const queries = [...new Set([...first.gaps, ...first.absenceClaims.map(absenceTopic)])]
+  const queries = [...new Set([...first.gapLines, ...first.absenceClaims.map(absenceTopic)])]
     .filter(isSearchable)
     .slice(0, MAX_GAP_QUERIES);
   if (queries.length === 0) return null;
-  const research: NonNullable<AskTrace["research"]> = { queries, added: [], outcome: "failed" };
+  const research: NonNullable<AskTrace["research"]> = { first: first.result.status, queries, added: [], outcome: "failed" };
   trace.research = research;
 
   try {
@@ -184,6 +201,14 @@ async function answerGaps(
       return null;
     }
     // Claude saw more the second time, but a partial answer still beats a second-pass "not covered".
+    // Claude said the first passages don't answer the question; an answer citing only those passages
+    // contradicts that, so trust the first verdict.
+    const addedIds = new Set(research.added);
+    const citesAdded = second.gate.citedChunks.some((id) => addedIds.has(id));
+    if (first.result.status === "not-covered" && second.gate.result.status === "answered" && !citesAdded) {
+      research.outcome = "kept-first";
+      return null;
+    }
     if (second.gate.result.status !== "answered" && first.result.status === "answered") {
       research.outcome = "kept-first";
       return null;

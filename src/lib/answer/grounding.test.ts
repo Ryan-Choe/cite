@@ -85,6 +85,7 @@ describe("applyGroundingGate", () => {
     expect(outcome.result).toEqual({
       status: "not-covered",
       searchedFor: "vacation",
+      alsoSearchedFor: [],
       closest: [
         { title: "Time off", page: 980 },
         { title: "Spending money › Equipment", page: 972 },
@@ -224,4 +225,87 @@ describe("gaps", () => {
       "Laptops are provided.|\n\n|Time off is unlimited.| |Really.",
     );
   });
+
+  it("treats NOT_COVERED with gap lines as not covered, and reports the gaps to search", () => {
+    const outcome = applyGroundingGate(reply({ text: "NOT_COVERED\nGAP: annual leave allowance\nGAP: booking time off" }), sources, "q");
+    expect(outcome.notCoveredReason).toBe("model-said-not-covered");
+    expect(outcome.result.status).toBe("not-covered");
+    expect(outcome.gaps).toEqual(["annual leave allowance", "booking time off"]);
+  });
+
+  it("shows Claude's gap lines, not the topics of absence claims it also wrote (they're still searched)", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "Laptops are provided.", citations: [cite(1, 0, 1, "Laptops are provided.")] },
+        { text: " The handbook doesn't say who pays for monitors.\nGAP: monitor budget" },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.gaps).toEqual(["monitor budget"]);
+    expect(outcome.absenceClaims).toEqual(["The handbook doesn't say who pays for monitors."]);
+  });
+
+  it("drops an uncited sentence that the cited one after it repeats, but keeps a short verdict", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "Take at least 25 days off a year. " },
+        { text: "Take at least 25 days a year.", citations: [cite(0, 1, 2, "Take at least 25 days a year.")] },
+        { text: " Yes. " },
+        { text: "Book it in PTO by Deel.", citations: [cite(0, 2, 3, "Book it in PTO by Deel.")] },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.restatements).toBe(1);
+    expect(outcome.result.status === "answered" && outcome.result.parts.map((p) => p.text).join("|")).toBe(
+      "Take at least 25 days a year.| Yes. |Book it in PTO by Deel.",
+    );
+  });
+
+  it("keeps the space or list marker in front of a dropped restatement, and doesn't split at 'e.g.'", () => {
+    const run = (uncited: string) =>
+      applyGroundingGate(
+        reply(
+          { text: "Laptops are provided.", citations: [cite(1, 0, 1, "Laptops are provided.")] },
+          { text: uncited },
+          { text: "Take at least 25 days a year.", citations: [cite(0, 1, 2, "Take at least 25 days a year.")] },
+        ),
+        sources,
+        "q",
+      ).result;
+    const text = (r: ReturnType<typeof run>) => r.status === "answered" && r.parts.map((p) => p.text).join("");
+    expect(text(run(" Take at least 25 days off a year. "))).toBe("Laptops are provided. Take at least 25 days a year.");
+    expect(text(run("\n- Take at least 25 days off a year. "))).toBe("Laptops are provided.\n- Take at least 25 days a year.");
+    // Split at "e.g." the tail would look like a restatement; as one sentence it isn't one, so it stays.
+    expect(text(run(" Rest matters, e.g. take at least 25 days off a year. "))).toBe(
+      "Laptops are provided. Rest matters, e.g. take at least 25 days off a year. Take at least 25 days a year.",
+    );
+  });
+
+  it("keeps an uncited summary in its own paragraph, and one the cited sentence doesn't repeat", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "Time off is flexible here. " },
+        { text: "Take at least 25 days a year.", citations: [cite(0, 1, 2, "Take at least 25 days a year.")] },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.restatements).toBe(0);
+  });
+
+  it("removes uncited remarks about the passages", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "The passages only partly cover this. " },
+        { text: "Laptops are provided.", citations: [cite(1, 0, 1, "Laptops are provided.")] },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.sourceRemarks).toEqual(["The passages only partly cover this."]);
+    expect(outcome.result.status === "answered" && outcome.result.parts.map((p) => p.text).join("|")).toBe("Laptops are provided.");
+  });
 });
+

@@ -39,7 +39,13 @@ export type AskResult =
       gaps: string[]; // parts of the question that the passages searched didn't answer, e.g. "approval needed for a side gig"
       searchedFor: string;
     }
-  | { status: "not-covered"; closest: SectionLink[]; searchedFor: string };
+  | {
+      status: "not-covered";
+      closest: SectionLink[];
+      searchedFor: string;
+      /** What the gap re-search also searched for (in the handbook's likely wording), if it ran. */
+      alsoSearchedFor: string[];
+    };
 
 export type AskErrorCode =
   | "invalid_question"

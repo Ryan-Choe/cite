@@ -5,7 +5,7 @@ import { POST } from "./route";
 
 vi.mock("@/lib/answer/pipeline", () => ({ ask: vi.fn() }));
 
-const notCovered: AskResponse = { status: "not-covered", closest: [], searchedFor: "q" };
+const notCovered: AskResponse = { status: "not-covered", closest: [], searchedFor: "q", alsoSearchedFor: [] };
 
 function post(body: unknown, headers: Record<string, string> = {}, url = "http://localhost:3000/api/ask") {
   return POST(

@@ -23,6 +23,7 @@ const chunk = (id: string, text: string): Chunk => ({
 });
 const laptops = chunk("spending-money#0", "Laptops are provided.");
 const monitors = chunk("spending-money#4", "Monitors are up to $500.");
+const equipment = chunk("equipment#2", "Home office equipment is reimbursed up to $1,000.");
 
 /** search() results by query; anything else finds only the laptops chunk. */
 function searchFinds(results: Record<string, Chunk[]>) {
@@ -115,7 +116,7 @@ describe("ask: gap re-search", () => {
     expect(firstCall[2]).toBeUndefined(); // the first call keeps the SDK's retries
     expect(secondCall[2]).toMatchObject({ maxRetries: 0 }); // the second is optional, so it doesn't retry
     expect(response).toMatchObject({ status: "answered", gaps: [], citations: [{ sectionTitle: "spending-money#4" }] });
-    expect(trace.research).toEqual({ queries: ["monitor budget"], added: ["spending-money#4"], outcome: "used-second" });
+    expect(trace.research).toEqual({ first: "answered", queries: ["monitor budget"], added: ["spending-money#4"], outcome: "used-second" });
     expect(trace.usage).toEqual({ input: 200, output: 20 }); // both calls
   });
 
@@ -133,7 +134,7 @@ describe("ask: gap re-search", () => {
     const { response, trace } = await ask({ question: "laptop?" });
     expect(answerWithCitations).toHaveBeenCalledTimes(1);
     expect(response).toMatchObject({ status: "answered", gaps: ["monitor budget"] });
-    expect(trace.research).toEqual({ queries: ["monitor budget"], added: [], outcome: "no-new-passages" });
+    expect(trace.research).toEqual({ first: "answered", queries: ["monitor budget"], added: [], outcome: "no-new-passages" });
   });
 
   it("keeps the first answer, and its model, when the second call fails", async () => {
@@ -153,6 +154,58 @@ describe("ask: gap re-search", () => {
     const { response, trace } = await ask({ question: "laptop?" });
     expect(response).toMatchObject({ status: "answered", gaps: ["monitor budget"] });
     expect(trace.research?.outcome).toBe("kept-first");
+  });
+
+  it("searches the gaps a 'not covered' reply names, and answers from what that finds", async () => {
+    searchFinds({ "home office equipment": [equipment] });
+    vi.mocked(answerWithCitations)
+      .mockResolvedValueOnce(reply([{ text: "NOT_COVERED\nGAP: home office equipment" }]))
+      .mockResolvedValueOnce(reply([{ text: "It's reimbursed up to $1,000.", cites: { doc: 1, text: "Home office equipment is reimbursed up to $1,000." } }]));
+    const { response, trace } = await ask({ question: "can I get money back for my chair?" });
+    expect(answerWithCitations).toHaveBeenCalledTimes(2);
+    expect(response).toMatchObject({ status: "answered", citations: [{ sectionTitle: "equipment#2" }] });
+    expect(trace.research).toEqual({ first: "not-covered", queries: ["home office equipment"], added: ["equipment#2"], outcome: "used-second" });
+  });
+
+  it("keeps a 'not covered' verdict when the second answer cites only passages Claude already said don't answer it", async () => {
+    vi.mocked(getIndex).mockResolvedValue({ byId: new Map([[equipment.id, equipment]]) } as HandbookIndex);
+    searchFinds({ "home office equipment": [equipment] });
+    vi.mocked(answerWithCitations)
+      .mockResolvedValueOnce(reply([{ text: "NOT_COVERED\nGAP: home office equipment" }]))
+      .mockResolvedValueOnce(reply([{ text: "Laptops are provided.", cites: { doc: 0, text: "Laptops are provided." } }]));
+    const { response, trace } = await ask({ question: "can I get money back for my chair?" });
+    expect(response).toMatchObject({ status: "not-covered", alsoSearchedFor: ["home office equipment"] });
+    expect(trace.research?.outcome).toBe("kept-first");
+  });
+
+  it("searches every gap line, though near-duplicates are merged for display", async () => {
+    vi.mocked(getIndex).mockResolvedValue({ byId: new Map() } as HandbookIndex);
+    vi.mocked(answerWithCitations).mockResolvedValueOnce(
+      reply([{ text: "NOT_COVERED\nGAP: maximum days of sick leave\nGAP: maximum days of parental leave\nGAP: sick leave" }]),
+    );
+    const { response } = await ask({ question: "how much leave?" });
+    for (const query of ["maximum days of sick leave", "maximum days of parental leave", "sick leave"]) {
+      expect(search).toHaveBeenCalledWith(expect.anything(), query);
+    }
+    expect(response).toMatchObject({ alsoSearchedFor: ["maximum days of sick leave", "maximum days of parental leave"] });
+  });
+
+  it("when both tries find nothing, lists the gap search's sections first and says what it searched for", async () => {
+    vi.mocked(getIndex).mockResolvedValue({ byId: new Map([[equipment.id, equipment]]) } as HandbookIndex);
+    searchFinds({ "home office equipment": [equipment] });
+    vi.mocked(answerWithCitations)
+      .mockResolvedValueOnce(reply([{ text: "NOT_COVERED\nGAP: home office equipment" }]))
+      .mockResolvedValueOnce(reply([{ text: "NOT_COVERED" }]));
+    const { response } = await ask({ question: "can I get money back for my chair?" });
+    expect(response).toEqual({
+      status: "not-covered",
+      searchedFor: "can I get money back for my chair?",
+      closest: [
+        { title: "equipment#2", page: 1 },
+        { title: "spending-money#0", page: 1 },
+      ],
+      alsoSearchedFor: ["home office equipment"],
+    });
   });
 
   it("keeps the first answer when the gap search itself fails", async () => {

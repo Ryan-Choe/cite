@@ -21,7 +21,8 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
 import { findAbsenceClaims } from "../src/lib/answer/gaps";
-import type { AskResponse } from "../src/lib/answer/types";
+import type { AnswerPart, AskResponse } from "../src/lib/answer/types";
+import { isUncitedClaim } from "../src/lib/answer/uncited";
 import { searchText } from "../src/lib/chunk";
 import { embedQuery } from "../src/lib/search/embed";
 import { loadIndex, search, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
@@ -167,6 +168,8 @@ interface Row {
   searchedFor: string;
   citedSections: string[];
   answer: string;
+  /** The answer as shown: runs of text and their citations. Absent in results saved before it was recorded. */
+  parts?: AnswerPart[];
   /** Gaps the answer named ("not found in the passages searched"). Absent in results saved before gaps existed. */
   gaps?: string[];
   trace: AskTrace;
@@ -223,6 +226,43 @@ function summarize(rows: Row[]) {
   };
 }
 
+/**
+ * How the answers read, beyond what they cite: answers whose first sentence is an uncited claim
+ * (shown grey, so the main answer looks unsupported), answers whose uncited text still talks about
+ * "the passages", first replies that said "not found" but ended answered after the gap re-search,
+ * and "not found" replies that got a second search. Needs saved parts; older runs have none.
+ */
+function readingChecks(rows: Row[]) {
+  const answered = rows.filter((r) => r.status === "answered" && r.parts);
+  const opensUncited = answered.filter((r) => {
+    const first = r.parts!.find((p) => p.text.trim() !== "");
+    if (!first || first.citations.length > 0) return false;
+    // The first sentence ends inside this part (otherwise it runs on into cited text). A lead-in ending ":" isn't a claim.
+    const end = /[.!?:](?=\s|$)|\n/.exec(first.text);
+    return end !== null && isUncitedClaim({ text: first.text.slice(0, end.index + 1), citations: [] });
+  }).length;
+  const aboutPassages = answered.filter((r) =>
+    r.parts!.some((p) => p.citations.length === 0 && /\b(?:passages?|excerpts?)\b/i.test(p.text)),
+  ).length;
+  const notCovered = rows.filter((r) => r.status === "not-covered");
+  const researched = notCovered.filter((r) => r.trace.research && r.trace.research.outcome !== "failed").length;
+  const firstNotFound = rows.filter((r) => r.trace.research?.first === "not-covered");
+  const recovered = firstNotFound.filter((r) => r.status === "answered").length;
+  return {
+    opensUncited: answered.length ? `${opensUncited}/${answered.length}` : "n/a",
+    aboutPassages: answered.length ? `${aboutPassages}/${answered.length}` : "n/a",
+    notCoveredSearchedAgain: `${researched}/${notCovered.length}`,
+    notFoundThenAnswered: `${recovered}/${firstNotFound.length}`,
+  };
+}
+
+function printReadingChecks(checks: ReturnType<typeof readingChecks>) {
+  console.log(`answers opening with an uncited claim:          ${checks.opensUncited}
+answers with uncited text about the passages:   ${checks.aboutPassages}
+first replies "not found", answered after re-search: ${checks.notFoundThenAnswered}
+"not found" replies that searched their gaps:   ${checks.notCoveredSearchedAgain}`);
+}
+
 function printSummary(summary: ReturnType<typeof summarize>) {
   console.log(`
 questions: expected section cited, no gaps:     ${summary.questions}
@@ -249,6 +289,7 @@ async function answerEval(questions: EvalQuestion[], set: string) {
       status: response.status,
       citedSections: citedSectionsOf(response),
       answer: answerText(response),
+      parts: response.status === "answered" ? response.parts : undefined,
       gaps: response.status === "answered" ? response.gaps : [],
     };
     const row: Row = { id, kind, outcome: grade(answered, expect), searchedFor: trace.searchedFor, ...answered, trace };
@@ -275,8 +316,10 @@ async function answerEval(questions: EvalQuestion[], set: string) {
 
   const summary = summarize(rows);
   printSummary(summary);
+  const checks = readingChecks(rows);
+  printReadingChecks(checks);
   console.log(`answers with any uncited text:                  ${answered.filter((r) => (r.trace.uncitedChars ?? 0) > 0).length}/${answered.length}
-gap re-search: ran / asked Claude again / answer replaced: ${rows.filter((r) => r.trace.research).length} / ${rows.filter((r) => ["used-second", "kept-first", "second-call-failed"].includes(r.trace.research?.outcome ?? "")).length} / ${rows.filter((r) => r.trace.research?.outcome === "used-second").length} of ${answered.length} answered
+gap re-search on answered questions: ran / asked Claude again / answer replaced: ${answered.filter((r) => r.trace.research).length} / ${answered.filter((r) => ["used-second", "kept-first", "second-call-failed"].includes(r.trace.research?.outcome ?? "")).length} / ${answered.filter((r) => r.trace.research?.outcome === "used-second").length} of ${answered.length}
 median time per question:                       ${(median(rows.map((r) => r.trace.ms.total)) / 1000).toFixed(1)}s
 answer-model cost for this run:                 $${cost.toFixed(3)} (${input} in / ${output} out tokens)`);
   // A run with errors (no key, rate limits, an outage) measures the setup, not the answers.
@@ -286,7 +329,7 @@ answer-model cost for this run:                 $${cost.toFixed(3)} (${input} in
     process.exitCode = 1;
     return;
   }
-  await saveResults(`answers-${set}`, { summary: { ...summary, cost }, rows });
+  await saveResults(`answers-${set}`, { summary: { ...summary, ...checks, cost }, rows });
 }
 
 /** Grade the saved answers for a set again with the current rules. No API calls; nothing is written. */
@@ -309,6 +352,7 @@ async function regrade(questions: EvalQuestion[], set: string) {
     printRow(regraded, question.reference, row.outcome);
   }
   printSummary(summarize(rows));
+  printReadingChecks(readingChecks(rows));
 }
 
 async function saveResults(name: string, data: unknown) {

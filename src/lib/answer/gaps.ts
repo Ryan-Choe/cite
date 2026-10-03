@@ -31,7 +31,7 @@ export function extractGapLines(text: string): { text: string; gaps: string[] } 
 const SOURCE = String.raw`\b(?:handbook|passages?|excerpts?)\b`;
 const BETWEEN = String.raw`(?:\s+(?!(?:says|states|notes|explains|adds|recommends)\b)[\w'’-]+){0,3}?`;
 const NOT = String.raw`(?:does\s+not|do\s+not|is\s+not|are\s+not|cannot|can\s+not|doesn['’]t|don['’]t|isn['’]t|aren['’]t|can['’]t|never)`;
-const VERB = String.raw`(?:say|state|mention|name|cover|describe|specify|address|list|give|include|explain|detail|discuss|provide|clarify|define|indicate)s?`;
+const VERB = String.raw`(?:say|state|mention|name|cover|describe|specify|address|list|give|include|explain|detail|discuss|provide|clarify|define|indicate|show|confirm|outline)s?`;
 const ABSENCE = String.raw`${SOURCE}${BETWEEN}\s+${NOT}(?:\s+[\w'’-]+){0,2}?\s+${VERB}\b`;
 // Other phrasings, each tied to the source or to Claude itself, so that handbook facts such as
 // "you don't need approval" never match.
@@ -57,24 +57,59 @@ export function findAbsenceClaims(text: string): string[] {
     .filter((sentence) => ABSENCE_ANY.test(sentence));
 }
 
+// Remarks about the passages themselves ("The passages only partly cover this.", "None of these
+// excerpts mention a cliff."): they describe what Claude was shown, not the handbook, and the gap
+// lines already say what's missing. The subject must be the passages, so handbook framing such as
+// "The handbook lists three steps:" stays.
+const PASSAGES = String.raw`(?:handbook\s+)?(?:provided\s+|available\s+)?(?:passages?|excerpts?)\b`;
+const SOURCE_REMARK = new RegExp(
+  String.raw`^(?:(?:the|these|those|my)\s+${PASSAGES}|(?:none|neither)\s+of\s+(?:the|these|those)\s+${PASSAGES}|nothing\s+(?:here|in\s+(?:the|these)\s+${PASSAGES})|there(?:['’]s|\s+is)\s+no\s+mention\b)`,
+  "i",
+);
+// A sentence that leans on one just removed ("They only describe how the comparison works.",
+// "What they do say is that …").
+const DANGLING = /^(?:(?:what|here['’]s\s+what)\s+)?(?:they|it|these|those)\b/i;
+// What an unfinished lead-in into the next (cited) run becomes when it has to go: the cited text
+// continues the sentence, so deleting the lead-in would leave it starting mid-sentence.
+const ATTRIBUTION = "The handbook says ";
+
 /**
- * Take the absence claims out of a run of answer text. Each claim goes with the break after it,
- * but any space before it stays, so the text around it doesn't run together.
+ * Take the absence claims, and remarks about the passages, out of a run of answer text. A sentence
+ * starting with a pronoun right after a removed one goes too, since it would make no sense alone.
+ * Each removed sentence goes with the break after it, but any space before it stays, so the text
+ * around it doesn't run together. When the text runs on into a cited run (`leadsIntoCitation`), an
+ * unfinished last piece ("It says ", "What they do say is that ") is the start of the cited sentence,
+ * so instead of going it becomes "The handbook says ". Only claims carry a topic worth searching
+ * for; remarks are dropped.
  */
-export function removeAbsenceClaims(text: string): { text: string; claims: string[] } {
+export function removeAbsenceClaims(
+  text: string,
+  leadsIntoCitation = false,
+): { text: string; claims: string[]; remarks: string[] } {
   const pieces = text.split(SENTENCE_BREAK);
   const claims: string[] = [];
+  const remarks: string[] = [];
   let rest = "";
+  let removedPrevious = false;
   for (let i = 0; i < pieces.length; i += 2) {
     const sentence = pieces[i];
-    if (sentence.trim() !== "" && ABSENCE_ANY.test(sentence)) {
-      claims.push(sentence.trim());
+    const trimmed = sentence.trim();
+    const claim = trimmed !== "" && ABSENCE_ANY.test(sentence);
+    const remark = !claim && trimmed !== "" && (SOURCE_REMARK.test(trimmed) || (removedPrevious && DANGLING.test(trimmed)));
+    if (claim) claims.push(trimmed);
+    if (remark) remarks.push(trimmed);
+    const unfinished = leadsIntoCitation && i === pieces.length - 1 && trimmed !== "" && !/[.!?:]$/.test(trimmed);
+    if ((claim || remark) && unfinished) {
+      rest += sentence.match(/^\s*/)![0] + ATTRIBUTION;
+    } else if (claim || remark) {
       rest += sentence.match(/^\s*/)![0];
+      removedPrevious = true;
     } else {
       rest += sentence + (pieces[i + 1] ?? "");
+      if (trimmed !== "") removedPrevious = false;
     }
   }
-  return { text: rest, claims };
+  return { text: rest, claims, remarks };
 }
 
 /**
@@ -88,6 +123,7 @@ export function absenceTopic(sentence: string): string {
   const topic = match ? sentence.slice(match.index + match[0].length) : sentence;
   return topic
     .replace(/(?:[,;]\s+|\s+)so\s+(?:I|you|it|they|there|this|that|we|one|no|nothing)\b.*$/i, "") // drop the conclusion drawn from the gap
+    .replace(/,?\s+but\s+(?:they|it|these|this|the\s+(?:handbook|passages?|excerpts?))\b.*$/i, "") // and what the source does say
     .replace(/[.!?]+$/, "")
     .trim();
 }
@@ -99,8 +135,28 @@ const VAGUE_WORDS = new Set(
     "includes include included more other else such").split(" "),
 );
 
+/** The words in a phrase that say something about its topic, lower-cased. */
+export function meaningfulWords(phrase: string): string[] {
+  return (phrase.toLowerCase().match(/[\p{L}\p{N}$]+/gu) ?? []).filter((word) => !VAGUE_WORDS.has(word));
+}
+
 /** Whether a phrase says enough to search for on its own: at least two meaningful words. */
 export function isSearchable(phrase: string): boolean {
-  const words = phrase.toLowerCase().match(/[\p{L}\p{N}$]+/gu) ?? [];
-  return words.filter((word) => !VAGUE_WORDS.has(word)).length >= 2;
+  return meaningfulWords(phrase).length >= 2;
+}
+
+/**
+ * The gaps to show, without repeats: a gap is dropped when all its meaningful words are in an
+ * earlier one, or an earlier one's are all in it ("vesting schedule" after "the vesting schedule
+ * for share options"). Gaps that differ in a meaningful word ("sick leave days" and "parental leave
+ * days") are both kept. The first wording is kept. For display only: every gap is searched.
+ */
+export function dedupeGaps(gaps: string[]): string[] {
+  const kept: { gap: string; words: Set<string> }[] = [];
+  const within = (a: Set<string>, b: Set<string>) => [...a].every((w) => b.has(w));
+  for (const gap of gaps) {
+    const words = new Set(meaningfulWords(gap));
+    if (!kept.some((k) => within(words, k.words) || within(k.words, words))) kept.push({ gap, words });
+  }
+  return kept.map((k) => k.gap);
 }
