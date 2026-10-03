@@ -17,19 +17,20 @@ Cite answers natural-language questions about a company handbook. Every answer i
 ## How a question is answered
 
 ```
-question ──► [rewrite follow-up] ──► hybrid search ──► Claude + citations ──► grounding gate ──► UI
-             Haiku 4.5, only if      BM25 + MiniLM,    Sonnet 5.5, top 8      no citations ⇒
-             there's history         fused with RRF    chunks as documents    "not covered"
+question ──► [rewrite follow-up] ──► hybrid search ──► Claude + citations ──► grounding gate ──► [gap re-search] ──► UI
+             Haiku 4.5, only if      BM25 + MiniLM,    Sonnet 5.5, top 8      no citations ⇒      search each gap; if new
+             there's history         fused with RRF    chunks as documents    "not found"         passages, answer again
 ```
 
 1. **Rewrite (multi-turn).** A follow-up such as "is that paid?" can't be searched on its own. When there is earlier conversation, Haiku 4.5 rewrites the question into a standalone one using the last 3 exchanges. The UI shows it as "Searched for: …". The first question skips this call.
-2. **Hybrid search.** Two rankings run over ~2,200 chunks:
+2. **Hybrid search.** Two rankings run over ~3,200 chunks:
    - Keyword search (BM25 via MiniSearch) catches exact terms like "Deel" or "PTO".
    - Semantic search (the MiniLM embedding model, run locally with transformers.js) catches paraphrases like "vacation" ↔ "time off".
    - They are merged with **weighted Reciprocal Rank Fusion**: `score = Σ weight/(60 + rank)`, with keyword search at weight 0.5. RRF uses only rank positions, so the two incompatible score scales never need rescaling. The half weight came from the eval: employees paraphrase, and on paraphrased questions keyword search mostly matches common words.
-3. **Answer with citations.** The top 8 chunks go to Sonnet 5.5 as document blocks with Anthropic's **citations** feature enabled, one block per page. The API guarantees each `cited_text` is copied verbatim from a block, and the block tells us the exact page. The model sees only the standalone question and the chunks, never the raw chat history, so everything it says traces back to the handbook.
-4. **Grounding gate.** Code maps each citation to its section and page. **An answer with no citations is never presented as grounded.** It is shown as "Not covered in the handbook", with the closest sections listed.
-5. **Display.** The UI shows progress steps, then the finished, already-gated answer. No streaming: the gate needs the complete response, and we never show an answer we haven't checked.
+3. **Answer with citations.** The top 8 chunks go to Sonnet 5.5 as document blocks with Anthropic's **citations** feature enabled, one block per paragraph. The API guarantees each `cited_text` is copied verbatim from a block, and the block tells us the exact page. The model sees only the standalone question and the chunks, never the raw chat history. Each citation's quote is checked verbatim against the text we sent; the sentence it supports is the model's own wording. Uncited text (framing, the odd summary) is shown grey and dotted, so it reads as unverified.
+4. **Grounding gate.** Code maps each citation to its section and page. **An answer with no citations is never presented as grounded.** It is shown as "Not found in the passages searched", with the closest sections listed and a note that the handbook may still cover it.
+5. **Gaps, not absence claims.** The model sees 8 chunks, so "the handbook doesn't say X" is a claim it can't check, and in the eval it was sometimes false: search had missed the passage that says X. The prompt forbids such claims and conclusions drawn from silence; the model lists each unanswered part as a `GAP: <search phrase>` line instead, and an uncited absence claim that slips through is taken out of the answer and its topic listed as a gap. The pipeline searches each gap (and any absence claim that slips through, by its topic) and, if that finds chunks the model hasn't seen, asks again with up to 8 more. Remaining gaps are shown as "Not found in the passages searched", with a note that the handbook may still cover them.
+6. **Display.** The UI shows progress steps, then the finished, already-gated answer. No streaming: the gate needs the complete response, and we never show an answer we haven't checked.
 
 ## Key decisions
 
@@ -55,30 +56,32 @@ question ──► [rewrite follow-up] ──► hybrid search ──► Claude 
 
 ## Product behavior
 
-- **Not covered:** a distinct card with the closest sections. The app never falls back to general knowledge.
+- **Not covered:** a distinct card, "Not found in the passages searched", with the closest sections and a note that the handbook may still cover it. The app never falls back to general knowledge.
+- **Gaps:** what the passages didn't answer is listed under the answer as "Not found in the passages searched", never stated as a fact about the handbook.
 - **Citations:** numbered markers like [1] in the answer; cards showing section · page, an expandable exact quote, and **Open page ↗**, which opens `/handbook.pdf#page=N` in a new tab.
 - **Missing API key:** the page still loads, with a setup banner. `.env.example` is committed.
-- **API errors:** plain-English messages and a Retry button. The SDK also retries twice on its own.
-- **Limits:** input ≤ ~500 characters, and `max_tokens` capped so cost is bounded.
+- **API errors:** plain-English messages and a Retry button. The SDK also retries twice on its own. If the search index or the embedding model fails to load, the question gets an error message instead of a crash, and the next question tries loading again.
+- **Limits:** the question and each of at most 3 earlier questions ≤ 500 characters, the request body ≤ 16,000 characters, `max_tokens` capped, and at most two answer calls per question, so cost per question is bounded.
+- **Who can ask:** the server listens on 127.0.0.1, and `/api/ask` answers only JSON requests whose Host and Origin are local, so other machines, other websites and DNS rebinding can't spend the owner's API credit.
 - **Logging:** each request logs the rewritten query, retrieved chunk IDs, per-step timings and token usage.
 
 ## Evaluation
 
 Two blind sets, written by separate agents that never saw the app's search, from sections drawn by a seeded shuffle:
 - **Set A** (`eval/questions.json`, 13 questions + 3 follow-ups): used for tuning.
-- **Set B** (`eval/holdout.json`, 12 questions + 2 follow-ups): written after tuning and run once.
+- **Set B** (`eval/holdout.json`, 12 questions + 2 follow-ups): written after tuning and run once. The gap re-search was later designed after reading its failures, so its second run is not held out.
 
 Ground truth comes from grep over the parsed text. Results and findings are in the README's Evaluation section.
 
 - **Retrieval check** (no API cost): is the expected section in the top 8? Reported as hit@8.
-- **Answer check** (calls Claude): answerable questions and follow-ups must cite an expected section. Out-of-scope questions pass if declined; a partial answer is scored "review", and a person checks that it names the gap and invents nothing.
-- No LLM judge. The checks are deterministic pass/fail, and a person reads the answers.
+- **Answer check** (calls Claude): answerable questions and follow-ups must cite an expected section and name no gaps. An answer that names a gap is scored "review", because the gap may be false; a person compares it with the reference answer, which is printed next to it. Out-of-scope questions pass if declined; a partial answer is scored "review", and a person checks that it names the gap and invents nothing.
+- No LLM judge in the eval. The checks are deterministic, every answer is printed for a person to read, and `--regrade` applies the current rules to saved answers without API calls. Separately, the saved answers were re-graded once against the reference answers by two Claude agents working blind (`eval/results/regrade-blind.json`); that is how the false "the handbook doesn't say" answers were found.
 
 ## Assumptions
 
 - The handbook PDF is the source of truth, not the live posthog.com site, which has likely changed since the print date.
 - Handbook content is trusted. There are no defenses against prompt-injection text inside the document.
-- Single user, local machine. No auth and no persistence.
+- Single user, local machine. No auth and no persistence; the server only listens on, and only answers, this machine.
 
 ## Code layout
 
@@ -97,9 +100,10 @@ src/lib/search/search.ts         BM25 + semantic retrieval, fused
 src/lib/answer/prompt.ts         system prompt; chunks → citable documents (one block per paragraph)
 src/lib/answer/claude.ts         Claude call (citations, effort, fallbacks), errors → plain English
 src/lib/answer/rewrite.ts        follow-up → standalone question (Haiku)
-src/lib/answer/grounding.ts      citation → section/page/quote, verified; no citations ⇒ not covered
-src/lib/answer/pipeline.ts       rewrite → search → answer → gate (shared by the route and the eval)
-src/app/api/ask/route.ts         HTTP: validation, status codes, one log line per request
+src/lib/answer/gaps.ts           "GAP:" lines and "the handbook doesn't say" claims → search phrases
+src/lib/answer/grounding.ts      citation → section/page/quote, verified; no citations ⇒ not covered; gaps split out
+src/lib/answer/pipeline.ts       rewrite → search → answer → gate → gap re-search (shared by the route and the eval)
+src/app/api/ask/route.ts         HTTP: local callers only, validation, status codes, one log line per request
 src/app/chat.tsx                 chat UI
 ```
 

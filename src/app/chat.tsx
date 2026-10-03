@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import { MAX_QUESTION_CHARS, type AskResponse, type AskResult, type Citation } from "@/lib/answer/types";
+import { MAX_HISTORY, MAX_QUESTION_CHARS, type AskResponse, type AskResult, type Citation } from "@/lib/answer/types";
+import { isUncitedClaim } from "@/lib/answer/uncited";
 
 const EXAMPLE_QUESTIONS = [
   "How much time off should I take each year?",
@@ -9,7 +10,6 @@ const EXAMPLE_QUESTIONS = [
   "How do I raise a grievance?",
   "What is a small team at PostHog?",
 ];
-const HISTORY_SENT = 3; // earlier exchanges sent along, for rewriting follow-ups
 
 interface Exchange {
   id: number;
@@ -30,7 +30,7 @@ export function Chat({ apiKeyConfigured }: { apiKeyConfigured: boolean }) {
 
   async function ask(question: string, replaceId?: number) {
     const id = replaceId ?? nextId.current++;
-    const earlier = exchanges.filter((e) => e.id !== id && isResult(e.response)).slice(-HISTORY_SENT);
+    const earlier = exchanges.filter((e) => e.id !== id && isResult(e.response)).slice(-MAX_HISTORY);
     const history = earlier.map((e) => ({ question: e.question, searchedFor: (e.response as AskResult).searchedFor }));
 
     setExchanges((list) =>
@@ -184,9 +184,10 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
     return (
       <div className="space-y-2">
         <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-          <p className="font-medium">Not covered in the handbook</p>
+          <p className="font-medium">Not found in the passages searched</p>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            I couldn&apos;t find an answer to this in the handbook, so I won&apos;t guess. These sections looked closest:
+            Search didn&apos;t find a passage that answers this, so I won&apos;t guess. The handbook may still cover it; these
+            sections looked closest:
           </p>
           <ul className="mt-2 space-y-1 text-sm">
             {response.closest.map((section) => (
@@ -202,6 +203,7 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
   }
 
   const cardId = (n: number) => `cite-${exchange.id}-${n}`;
+  const hasUncited = response.parts.some(isUncitedClaim);
   return (
     <div className="space-y-3">
       <p className="whitespace-pre-wrap leading-relaxed">
@@ -211,7 +213,17 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
           const trailing = part.text.slice(text.length);
           return (
             <span key={i}>
-              {text}
+              {isUncitedClaim(part) ? (
+                <span
+                  title="Not backed by a citation"
+                  className="text-zinc-500 underline decoration-zinc-400 decoration-dotted underline-offset-4 dark:text-zinc-400 dark:decoration-zinc-500"
+                >
+                  {text}
+                  <span className="sr-only"> (not cited)</span>
+                </span>
+              ) : (
+                text
+              )}
               {part.citations.map((n) => (
                 <a
                   key={n}
@@ -227,6 +239,23 @@ function Reply({ exchange, onRetry }: { exchange: Exchange; onRetry: () => void 
           );
         })}
       </p>
+      {hasUncited && (
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">Grey, dotted text isn&apos;t backed by a citation; check it against the handbook.</p>
+      )}
+      {response.gaps.length > 0 && (
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
+          <p className="font-medium">Not found in the passages searched</p>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5">
+            {response.gaps.map((gap) => (
+              <li key={gap}>{gap}</li>
+            ))}
+          </ul>
+          <p className="mt-2">
+            Search only reads part of the handbook, so it may still cover this. To be sure, search the{" "}
+            <PageLink page={1}>handbook PDF</PageLink>.
+          </p>
+        </div>
+      )}
       <ol className="space-y-1.5">
         {response.citations.map((c, i) => (
           <CitationCard
@@ -288,14 +317,38 @@ function isResult(response: AskResponse | "pending"): response is AskResult {
 }
 
 async function postQuestion(question: string, history: { question: string; searchedFor: string }[]): Promise<AskResponse> {
+  let res: Response;
   try {
-    const res = await fetch("/api/ask", {
+    res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question, history }),
     });
-    return (await res.json()) as AskResponse;
   } catch {
     return { status: "error", code: "unavailable", message: "Couldn't reach the Cite server. Is `npm run dev` running?", retryable: true };
+  }
+  // The server answered; if it isn't an AskResponse, it crashed before it could build one.
+  const body: unknown = await res.json().catch(() => null);
+  if (isAskResponse(body)) return body;
+  return {
+    status: "error",
+    code: "unavailable",
+    message: `The Cite server hit an error (HTTP ${res.status}). The details are in the terminal running it.`,
+    retryable: true,
+  };
+}
+
+function isAskResponse(body: unknown): body is AskResponse {
+  if (typeof body !== "object" || body === null) return false;
+  const response = body as Partial<Record<string, unknown>>;
+  switch (response.status) {
+    case "answered":
+      return Array.isArray(response.parts) && Array.isArray(response.citations) && Array.isArray(response.gaps);
+    case "not-covered":
+      return Array.isArray(response.closest);
+    case "error":
+      return typeof response.message === "string";
+    default:
+      return false;
   }
 }

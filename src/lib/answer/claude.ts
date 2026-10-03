@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "./prompt";
-import type { AskError } from "./types";
+import { askError as fail, type AskError } from "./types";
 
 /** Overridable in .env.local. Designed for the Sonnet / Opus family (effort + fallbacks). */
 export const ANSWER_MODEL = process.env.CITE_ANSWER_MODEL || "claude-sonnet-5-5";
@@ -24,20 +24,25 @@ export function hasApiKey(): boolean {
  * - effort "low": a handbook lookup is a short, chat-style task, and lower effort is faster.
  * - fallbacks "default": if a safety classifier declines the request, the API retries it on
  *   Anthropic's recommended fallback model instead of returning a refusal.
+ * - options: per-request overrides of the client's retries and timeout (e.g. for an optional call).
  */
 export async function answerWithCitations(
   question: string,
   documents: Anthropic.Beta.BetaRequestDocumentBlock[],
+  options?: { maxRetries?: number; timeout?: number },
 ): Promise<Anthropic.Beta.BetaMessage> {
-  return getClient().beta.messages.create({
-    model: ANSWER_MODEL,
-    max_tokens: ANSWER_MAX_TOKENS,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    output_config: { effort: "low" },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: [...documents, { type: "text", text: question }] }],
-  });
+  return getClient().beta.messages.create(
+    {
+      model: ANSWER_MODEL,
+      max_tokens: ANSWER_MAX_TOKENS,
+      betas: ["server-side-fallback-2026-07-01"],
+      fallbacks: "default",
+      output_config: { effort: "low" },
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: [...documents, { type: "text", text: question }] }],
+    },
+    options,
+  );
 }
 
 /** Turn an API failure into a message the user can act on. Most specific error class first. */
@@ -61,8 +66,4 @@ export function toAskError(error: unknown): AskError {
     return fail("unavailable", "The Anthropic API had a problem — try again.", true);
   }
   return fail("unavailable", "Something went wrong while answering. The details are in the server log.", false);
-}
-
-function fail(code: AskError["code"], message: string, retryable: boolean): AskError {
-  return { status: "error", code, message, retryable };
 }

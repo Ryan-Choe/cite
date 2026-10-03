@@ -1,22 +1,25 @@
 {
   "summary": {
     "questions": "8/10",
-    "followUps": "3/3",
-    "outOfScopeDeclined": "2/3",
-    "outOfScopeReview": "1/3",
-    "cost": 0.16049
+    "questionsReview": "0/10",
+    "followUps": "2/3",
+    "followUpsReview": "1/3",
+    "outOfScopeDeclined": "1/3",
+    "outOfScopeReview": "2/3",
+    "cost": 0.236728
   },
   "rows": [
     {
       "id": "freelance-work-allowed",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "can I do some paid freelance work outside my job here?",
+      "status": "answered",
       "citedSections": [
         "people/side-gigs"
       ],
-      "answer": "Yes, within limits. PostHog is ok with you earning money on the side, which is why they're called \"side gigs\", but it is not ok with a side gig being your main focus and PostHog being just a paycheck.[1] The handbook says the company is too small for PostHog not to be your main motivation.[1]\n\nOn intellectual property:\n- PostHog won't try to claim ownership of IP you create in your personal time.[2]\n- You must be careful not to introduce any of PostHog's non-open source IP into any project you work on, as this can cause serious legal headaches.[2]\n- As a rule, anything from PostHog that is explicitly MIT-licensed is fine to use, and anything else is not.[2]\n\nThe handbook passages I have don't say whether you need approval or must disclose a side gig, so they don't cover that.",
+      "answer": "Yes, within limits. PostHog is ok with you earning money on the side, but not with it being your main focus.[1] A few hours a month on a paid side gig is acceptable, and side gigs should by default be something you work on in your personal time and should not impact your work at PostHog.[2]\n\nOther points from the handbook:\n- Check in with the relevant Exec team member for your team (i.e. James, Tim, or Charles) to get their confirmation before going ahead with any side gig.[3]\n- PostHog currently doesn't offer part time work as an option.[1]\n- PostHog won't claim ownership of IP you create in your personal time, but you must not introduce any of PostHog's non-open source IP into your work. Anything explicitly MIT-licensed from PostHog is fine to use; anything else is not.[4]\n- Anything that comes out of your work at PostHog, such as hackathons, offsites, team projects or internal experiments, is treated as PostHog work by default.[5] To develop such an idea as an external side project, get explicit sign-off first.[6]\n- If you want a side gig to become your full-time work one day, let PostHog know so they can create a plan.[7]",
+      "gaps": [],
       "trace": {
         "question": "can I do some paid freelance work outside my job here?",
         "searchedFor": "can I do some paid freelance work outside my job here?",
@@ -32,30 +35,49 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 3480,
-          "search": 479,
-          "answer": 3000
+          "total": 6954,
+          "search": 15,
+          "answer": 3320,
+          "research": 36,
+          "reanswer": 3345
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3274,
-          "output": 341
+          "input": 9079,
+          "output": 810
         },
-        "citations": 2,
+        "research": {
+          "queries": [
+            "approval or disclosure process for side gigs or freelance work"
+          ],
+          "added": [
+            "contents/handbook/growth/sales/contracts.md#21",
+            "contents/handbook/people/side-gigs.md#3",
+            "contents/handbook/people/side-gigs.md#5",
+            "contents/handbook/people/side-gigs.md#1",
+            "contents/handbook/growth/sales/running-trials.md#8",
+            "contents/handbook/content/index.md#5",
+            "contents/handbook/marketing/customer-case-studies.md#6"
+          ],
+          "outcome": "used-second"
+        },
+        "citations": 7,
         "droppedCitations": 0,
-        "uncitedChars": 131
+        "uncitedChars": 41,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "freelance-work-allowed → follow-up",
       "kind": "follow-up",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "Do I need to run paid freelance work outside my job at PostHog by anyone first?",
+      "status": "answered",
       "citedSections": [
         "people/side-gigs"
       ],
-      "answer": "The passages don't say that you need approval for paid side work in general. They say only that PostHog is ok with you earning money on the side[1], and that side gigs may sometimes earn you money[2]. The handbook also says PostHog doesn't want the side work to become your main focus, and that PostHog being just a paycheck[1] isn't acceptable.\n\nSome cases do need a conversation or sign-off:\n- If the idea came out of your PostHog work (hackathons, offsites, team projects, internal experiments), it should be treated as PostHog work by default[3]. To develop it as a personal or external project, please get explicit sign-off first[4].\n- If you're worried about any of this, especially if the work directly competes with something PostHog has built or is on our roadmap[5], the handbook says to talk to Fraser[5].\n\nAlso, PostHog won't try to claim ownership of any IP you create in your personal time[6]. But you must not bring PostHog's non-open source IP into that work. Anything explicitly MIT-licensed is fine to use, anything else is not.[6]\n\nThe passages don't describe a formal approval process for freelance work that is unrelated to PostHog.",
+      "answer": "Yes. The handbook asks you to check in with the relevant Exec team member for your team (James, Tim, or Charles) and get their confirmation before going ahead with any side gigs.[1] If your side gig existed before you joined PostHog, this will usually be covered as part of the onboarding process.[2]\n\nA few related points on paid side gigs:\n- A few hours a month on a paid side gig is acceptable, and side gigs should by default be something you work on in your personal time that doesn't impact your work at PostHog.[3]\n- If the project grew out of an idea that started at PostHog, you should get explicit sign-off first.[4]",
+      "gaps": [],
       "trace": {
         "question": "do I need to run it by anyone first?",
         "searchedFor": "Do I need to run paid freelance work outside my job at PostHog by anyone first?",
@@ -71,29 +93,50 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 4518,
-          "rewrite": 665,
-          "search": 33,
-          "answer": 3819
+          "total": 6266,
+          "rewrite": 714,
+          "search": 54,
+          "answer": 3064,
+          "research": 61,
+          "reanswer": 2368
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3578,
-          "output": 522
+          "input": 10411,
+          "output": 679
         },
-        "citations": 6,
+        "research": {
+          "queries": [
+            "paid freelance work needs approval",
+            "approval or notification process for paid freelance side gigs"
+          ],
+          "added": [
+            "contents/handbook/growth/sales/how-we-work.md#11",
+            "contents/handbook/growth/sales/billing.md#18",
+            "contents/handbook/people/side-gigs.md#5",
+            "contents/handbook/growth/sales/how-we-work.md#13",
+            "contents/handbook/people/side-gigs.md#1",
+            "contents/handbook/content/index.md#5",
+            "contents/handbook/growth/sales/professional-services.md#1",
+            "contents/handbook/growth/sales/crm.md#28"
+          ],
+          "outcome": "used-second"
+        },
+        "citations": 4,
         "droppedCitations": 0,
-        "uncitedChars": 545
+        "uncitedChars": 34,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "who-founded-posthog",
       "kind": "question",
       "outcome": "fail",
-      "status": "not-covered",
       "searchedFor": "who started posthog and when?",
+      "status": "not-covered",
       "citedSections": [],
       "answer": "",
+      "gaps": [],
       "trace": {
         "question": "who started posthog and when?",
         "searchedFor": "who started posthog and when?",
@@ -109,31 +152,33 @@
         ],
         "status": "not-covered",
         "ms": {
-          "total": 1184,
-          "search": 33,
-          "answer": 1151
+          "total": 1237,
+          "search": 41,
+          "answer": 1195
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 2484,
+          "input": 2616,
           "output": 10
         },
         "droppedCitations": 0,
         "uncitedChars": 10,
-        "notCoveredReason": "model-said-not-covered"
+        "notCoveredReason": "model-said-not-covered",
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "contract-feature-deadline",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "a big prospect wants a feature promised by Q3 written into their contract - is that ok?",
+      "status": "answered",
       "citedSections": [
         "how-we-make-money",
         "growth/sales/overview"
       ],
-      "answer": "No. The handbook says PostHog doesn't contract deliverables, and especially doesn't contract to provide deliverables by a certain date, because on principle a single customer would be forcing it to build something.[1] Another stated reason is that otherwise a single customer could have too much of an impact on team morale and priorities.[2]\n\nSome related points:\n- If PostHog has to walk away from a deal because it would have to compromise on these principles, it will.[3]\n- PostHog will build things for a big customer as long as it is confident they won't be the only user of that thing, and re-shuffling the roadmap a bit could make sense.[4]\n- Customers need to try PostHog before they expect changes.[5]",
+      "answer": "No. The handbook says PostHog doesn't contract deliverables, and especially doesn't contract to provide deliverables by a certain date, because on principle a single customer would be forcing the company to build something.[1] Another passage gives the reason as a single customer could otherwise have too much of an impact on team morale and priorities.[2]\n\nSome related points:\n- If PostHog has to walk away from a deal because it would have to compromise on these principles, it will.[3]\n- PostHog will build things for a big customer as long as it is confident they won't be the only user of that thing, and re-shuffling the roadmap a bit could make sense.[4]\n- Customers need to try PostHog before they expect changes.[5]",
+      "gaps": [],
       "trace": {
         "question": "a big prospect wants a feature promised by Q3 written into their contract - is that ok?",
         "searchedFor": "a big prospect wants a feature promised by Q3 written into their contract - is that ok?",
@@ -149,30 +194,32 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 2818,
-          "search": 18,
-          "answer": 2799
+          "total": 2668,
+          "search": 16,
+          "answer": 2651
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 4094,
-          "output": 302
+          "input": 4226,
+          "output": 305
         },
         "citations": 5,
         "droppedCitations": 0,
-        "uncitedChars": 59
+        "uncitedChars": 64,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "hogpatch-founder-access",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "how does a YC founder get a desk at Hogpatch?",
+      "status": "answered",
       "citedSections": [
         "people/hogpatch"
       ],
-      "answer": "A YC founder can't apply for Hogpatch. It's invite-only and isn't open to the whole batch, and when space opens up, PostHog handpicks a few YC companies to join.[1] There is a waitlist, but you can't apply, because founders are handpicked when there's room.[2]\n\nOnce invited:\n- Judy, the office manager, sends you and your cofounders a digital wallet pass that gives 24/7 self-service access, with no check-in or reservations needed.[3]\n- There's no desk booking system, so you just grab a spot (desk or phone booth) when you arrive.[4]\n- Each invite lasts 3 months.[5]",
+      "answer": "A YC founder can't apply for Hogpatch. It is invite-only and isn't open to the whole batch; when space opens up, PostHog handpicks a few YC companies to join.[1] There is a waitlist, but you can't apply, since founders are handpicked when there's room.[2]\n\nOnce invited:\n- The office manager, Judy, sends you and your cofounders a digital wallet pass, which gives 24/7 self-service access.[3]\n- There's no booking system for desks and phone booths; you just grab a spot when you arrive.[4]\n- Each invite lasts 3 months.[5]",
+      "gaps": [],
       "trace": {
         "question": "how does a YC founder get a desk at Hogpatch?",
         "searchedFor": "how does a YC founder get a desk at Hogpatch?",
@@ -188,30 +235,32 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 2882,
-          "search": 28,
-          "answer": 2848
+          "total": 2468,
+          "search": 40,
+          "answer": 2427
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3157,
-          "output": 291
+          "input": 3289,
+          "output": 275
         },
         "citations": 5,
         "droppedCitations": 0,
-        "uncitedChars": 41
+        "uncitedChars": 41,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "logs-data-loss-cause",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "why did US customers lose their older Logs data in February?",
+      "status": "answered",
       "citedSections": [
         "company/post-mortems/2026-02-20-posthog-us-logs-data-loss"
       ],
-      "answer": "A routine mutation to materialize an index triggered a bug in ClickHouse's zero-copy replication, which caused one replica to erroneously believe all of the data parts in the database were no longer referenced.[1] The replicas then spent roughly 11:02–19:40 on Feb 19 deleting all of the data stored in S3 for the entire database.[2]\n\nWhy it went unnoticed and was unrecoverable:\n- Data only moves to S3 after 24 hours and most queries are for recent data, so query errors were low and no automated alarms fired.[2]\n- There was no monitoring of the integrity of \"cold\" data in S3, since alerts focused on ingestion lag, query latency, and error rates on active queries.[3]\n- Durability relied solely on database replication with shared storage, and S3 Versioning was not enabled, which would have allowed the deleted files to be \"undeleted\".[4]\n\nContributing factor: experimental configurations (Zero Copy Replication) intended for MVP/Alpha stages were allowed to persist into production.[5]\n\nThe loss was discovered when a node crashed and restarted on Feb 19 at 19:40 and failed to start because of the large volume of missing data.[6] Kafka's 3 days of retention saved recent data from total loss.[7]",
+      "answer": "The loss came from a bug in ClickHouse's zero-copy replication, which was triggered by a routine mutation. A routine mutation was run at 10:54 on Feb 19 to materialize an index, and when it finished it triggered a bug in ClickHouse's zero-copy replication. That caused one of the replicas to erroneously believe all of the data parts in the database were no longer referenced.[1]\n\n- From 11:02 to 19:40, the replicas deleted all of the data stored in S3 for the entire database.[2]\n- The deletion happened silently in the background without application-level errors, and the team lacked monitoring for the integrity of \"cold\" data in S3.[3] Data only moves to S3 after 24 hours, and most queries are for recent data, so the volume of query errors was low and no automated alarms fired.[2]\n- The problem surfaced when a node crashed and restarted at 19:40 and couldn't start up because of the missing data.[4]\n- Contributing factors: experimental configurations (Zero Copy Replication) intended for MVP/Alpha stages were allowed to persist into production.[5] Relying solely on database replication for durability created a single point of failure, and S3 Versioning wasn't enabled, which would have allowed the deleted files to be \"undeleted\".[6]\n\nThe result was loss of Logs data collected more than 3 days ago in the US region.[7] Kafka's 3 days of retention saved recent activity from total loss.[8]",
+      "gaps": [],
       "trace": {
         "question": "why did US customers lose their older Logs data in February?",
         "searchedFor": "why did US customers lose their older Logs data in February?",
@@ -227,72 +276,92 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 4016,
-          "search": 94,
-          "answer": 3922
+          "total": 4192,
+          "search": 17,
+          "answer": 4175
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3383,
-          "output": 545
+          "input": 3515,
+          "output": 623
         },
-        "citations": 7,
+        "citations": 8,
         "droppedCitations": 0,
-        "uncitedChars": 79
+        "uncitedChars": 86,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "logs-data-loss-cause → follow-up",
       "kind": "follow-up",
-      "outcome": "pass",
+      "outcome": "review",
+      "searchedFor": "Did PostHog recover any of the US customers' older Logs data that was lost in February?",
       "status": "answered",
-      "searchedFor": "Did PostHog recover any of the older Logs data that US customers lost in February?",
       "citedSections": [
         "company/post-mortems/2026-02-20-posthog-us-logs-data-loss"
       ],
-      "answer": "The handbook doesn't say that the older data was recovered. It says the incident caused the loss of data collected more than 3 days ago in our US region[1].\n\nThe recovery it does describe is limited to the last 3 days of data, which came from Kafka:\n- The decision was made to cut over to a new table and restore data from Kafka, where there are 3 days of retention.[2]\n- By 23:00 on Feb 19, they had switched over to the new table and caught up on recent messages.[3]\n- The backfill from Kafka history began on Feb 20 at 10:05 and completed at 12:21.[4]\n\nThe passages don't mention any recovery of data older than that Kafka retention window.",
+      "answer": "The handbook doesn't show that the older data was recovered. It only describes a recovery of the most recent 3 days from Kafka.\n\n- The incident caused the loss of data collected more than 3 days ago in the US region.[1]\n- By 21:45 on Feb 19, it was determined that the data was most likely unrecoverable, and disaster recovery procedures started.[2]\n- The team decided to cut over to a new table and restore data from Kafka, which had 3 days of retention.[3] The backfill from Kafka history began Feb 20 at 10:05 and completed at 12:21.[4]\n- The Kafka 3-day retention saved them from total data loss for recent activity.[5]",
+      "gaps": [
+        "whether any Logs data older than 3 days was recovered from another source"
+      ],
       "trace": {
         "question": "did we get any of it back?",
-        "searchedFor": "Did PostHog recover any of the older Logs data that US customers lost in February?",
+        "searchedFor": "Did PostHog recover any of the US customers' older Logs data that was lost in February?",
         "retrieved": [
           "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#0",
           "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#1",
           "contents/handbook/company/post-mortems/index.md#2",
           "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#4",
-          "contents/handbook/growth/use-case-selling/customer-experience.md#1",
           "contents/handbook/growth/use-case-selling/observability.md#3",
           "contents/handbook/company/security.md#6",
+          "contents/handbook/growth/use-case-selling/customer-experience.md#1",
           "contents/handbook/growth/use-case-selling/data-infrastructure.md#6"
         ],
         "status": "answered",
         "ms": {
-          "total": 3294,
-          "rewrite": 861,
-          "search": 55,
-          "answer": 2374
+          "total": 6654,
+          "rewrite": 688,
+          "search": 44,
+          "answer": 2753,
+          "research": 21,
+          "reanswer": 3147
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3616,
-          "output": 287
+          "input": 8883,
+          "output": 660
         },
-        "citations": 4,
+        "research": {
+          "queries": [
+            "whether any Logs data older than 3 days was recovered by other means"
+          ],
+          "added": [
+            "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#6",
+            "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#9",
+            "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#7",
+            "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#3",
+            "contents/handbook/company/post-mortems/2026-02-20-posthog-us-logs-data-loss.md#2"
+          ],
+          "outcome": "used-second"
+        },
+        "citations": 5,
         "droppedCitations": 0,
-        "uncitedChars": 209
+        "uncitedChars": 102,
+        "gaps": 1,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "product-intent-timing",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "we're launching a beta soon - when do we need to start tracking which users are interested in our product?",
+      "status": "answered",
       "citedSections": [
         "growth/growth-engineering/product-intents",
-        "engineering/posthog-com/developing-the-website",
-        "product/releasing-new-products-and-features"
+        "engineering/posthog-com/developing-the-website"
       ],
-      "answer": "You should start tracking product intents as soon as your product is in any sort of public beta. The handbook says this is not so you can hyper-focus on activation numbers at this stage, but so you can start collecting data for when you later need to determine a good activation metric.[1] Collecting product intents should be a precursor to any sort of public release.[2]\n\nFor the website side, if you want to start tracking interest for a new product, you'll need to add a new entry to PRODUCT_SLUGS in src/lib/productInterest.ts.[3]\n\nThe handbook also notes that users who registered interest during the Concept stage can opt in to enable the feature once you move the item to beta, and subscribed users are automatically notified when the stage changes.[4]",
+      "answer": "You should start tracking product intents as soon as your product is in any sort of public beta. As soon as your product is in any sort of public beta you should start tracking product intents.[1] The reason isn't to hyper-focus on activation numbers at this stage, but to start collecting data for when you later want to determine a good activation metric.[1] Collecting product intents should be a precursor to any sort of public release.[2]\n\nIf you want to track interest for a new product on the website, you'll need to add a new entry to PRODUCT_SLUGS in src/lib/productInterest.ts[3].",
+      "gaps": [],
       "trace": {
         "question": "we're launching a beta soon - when do we need to start tracking which users are interested in our product?",
         "searchedFor": "we're launching a beta soon - when do we need to start tracking which users are interested in our product?",
@@ -308,31 +377,33 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 2839,
-          "search": 30,
-          "answer": 2809
+          "total": 2316,
+          "search": 57,
+          "answer": 2259
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3909,
-          "output": 294
+          "input": 4041,
+          "output": 248
         },
-        "citations": 4,
+        "citations": 3,
         "droppedCitations": 0,
-        "uncitedChars": 119
+        "uncitedChars": 128,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "onsite-visit-threshold",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "which of my accounts are big enough to be worth visiting in person?",
+      "status": "answered",
       "citedSections": [
         "growth/sales/customer-onsites",
         "growth/sales/expansion-and-retention"
       ],
-      "answer": "The handbook gives two thresholds, and they differ slightly.\n\n- In-person visits work best for accounts paying or likely to pay $50k+/year where you've identified specific opportunities for expansion, are navigating renewal conversations, or need to overcome significant technical or organizational hurdles.[1]\n- Generally you should be trying to regularly see customers in your book of business who are $100k+ annually, or could get there.[2]\n\nOn cadence, you should match the cadence of in-person meetings to the size of the contract (more regular for Very Large, less regular for Large).[3]\n\nThe handbook doesn't say how to reconcile the $50k and $100k figures, and it can't tell me which specific accounts in your book meet them. Your intuition and experience should ultimately guide the who, what and how of in-person meetings.[4]",
+      "answer": "The handbook gives two thresholds, so which accounts qualify depends on the context:\n\n- In-person visits work best for accounts paying or likely to pay $50k+/year where you've identified specific expansion opportunities, are navigating renewal conversations, or need to overcome significant technical or organizational hurdles.[1]\n- Generally, you should be trying to regularly see customers in your book of business who are $100k+ annually, or could get there.[2]\n- You should match the cadence of in-person meetings to the size of the contract: more regular for Very Large, less regular for Large.[3]\n\nVisits are a high-effort, high-reward play, so use them strategically.[1] Your intuition and experience should ultimately guide who you meet in person.[4]",
+      "gaps": [],
       "trace": {
         "question": "which of my accounts are big enough to be worth visiting in person?",
         "searchedFor": "which of my accounts are big enough to be worth visiting in person?",
@@ -348,28 +419,30 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 2782,
-          "search": 43,
-          "answer": 2739
+          "total": 2487,
+          "search": 42,
+          "answer": 2445
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 4178,
-          "output": 328
+          "input": 4310,
+          "output": 319
         },
         "citations": 4,
         "droppedCitations": 0,
-        "uncitedChars": 167
+        "uncitedChars": 70,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "meetup-sponsorship-amount",
       "kind": "question",
       "outcome": "fail",
-      "status": "not-covered",
       "searchedFor": "a customer is organizing a dev meetup and asked us for money - how much do we usually chip in?",
+      "status": "not-covered",
       "citedSections": [],
       "answer": "",
+      "gaps": [],
       "trace": {
         "question": "a customer is organizing a dev meetup and asked us for money - how much do we usually chip in?",
         "searchedFor": "a customer is organizing a dev meetup and asked us for money - how much do we usually chip in?",
@@ -385,31 +458,33 @@
         ],
         "status": "not-covered",
         "ms": {
-          "total": 816,
-          "search": 21,
-          "answer": 795
+          "total": 1230,
+          "search": 26,
+          "answer": 1204
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3954,
+          "input": 4086,
           "output": 10
         },
         "droppedCitations": 0,
         "uncitedChars": 10,
-        "notCoveredReason": "model-said-not-covered"
+        "notCoveredReason": "model-said-not-covered",
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "salesforce-org-ids",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "how do I pull the posthog org IDs for all my accounts out of salesforce?",
+      "status": "answered",
       "citedSections": [
         "growth/sales/user-event-streams",
         "cs-and-onboarding/new-hire-onboarding-exercise"
       ],
-      "answer": "Query PostHog's data warehouse to pull Salesforce data and create a CSV of all PostHog organization IDs for accounts you own.[1]\n\nThe handbook gives these details:\n\n- Run this SQL query: SELECT DISTINCT posthog_org_id_c, NULL as empty_column FROM salesforce.account WHERE owner_id = 'your_salesforce_id'[2]\n- To find your Salesforce ID, go to your profile and copy the text in the website URL after \"/User/\".[2]\n- Export the results via CSV.[2]\n- The empty column is there so the org IDs are comma-delimited, which lets you copy and paste all of them directly into a filter input text field.[2]",
+      "answer": "Run a SQL query against PostHog's data warehouse, which holds the Salesforce data, and export the results as a CSV. The handbook says to query PostHog's data warehouse to pull Salesforce data and create a CSV of all PostHog organization IDs for accounts you own.[1]\n\nThe handbook gives this query: SELECT DISTINCT posthog_org_id_c, NULL as empty_column FROM salesforce.account WHERE owner_id = 'your_salesforce_id'[2]\n\n- To find your Salesforce ID, go to your profile and copy the text in the website URL after \"/User/\".[2]\n- Export the results via CSV.[2]\n- The empty column is there so the org IDs are comma-delimited, which lets you copy and paste all of them directly into a filter input text field.[2]",
+      "gaps": [],
       "trace": {
         "question": "how do I pull the posthog org IDs for all my accounts out of salesforce?",
         "searchedFor": "how do I pull the posthog org IDs for all my accounts out of salesforce?",
@@ -425,31 +500,33 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 2297,
-          "search": 21,
-          "answer": 2275
+          "total": 2644,
+          "search": 25,
+          "answer": 2618
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3230,
-          "output": 308
+          "input": 3362,
+          "output": 343
         },
         "citations": 2,
         "droppedCitations": 0,
-        "uncitedChars": 28
+        "uncitedChars": 117,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "customer-site-debug-mode",
       "kind": "question",
       "outcome": "pass",
-      "status": "answered",
       "searchedFor": "how can I see what posthog is doing on a customer's live site?",
+      "status": "answered",
       "citedSections": [
         "support/troubleshooting-tips",
         "cs-and-onboarding/foundation-check"
       ],
-      "answer": "The handbook describes a few ways to see how PostHog is configured and behaving on a customer's live site:\n\n- Debug mode: append ?__posthog_debug=true to a site that has posthog running, e.g. https://app.mywebsite.com/login?__posthog_debug=true. This can show lots of useful information like logs and config.[1]\n- Console check: add ?__posthog_debug=true to a URL where PostHog is being called, pull up console logs, type posthog.config and look for the api_host property.[2]\n- Session replay (if the customer uses it): enable doctor and look for the posthog config event.[3] Another description of this is to go to the appropriate replay video, select Activity > Inspector > Doctor, and search for \"config\", then look for PostHog Config.[4]\n\nThese checks can show things like whether a reverse proxy is in use. If api_host shows us.i.posthog or eu.i.posthog, they are not using a reverse proxy.[5]\n\nIf neither method is available, because the customer isn't using session replay and the hosted site isn't publicly accessible, you can simply ask the customer on the discovery call.[6]",
+      "answer": "You can use PostHog's debug mode on the customer's site. Append ?__posthog_debug=true to a site that has PostHog running, e.g. https://app.mywebsite.com/login?__posthog_debug=true, which can show lots of useful information like logs and config.[1]\n\nIf you want to check the configuration specifically, there are two routes:\n\n- Add ?__posthog_debug=true to a URL where PostHog is being called, pull up the console logs, type posthog.config and look for the api_host property.[2]\n- If the customer uses session replay, go to the appropriate replay video, select Activity > Inspector > Doctor, search for \"config\", and look for PostHog Config.[3] In session replay, you can enable doctor and look for the posthog config event.[4]\n\nThe api_host value tells you whether they use a reverse proxy: if it shows us.i.posthog or eu.i.posthog, they are not using one.[5] If neither method is available because the customer isn't using session replay and the hosted site isn't publicly accessible, you can ask the customer on the discovery call.[6]",
+      "gaps": [],
       "trace": {
         "question": "how can I see what posthog is doing on a customer's live site?",
         "searchedFor": "how can I see what posthog is doing on a customer's live site?",
@@ -465,73 +542,73 @@
         ],
         "status": "answered",
         "ms": {
-          "total": 3354,
-          "search": 29,
-          "answer": 3324
+          "total": 3302,
+          "search": 34,
+          "answer": 3267
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3966,
-          "output": 460
+          "input": 4098,
+          "output": 443
         },
         "citations": 6,
         "droppedCitations": 0,
-        "uncitedChars": 248
+        "uncitedChars": 105,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "customer-site-debug-mode → follow-up",
       "kind": "follow-up",
       "outcome": "pass",
+      "searchedFor": "How can I check if a customer has set up a reverse proxy when seeing what PostHog is doing on their live site?",
       "status": "answered",
-      "searchedFor": "How can I check if a customer has set up a reverse proxy for PostHog on their live site?",
       "citedSections": [
         "cs-and-onboarding/foundation-check",
-        "support/troubleshooting-tips",
-        "cs-and-onboarding/health-checks"
+        "support/troubleshooting-tips"
       ],
-      "answer": "Check whether the customer has a reverse proxy by looking at their api_host configuration.[1] The handbook gives these ways:\n\n- If they use session replay: open the relevant replay video, select Activity > Inspector > Doctor, search for \"config\", find PostHog Config, and expand api_host. See whether the URL is one of PostHog's domains (us.i.posthog.com or eu.i.posthog.com) or one of the customer's own.[2]\n- If they don't use session replay: add ?__posthog_debug=true to a URL where PostHog is being called, open the console logs, type posthog.config, and look at the api_host property.[3]\n- If neither works (no session replay and the site isn't publicly accessible): ask the customer on the discovery call.[4]\n\nIf api_host shows us.i.posthog or eu.i.posthog, they are not using a reverse proxy.[5]\n\nThe handbook also notes that with either a managed or non-managed reverse proxy, events should populate the \"Library custom API host\" property, and host mapping and domains can potentially be seen in Metabase. You should verify the setup with the customer.[6]",
+      "answer": "Open their site in debug mode and check the api_host in the PostHog config.\n\n- Add ?__posthog_debug=true to a URL where PostHog is being called, pull up the console logs, type posthog.config, and look for the api_host property.[1]\n- Debug mode can show lots of useful information like logs and config.[2]\n\nTo interpret the result, if api_host shows us.i.posthog or eu.i.posthog, they are not using a reverse proxy.[3] If it shows one of their own domains instead of one of PostHog's, that indicates a proxy.[4]\n\nIf the customer uses session replay, there's another way: in the replay video, select Activity > Inspector > Doctor, search for \"config\", find PostHog Config, and expand the api_host.[4]\n\nIf neither method is available because the customer isn't using session replay and the hosted site isn't publicly accessible, you can ask the customer on the discovery call.[5]",
+      "gaps": [],
       "trace": {
         "question": "what about checking if they've set up a reverse proxy?",
-        "searchedFor": "How can I check if a customer has set up a reverse proxy for PostHog on their live site?",
+        "searchedFor": "How can I check if a customer has set up a reverse proxy when seeing what PostHog is doing on their live site?",
         "retrieved": [
           "contents/handbook/cs-and-onboarding/foundation-check.md#3",
           "contents/handbook/cs-and-onboarding/health-checks.md#7",
           "contents/handbook/support/troubleshooting-tips.md#1",
+          "contents/handbook/support/customer-support.md#14",
           "contents/handbook/engineering/posthog-com/technical-architecture.md#18",
           "contents/handbook/growth/sales/risk-mitigation-and-churn-prevention.md#9",
-          "contents/handbook/company/new-to-github.md#19",
           "contents/handbook/company/security.md#0",
-          "contents/handbook/support/customer-support.md#14"
+          "contents/handbook/growth/sales/customer-training.md#6"
         ],
         "status": "answered",
         "ms": {
-          "total": 3916,
-          "rewrite": 691,
-          "search": 25,
-          "answer": 3199
+          "total": 3954,
+          "rewrite": 758,
+          "search": 61,
+          "answer": 3134
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3550,
-          "output": 457
+          "input": 3754,
+          "output": 391
         },
-        "citations": 6,
+        "citations": 5,
         "droppedCitations": 0,
-        "uncitedChars": 158
+        "uncitedChars": 126,
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "oos-hogpatch-address",
       "kind": "out-of-scope",
-      "outcome": "review",
-      "status": "answered",
+      "outcome": "pass",
       "searchedFor": "what's the street address for Hogpatch? I'm in SF next week",
-      "citedSections": [
-        "people/hogpatch",
-        "people/hogpatch-operations"
-      ],
-      "answer": "The handbook doesn't give a street address for Hogpatch. It says only that Hogpatch is about 100 yards from YC's office, the nearest Muni stop is 20th Street, and the entrance is a discreet door off 3rd Street.[1] For YC founders, the exact location is listed on the digital wallet pass.[1]\n\nSince you're a PostHog teammate, you don't need an invite. If you know your SF travel dates in advance, it's helpful to post in the #sf-bay-area channel so the space can be made ready for you.[2] On your first visit, ring the black intercom doorbell on the front door.[3] No check-in or reservations are needed.[4]",
+      "status": "not-covered",
+      "citedSections": [],
+      "answer": "",
+      "gaps": [],
       "trace": {
         "question": "what's the street address for Hogpatch? I'm in SF next week",
         "searchedFor": "what's the street address for Hogpatch? I'm in SF next week",
@@ -545,30 +622,37 @@
           "contents/handbook/people/hogpatch.md#7",
           "contents/handbook/people/hogpatch.md#3"
         ],
-        "status": "answered",
+        "status": "not-covered",
         "ms": {
-          "total": 2537,
-          "search": 26,
-          "answer": 2511
+          "total": 949,
+          "search": 95,
+          "answer": 854
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3200,
-          "output": 298
+          "input": 3332,
+          "output": 10
         },
-        "citations": 4,
         "droppedCitations": 0,
-        "uncitedChars": 118
+        "uncitedChars": 10,
+        "notCoveredReason": "model-said-not-covered",
+        "gaps": 0,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "oos-option-vesting",
       "kind": "out-of-scope",
-      "outcome": "pass",
-      "status": "not-covered",
+      "outcome": "review",
       "searchedFor": "how does vesting work for my stock options - is there a one-year cliff?",
-      "citedSections": [],
-      "answer": "",
+      "status": "answered",
+      "citedSections": [
+        "people/offboarding"
+      ],
+      "answer": "The passages only partly cover this. The handbook says that if a team member has been allocated share options, the company will confirm how many have vested and the process by which they may wish to exercise them when they leave.[1] It also says there is a team-friendly post-departure exercise window of 10 years, and most team members who leave will be deemed a 'good leaver' unless they have been terminated due to gross misconduct.[1]",
+      "gaps": [
+        "stock option vesting schedule and cliff",
+        "the vesting schedule itself, including whether there is a one-year cliff"
+      ],
       "trace": {
         "question": "how does vesting work for my stock options - is there a one-year cliff?",
         "searchedFor": "how does vesting work for my stock options - is there a one-year cliff?",
@@ -582,30 +666,55 @@
           "contents/handbook/onboarding/onboarding-program.md#1",
           "contents/handbook/support/support-zero.md#3"
         ],
-        "status": "not-covered",
+        "status": "answered",
         "ms": {
-          "total": 967,
-          "search": 11,
-          "answer": 956
+          "total": 4578,
+          "search": 18,
+          "answer": 2173,
+          "research": 60,
+          "reanswer": 2326
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 3872,
-          "output": 10
+          "input": 10787,
+          "output": 443
         },
+        "research": {
+          "queries": [
+            "the vesting schedule or whether there's a one-year cliff",
+            "stock option vesting schedule and cliff"
+          ],
+          "added": [
+            "contents/handbook/getting-started/meetings.md#1",
+            "contents/handbook/exec/annual-planning.md#0",
+            "contents/handbook/engineering/operations/on-call-rotation.md#6",
+            "contents/handbook/exec/annual-planning.md#3",
+            "contents/handbook/engineering/operations/support-hero.md#3",
+            "contents/handbook/onboarding/onboarding-program.md#2",
+            "contents/handbook/growth/cross-selling/cross-sell-motions.md#8",
+            "contents/handbook/engineering/development-process.md#1"
+          ],
+          "outcome": "used-second"
+        },
+        "citations": 1,
         "droppedCitations": 0,
-        "uncitedChars": 10,
-        "notCoveredReason": "model-said-not-covered"
+        "uncitedChars": 59,
+        "gaps": 2,
+        "model": "claude-sonnet-5-5"
       }
     },
     {
       "id": "oos-oncall-pay",
       "kind": "out-of-scope",
-      "outcome": "pass",
-      "status": "not-covered",
+      "outcome": "review",
       "searchedFor": "do we get paid extra or get a day off for covering weekend on-call?",
-      "citedSections": [],
-      "answer": "",
+      "status": "answered",
+      "citedSections": [
+        "engineering/operations/on-call-rotation"
+      ],
+      "answer": "The passages describe how the weekend on-call schedule is structured, but they don't say anything about extra pay or a day off in return for covering it.\n\nWhat they do cover on weekend on-call:\n- The global on-call schedule has 2 weekend layers: Europe Weekend (06:00 to 18:00 UTC, 12 hours) and Americas Weekend (18:00 to 06:00 UTC, 12 hours).[1]",
+      "gaps": [
+        "on-call compensation or time off in lieu for weekend on-call"
+      ],
       "trace": {
         "question": "do we get paid extra or get a day off for covering weekend on-call?",
         "searchedFor": "do we get paid extra or get a day off for covering weekend on-call?",
@@ -619,20 +728,34 @@
           "contents/handbook/getting-started/meetings.md#5",
           "contents/handbook/getting-started/meetings.md#1"
         ],
-        "status": "not-covered",
+        "status": "answered",
         "ms": {
-          "total": 1198,
-          "search": 30,
-          "answer": 1168
+          "total": 3311,
+          "search": 16,
+          "answer": 2168,
+          "research": 15,
+          "reanswer": 1111
         },
-        "model": "claude-sonnet-5-5",
         "usage": {
-          "input": 4435,
-          "output": 10
+          "input": 9740,
+          "output": 198
         },
+        "research": {
+          "queries": [
+            "on-call compensation or time off in lieu for weekend on-call"
+          ],
+          "added": [
+            "contents/handbook/people/time-off.md#1",
+            "contents/handbook/people/benefits.md#1",
+            "contents/handbook/people/time-off.md#6"
+          ],
+          "outcome": "kept-first"
+        },
+        "citations": 1,
         "droppedCitations": 0,
-        "uncitedChars": 10,
-        "notCoveredReason": "model-said-not-covered"
+        "uncitedChars": 153,
+        "gaps": 1,
+        "model": "claude-sonnet-5-5"
       }
     }
   ]

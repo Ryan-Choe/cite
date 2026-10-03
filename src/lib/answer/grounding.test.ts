@@ -48,6 +48,7 @@ describe("applyGroundingGate", () => {
     expect(result).toEqual({
       status: "answered",
       searchedFor: "how much vacation",
+      gaps: [],
       parts: [
         { text: "You should take at least 25 days off a year.", citations: [1] },
         { text: " Book it in PTO by Deel.", citations: [2] },
@@ -141,5 +142,86 @@ describe("uncitedChars", () => {
       "q",
     );
     expect(uncitedChars).toBe(10);
+  });
+});
+
+describe("gaps", () => {
+  const laptops = cite(1, 0, 1, "Laptops are provided.");
+
+  it("moves Claude's GAP lines out of the answer text and reports them", () => {
+    const outcome = applyGroundingGate(
+      reply({ text: "Laptops are provided.", citations: [laptops] }, { text: "\n\nGAP: monitor budget\nGAP: \"who orders the laptop\"\n" }),
+      sources,
+      "laptop",
+    );
+    expect(outcome.gaps).toEqual(["monitor budget", "who orders the laptop"]);
+    expect(outcome.result).toMatchObject({
+      status: "answered",
+      gaps: ["monitor budget", "who orders the laptop"],
+      parts: [{ text: "Laptops are provided.", citations: [1] }], // the gap-only block is dropped
+    });
+    expect(outcome.uncitedChars).toBe(0); // gap lines aren't uncited answer text
+  });
+
+  it("keeps the answer text around a gap line in the same block", () => {
+    const { result } = applyGroundingGate(
+      reply({ text: "Yes.", citations: [laptops] }, { text: " Ask IT.\nGAP: monitor budget\n" }),
+      sources,
+      "q",
+    );
+    expect(result.status === "answered" && result.parts.map((p) => p.text)).toEqual(["Yes.", " Ask IT."]);
+  });
+
+  it("treats a reply with only gaps as not covered, but still reports the gaps", () => {
+    const outcome = applyGroundingGate(reply({ text: "GAP: stock price" }), sources, "stock price");
+    expect(outcome.result.status).toBe("not-covered");
+    expect(outcome.notCoveredReason).toBe("only-gaps");
+    expect(outcome.gaps).toEqual(["stock price"]);
+  });
+
+  it("takes an uncited 'the handbook doesn't say' sentence out of the answer and lists its topic as a gap", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "Laptops are provided.", citations: [laptops] },
+        { text: " The handbook doesn't say who orders replacement laptops, so you can ask anyone. Ask IT." },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.result).toMatchObject({
+      status: "answered",
+      gaps: ["who orders replacement laptops"],
+      parts: [{ text: "Laptops are provided." }, { text: " Ask IT." }],
+    });
+    expect(outcome.absenceClaims).toEqual(["The handbook doesn't say who orders replacement laptops, so you can ask anyone."]);
+  });
+
+  it("drops a vague absence claim without listing an unsearchable gap", () => {
+    const outcome = applyGroundingGate(reply({ text: "Yes.", citations: [laptops] }, { text: " The handbook doesn't say." }), sources, "q");
+    expect(outcome.result).toMatchObject({ status: "answered", gaps: [], parts: [{ text: "Yes." }] });
+  });
+
+  it("leaves an absence claim inside a cited block in place (it would take cited text with it)", () => {
+    const outcome = applyGroundingGate(reply({ text: "Laptops are provided; the handbook doesn't say which model.", citations: [laptops] }), sources, "q");
+    expect(outcome.result).toMatchObject({ parts: [{ text: "Laptops are provided; the handbook doesn't say which model." }], gaps: [] });
+    expect(outcome.absenceClaims).toHaveLength(1); // still searched again by the pipeline
+  });
+
+  it("keeps the separators between cited blocks, and replaces a removed sentence with one", () => {
+    const monitors = cite(0, 0, 1, "We offer unlimited time off.");
+    const { result } = applyGroundingGate(
+      reply(
+        { text: "Laptops are provided.", citations: [laptops] },
+        { text: "\n\n" },
+        { text: "Time off is unlimited.", citations: [monitors] },
+        { text: " The passages don't mention monitor budgets. " },
+        { text: "Really.", citations: [laptops] },
+      ),
+      sources,
+      "q",
+    );
+    expect(result.status === "answered" && result.parts.map((p) => p.text).join("|")).toBe(
+      "Laptops are provided.|\n\n|Time off is unlimited.| |Really.",
+    );
   });
 });

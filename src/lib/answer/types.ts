@@ -1,6 +1,8 @@
 /** The contract between the /api/ask route and the chat page. */
 
 export const MAX_QUESTION_CHARS = 500;
+/** Earlier exchanges sent along with a question, for rewriting follow-ups. The server keeps at most this many. */
+export const MAX_HISTORY = 3;
 
 export interface AskRequest {
   question: string;
@@ -30,17 +32,29 @@ export interface SectionLink {
 }
 
 export type AskResult =
-  | { status: "answered"; parts: AnswerPart[]; citations: Citation[]; searchedFor: string }
+  | {
+      status: "answered";
+      parts: AnswerPart[];
+      citations: Citation[];
+      gaps: string[]; // parts of the question that the passages searched didn't answer, e.g. "approval needed for a side gig"
+      searchedFor: string;
+    }
   | { status: "not-covered"; closest: SectionLink[]; searchedFor: string };
 
 export type AskErrorCode =
   | "invalid_question"
+  | "forbidden"
+  | "payload_too_large"
+  | "unsupported_media_type"
   | "missing_api_key"
   | "invalid_api_key"
   | "rate_limited"
   | "overloaded"
   | "refused"
-  | "unavailable";
+  | "index_unavailable"
+  | "search_unavailable"
+  | "unavailable"
+  | "internal_error";
 
 export interface AskError {
   status: "error";
@@ -50,3 +64,7 @@ export interface AskError {
 }
 
 export type AskResponse = AskResult | AskError;
+
+export function askError(code: AskErrorCode, message: string, retryable = false): AskError {
+  return { status: "error", code, message, retryable };
+}

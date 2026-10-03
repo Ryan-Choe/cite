@@ -12,11 +12,18 @@ export const EMBEDDING_DIM = 384;
 env.cacheDir = path.join(process.cwd(), ".cache", "models");
 
 // Loading the model takes a few seconds, so do it once per process. Keeping the promise on
-// globalThis also survives Next.js dev-mode hot reloads, which re-run this module.
+// globalThis also survives Next.js dev-mode hot reloads, which re-run this module. A failed load
+// (e.g. the first-use download while offline) is forgotten, so the next question tries again.
 const globalForModel = globalThis as unknown as { citeEmbedder?: Promise<FeatureExtractionPipeline> };
 
 function getEmbedder(): Promise<FeatureExtractionPipeline> {
-  globalForModel.citeEmbedder ??= pipeline("feature-extraction", EMBEDDING_MODEL, { dtype: "fp32" });
+  if (!globalForModel.citeEmbedder) {
+    const loading = pipeline("feature-extraction", EMBEDDING_MODEL, { dtype: "fp32" });
+    globalForModel.citeEmbedder = loading;
+    loading.catch(() => {
+      if (globalForModel.citeEmbedder === loading) globalForModel.citeEmbedder = undefined;
+    });
+  }
   return globalForModel.citeEmbedder;
 }
 

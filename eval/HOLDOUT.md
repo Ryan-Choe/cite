@@ -63,3 +63,5 @@
 ## How it's used
 
 This set is scored with the same rules as set A (see "Scoring" in `eval/QUESTIONS.md`). It was committed **after** all tuning on set A was done: the keyword weight in fusion, and the prompt change forbidding uncited advice. It was then run **once**, so its results show how well that tuning generalizes. No changes were made based on its results.
+
+**Update, 2026-10-02.** After the run above, a review found that four answers on the two sets, two of them in this set (`workflow-pr-review`, `support-ticket-split`), wrongly told the user the handbook doesn't say something, and the scoring passed them. The gap re-search (see the README) was designed with those failures in view, so this set is no longer held out for that change. Its second run, with the gap re-search, is in `eval/results/answers-holdout.json`; the first run's answers are in commit 91f2d69.

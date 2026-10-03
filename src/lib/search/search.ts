@@ -58,10 +58,17 @@ export async function loadIndex(dir?: string): Promise<HandbookIndex> {
   };
 }
 
-// Load once per process (and survive Next.js dev hot reloads), like the embedding model.
+// Load once per process (and survive Next.js dev hot reloads), like the embedding model. A failed
+// load is forgotten, so the next question tries again instead of failing until a restart.
 const globalForIndex = globalThis as unknown as { citeIndex?: Promise<HandbookIndex> };
 export function getIndex(): Promise<HandbookIndex> {
-  globalForIndex.citeIndex ??= loadIndex();
+  if (!globalForIndex.citeIndex) {
+    const loading = loadIndex();
+    globalForIndex.citeIndex = loading;
+    loading.catch(() => {
+      if (globalForIndex.citeIndex === loading) globalForIndex.citeIndex = undefined;
+    });
+  }
   return globalForIndex.citeIndex;
 }
 

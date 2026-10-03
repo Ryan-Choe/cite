@@ -1,0 +1,294 @@
+{
+  "about": "Blind re-grade of the saved answers in answers-questions.json (set A, tuned) and answers-holdout.json (set B, held out), as committed in 91f2d69, against each question's reference answer and the handbook text. Two graders, separate Claude agents that saw the questions, the saved answers and the parsed handbook but not the README or the automated grades, graded every row independently: `grade` is grader 1's, `grader2` is grader 2's, and they agree on all 30 rows. The notes are grader 1's.",
+  "grades": {
+    "correct": "answers what was asked, consistent with the reference answer and the handbook",
+    "false-absence": "says or implies that the handbook (or the passages) doesn't say something it does say",
+    "declined-answerable": "said not covered, though the handbook answers it (a safe failure)",
+    "declined-correctly": "out of scope, and said not covered",
+    "oos-partial-gap-named": "out of scope; answered only with cited facts, and named what is missing"
+  },
+  "summary": {
+    "setA": {
+      "questions": "7/10 correct, 1 false-absence, 2 declined",
+      "followUps": "2/3 correct, 1 false-absence",
+      "outOfScope": "2 declined, 1 partial answer that names the gap"
+    },
+    "setB": {
+      "questions": "4/10 correct, 2 false-absence, 4 declined",
+      "followUps": "2/2 correct",
+      "outOfScope": "1 declined, 1 partial answer that names the gap"
+    }
+  },
+  "rows": [
+    {
+      "set": "A",
+      "id": "freelance-work-allowed",
+      "kind": "question",
+      "status": "answered",
+      "grade": "false-absence",
+      "grader2": "false-absence",
+      "note": "The \"yes\" is right, but the answer leaves out the stated limits: \"A few hours a month on a paid side gig is acceptable... in your personal time\" (side-gigs.md#1, p965). It then wrongly says approval isn't covered, while side-gigs.md#5 (p966) says to \"check in with the relevant Exec team member... to get their confirmation before going ahead with any side gigs\" (that chunk was not retrieved)."
+    },
+    {
+      "set": "A",
+      "id": "freelance-work-allowed → follow-up",
+      "kind": "follow-up",
+      "status": "answered",
+      "grade": "false-absence",
+      "grader2": "false-absence",
+      "note": "The direct answer is the opposite of the handbook. side-gigs.md#5 (p966) says to \"check in with the relevant Exec team member for your team (ie. James, Tim, or Charles) to get their confirmation before going ahead with any side gigs\". The cited extras are true (Fraser in #4, sign-off for PostHog-originated ideas in #3)."
+    },
+    {
+      "set": "A",
+      "id": "who-founded-posthog",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "The handbook answers it directly. story.md#3 (p1028): \"PostHog was founded by James and Tim on January 23, 2020.\" brand/press.md#6 (p17) also says \"Founded in 2020 by James Hawkins and Tim Glaser\". story.md#3 was not in trace.retrieved."
+    },
+    {
+      "set": "A",
+      "id": "contract-feature-deadline",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Matches how-we-make-money.md#5 (p808): \"We don't contract deliverables, and we especially don't contract to provide deliverables by a certain date.\" The walk-away, build-if-others-use-it and try-first points are also cited there and correctly. The morale point is from growth/sales/overview.md#6 (p641)."
+    },
+    {
+      "set": "A",
+      "id": "hogpatch-founder-access",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Consistent with hogpatch.md#2 (p944): \"invite-only... you can't apply - we handpick founders\" and \"Each invite lasts 3 months\". The wallet pass from Judy and the no-booking desks are correct (hogpatch.md#3, #6). One caveat: brand/startups.md#2 (p21) lists \"Access to HogPatch for the duration of their time in the batch\" as a YC deal perk, and the answer doesn't mention that tension."
+    },
+    {
+      "set": "A",
+      "id": "logs-data-loss-cause",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Every claim checks out against the post-mortem chunks #3, #6, #7 and #8 (p137-139): the materialize-index mutation triggered the \"bug in ClickHouse's zero-copy replication\", replicas deleted S3 data from 11:02 to 19:40, S3 only after 24h so no alarms, no S3 Versioning, and an experimental config left in production. This matches the reference cause."
+    },
+    {
+      "set": "A",
+      "id": "logs-data-loss-cause → follow-up",
+      "kind": "follow-up",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Matches the reference: only the last 3 days came back from Kafka. post-mortem #4 (p138): \"restore data from Kafka, where we have 3 days of retention\", backfill from 10:05 to 12:21 on Feb 20. #0 (p137): \"loss of data collected more than 3 days ago\". The opening is a little hedgy, but the loss is stated with a citation."
+    },
+    {
+      "set": "A",
+      "id": "product-intent-timing",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "product-intents.md#2 (p462): \"As soon as your product is in any sort of public beta you should start tracking product intents\" and \"a precursor to any sort of public release\". The extras on PRODUCT_SLUGS (developing-the-website.md#36, p381) and concept-stage opt-in (releasing-new-products-and-features.md#4, p1017) are tangential but accurate."
+    },
+    {
+      "set": "A",
+      "id": "onsite-visit-threshold",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Gives both thresholds accurately. customer-onsites.md#0 (p561): \"accounts paying or likely to pay $50k+/year where...\". expansion-and-retention.md#8 (p575): \"regularly see customers... who are $100k+ annually, or could get there\". The cadence point is also correct."
+    },
+    {
+      "set": "A",
+      "id": "meetup-sponsorship-amount",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "marketing/events.md#9 (p822), under Community events / Getting support: \"Budgetary support typically falls in the range from $500 to $3,500.\" That chunk was not retrieved, so this is a safe failure."
+    },
+    {
+      "set": "A",
+      "id": "salesforce-org-ids",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Verbatim from new-hire-onboarding-exercise.md#1 (p240): the SQL \"SELECT DISTINCT posthog_org_id_c, NULL as empty_column FROM salesforce.account WHERE owner_id = 'your_salesforce_id'\", the Salesforce ID from the URL after /User/, CSV export, and the empty-column rationale. The data-warehouse framing is from user-event-streams.md#2 (p693)."
+    },
+    {
+      "set": "A",
+      "id": "customer-site-debug-mode",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "troubleshooting-tips.md#1 (p1060): \"Debug mode: append ?__posthog_debug=true to a site that has posthog running... logs and config\". The posthog.config console check, Doctor in replay, and the ask-on-discovery-call fallback all match foundation-check.md#3 (p209-210)."
+    },
+    {
+      "set": "A",
+      "id": "customer-site-debug-mode → follow-up",
+      "kind": "follow-up",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "troubleshooting-tips.md#1 (p1060): \"look at their api_host configuration. If it shows us.i.posthog or eu.i.posthog – then they are not using a reverse proxy\". The methods match foundation-check.md#3 (p209), and the \"Library custom API host\"/Metabase note matches health-checks.md#7 (p223)."
+    },
+    {
+      "set": "A",
+      "id": "oos-hogpatch-address",
+      "kind": "out-of-scope",
+      "status": "answered",
+      "grade": "oos-partial-gap-named",
+      "grader2": "oos-partial-gap-named",
+      "note": "It plainly says there's no street address (I found no address regex hits in the corpus). Every given fact is true and cited. hogpatch.md#4 (p945): \"100 yards from YC's office... nearest Muni stop at 20th Street... discreet door off 3rd Street\". The intercom and #sf-bay-area points are from hogpatch-operations.md#1 (p942)."
+    },
+    {
+      "set": "A",
+      "id": "oos-option-vesting",
+      "kind": "out-of-scope",
+      "status": "not-covered",
+      "grade": "declined-correctly",
+      "grader2": "declined-correctly",
+      "note": "No vesting schedule or cliff appears anywhere. The closest are offboarding.md#11 (p949), \"post-departure exercise window of 10 years\", and strong-team.md#7, \"standard PostHog equity schedule\", neither of which describes vesting or a cliff."
+    },
+    {
+      "set": "A",
+      "id": "oos-oncall-pay",
+      "kind": "out-of-scope",
+      "status": "not-covered",
+      "grade": "declined-correctly",
+      "grader2": "declined-correctly",
+      "note": "on-call-rotation.md (p329-332) says \"on-call involves weekends too\" but says nothing about extra pay or days off. Searches for TOIL, in lieu, day off and extra pay found nothing on on-call."
+    },
+    {
+      "set": "B",
+      "id": "customers-from-recommendations",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "low-prices.md#2 (p809): \"Nearly all our sales are self-serve and 70% of our customers find us through word-of-mouth growth.\" That chunk was not retrieved."
+    },
+    {
+      "set": "B",
+      "id": "team-survey-anonymity",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "people/feedback.md#8 (p906): \"Only the People & Ops and Exec teams have access to the full list of responses, which are not anonymous.\" The 6-month Pulse/Deel cadence and the Issue summary are also correct."
+    },
+    {
+      "set": "B",
+      "id": "team-survey-anonymity → follow-up",
+      "kind": "follow-up",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "feedback.md#8 (p906): \"We run team surveys every 6 months using the Pulse Surveys by Deel Slack app... set up to run automatically, including reminder messages\"."
+    },
+    {
+      "set": "B",
+      "id": "propose-company-wide-tool",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "company/adding-tools.md#2 (p31-32) covers the process: \"1. Try the tool in a low-risk context\", \"2. Open an pull request in Company Internal... open an issue describing why we should adopt the tool\", then #7 adds terms and #legal review. No adding-tools chunk was retrieved."
+    },
+    {
+      "set": "B",
+      "id": "workflow-pr-review",
+      "kind": "question",
+      "status": "answered",
+      "grade": "false-absence",
+      "grader2": "false-absence",
+      "note": "shai-hulud-attack.md#13 (p128) says the opposite: \"Increased the scrutiny any PR modifying a workflow file gets (requiring a specific review from someone on our security team)\". That chunk was not retrieved. The cited security.md#5 and Shai-Hulud #10 details are accurate."
+    },
+    {
+      "set": "B",
+      "id": "promotion-criteria",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "career-progression.md#4 (p903), under \"Ways we do not help you progress\": \"A checklist of things / a formal career progression framework\". So the clear answer is no rubric, and progression comes from shipping toward goals (#0). Not retrieved."
+    },
+    {
+      "set": "B",
+      "id": "browser-extension-billing",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "Matches the Recommendations table in chrome-extension-billing-case-study-wildfire.md#5 (p858): \"Use chrome.storage.local to persist UUID\", \"bootstrap.distinctID\", \"Only call identify() if the ID has changed\", bootstrap.featureFlags. The mid-cycle billing-limit caveat from #1 is also correct."
+    },
+    {
+      "set": "B",
+      "id": "support-ticket-split",
+      "kind": "question",
+      "status": "answered",
+      "grade": "false-absence",
+      "grader2": "false-absence",
+      "note": "The handbook does answer \"does everyone work every product?\". support-smes.md#2 (p1052): all engineers share Analytics and Unclassified, and \"For each product group, we select one person from EU and one from NA\". #0 notes it is hard to \"work across every product\". The answer says this isn't covered. Its other bullets are true but peripheral."
+    },
+    {
+      "set": "B",
+      "id": "newsletter-owner",
+      "kind": "question",
+      "status": "not-covered",
+      "grade": "declined-answerable",
+      "grader2": "declined-answerable",
+      "note": "content/newsletter.md#0 (p177): \"Our newsletter is called Product for Engineers. It's owned by Andy... One person writes it and Andy edits and publishes it.\" Not retrieved."
+    },
+    {
+      "set": "B",
+      "id": "sales-lead-threshold",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "new-sales.md#14 (p622): \"Leads below the sales assist threshold (less than $20K ARR)\". #16: \"too small (<$20k)... route to self-serve\". This is consistent with accounts-overview p493 \"$20k+ potential? (TAE decides)\". The answer omits that the TAE makes the call, which is minor."
+    },
+    {
+      "set": "B",
+      "id": "case-study-customer-outreach",
+      "kind": "question",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "customer-case-studies.md#2 (p817): \"search for the company in Vitally. If they already have an assigned Account Executive or CSM, give that person a heads-up\", and if no one is assigned, reach out directly. The Slack-channel and marketing-channel points are also correct."
+    },
+    {
+      "set": "B",
+      "id": "case-study-customer-outreach → follow-up",
+      "kind": "follow-up",
+      "status": "answered",
+      "grade": "correct",
+      "grader2": "correct",
+      "note": "co-marketing.md#5 (p814): \"thank customers who participate in case studies and collab content by sending them a merch voucher\". This is consistent with customer-case-studies.md#7 (p819): \"send a merch credit to the participants as thank you\"."
+    },
+    {
+      "set": "B",
+      "id": "oos-team-survey-score",
+      "kind": "out-of-scope",
+      "status": "answered",
+      "grade": "oos-partial-gap-named",
+      "grader2": "oos-partial-gap-named",
+      "note": "It plainly states that no scores are given; I found none in the corpus. The cited facts are true. feedback.md#8 (p906): benchmark \"Culture Amp's 'new tech' companies with less than 200 people\", plus average x20 and a summary in an Issue."
+    },
+    {
+      "set": "B",
+      "id": "oos-passport-renewal",
+      "kind": "out-of-scope",
+      "status": "not-covered",
+      "grade": "declined-correctly",
+      "grader2": "declined-correctly",
+      "note": "No \"passport\" hits in the corpus. offsites.md#14 (p93) covers visas and border control, but nothing on renewing a passport."
+    }
+  ]
+}

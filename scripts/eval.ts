@@ -1,20 +1,25 @@
 /**
- * npm run eval [-- --answers] [-- path/to/questions.json]
+ * npm run eval [-- --answers | --regrade] [-- path/to/questions.json]
  *
  * Retrieval check (default, no API calls): for each answerable question, is a chunk from an
  * expected section among the top 8? Reported for keyword-only, semantic-only, and hybrid search,
  * so the value of combining them is measured rather than assumed.
  *
  * Answer check (--answers, calls Claude, ~1-2¢ per question): runs each question through the real
- * pipeline (rewrite → search → Claude → grounding gate). Answerable questions and follow-ups must be
- * answered with a citation from an expected section. Out-of-scope questions pass if declined; if
- * instead they get a partial answer (allowed by the prompt: answer what the handbook says, name
- * what it doesn't), they're marked "review" and printed for a person to check. Results are also
+ * pipeline (rewrite → search → Claude → grounding gate → gap re-search). Answerable questions and
+ * follow-ups pass if they cite an expected section and name no gaps. An answer that names a gap is
+ * marked "review": search may have missed the passage that covers it, so the gap may be false, and
+ * a person checks it against the reference answer (printed alongside). Out-of-scope questions pass
+ * if declined; a partial answer is also marked "review". Every answer is printed. Results are
  * written to eval/results/<mode>-<set>.json.
+ *
+ * Re-grade (--regrade, no API calls, writes nothing): grades the saved answers in
+ * eval/results/answers-<set>.json again with the current rules.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
+import { findAbsenceClaims } from "../src/lib/answer/gaps";
 import type { AskResponse } from "../src/lib/answer/types";
 import { embed } from "../src/lib/search/embed";
 import { hybridRanking, keywordRanking, loadIndex, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
@@ -26,8 +31,10 @@ export interface EvalQuestion {
   id: string;
   question: string;
   expect: Expectation;
+  /** The reference answer, printed next to answers that need a person to review them. */
+  answer?: string;
   /** A follow-up asked right after `question`, with it as conversation history. */
-  followUp?: { question: string; expect: Expectation };
+  followUp?: { question: string; expect: Expectation; answer?: string };
 }
 
 function matchesSection(sectionPath: string, expected: string): boolean {
@@ -44,6 +51,7 @@ async function main() {
 
   const set = path.basename(file, ".json"); // results are saved per question set, e.g. answers-holdout.json
   if (args.includes("--answers")) await answerEval(questions, set);
+  else if (args.includes("--regrade")) await regrade(questions, set);
   else await retrievalEval(index, questions, set);
 }
 
@@ -115,25 +123,70 @@ interface Row {
   searchedFor: string;
   citedSections: string[];
   answer: string;
+  /** Gaps the answer named ("not found in the passages searched"). Absent in results saved before gaps existed. */
+  gaps?: string[];
   trace: AskTrace;
 }
 
-function grade(response: AskResponse, expect: Expectation): { outcome: Outcome; citedSections: string[] } {
-  const citedSections =
-    response.status === "answered"
-      ? [...new Set(response.citations.map((c) => c.sectionPath.replace(/^contents\/handbook\/|\.md$/g, "")))]
-      : [];
-  if (expect === "not-covered") {
-    const outcome = response.status === "not-covered" ? "pass" : response.status === "answered" ? "review" : "fail";
-    return { outcome, citedSections };
-  }
-  const cited = citedSections.some((path) => expect.some((e) => matchesSection(`contents/handbook/${path}.md`, e)));
-  return { outcome: cited ? "pass" : "fail", citedSections };
+/**
+ * Pass, review or fail for one answer. An answerable question passes only if it cites an expected
+ * section and names no gaps. A gap may be false (search can miss the passage that covers it), so an
+ * answer that names one, or still claims the handbook doesn't say something, goes to a person.
+ */
+function grade(row: Pick<Row, "status" | "citedSections" | "answer" | "gaps">, expect: Expectation): Outcome {
+  if (expect === "not-covered") return row.status === "not-covered" ? "pass" : row.status === "answered" ? "review" : "fail";
+  const cited = row.citedSections.some((path) => expect.some((e) => matchesSection(`contents/handbook/${path}.md`, e)));
+  if (!cited) return "fail";
+  const claimsAbsence = findAbsenceClaims(row.answer.replace(/\[\d+\]/g, "")).length > 0;
+  return (row.gaps ?? []).length > 0 || claimsAbsence ? "review" : "pass";
+}
+
+function citedSectionsOf(response: AskResponse): string[] {
+  if (response.status !== "answered") return [];
+  return [...new Set(response.citations.map((c) => c.sectionPath.replace(/^contents\/handbook\/|\.md$/g, "")))];
 }
 
 function answerText(response: AskResponse): string {
   if (response.status !== "answered") return "";
   return response.parts.map((p) => p.text + p.citations.map((n) => `[${n}]`).join("")).join("");
+}
+
+/** One line per row, then the details a person needs: every answer, and the reference answer when it needs review. */
+function printRow(row: Row, reference: string | undefined, previous?: Outcome) {
+  const mark = { pass: "pass", review: "REVIEW", fail: "FAIL" }[row.outcome].padEnd(6);
+  const was = previous && previous !== row.outcome ? `  (was ${previous})` : "";
+  const uncited = row.status === "answered" ? `  uncited ${row.trace.uncitedChars ?? 0}` : "";
+  console.log(`${mark}  ${row.id.slice(0, 34).padEnd(34)} ${row.kind.padEnd(12)} ${row.status.padEnd(11)} ${(row.trace.ms.total / 1000).toFixed(1)}s${uncited}${was}`);
+  if (row.outcome !== "pass") console.log(`      searched for: ${row.searchedFor}\n      cited: ${row.citedSections.join(", ") || "—"}`);
+  if (row.status === "answered") console.log(`      answer: ${row.answer.replace(/\n+/g, " ")}`);
+  if (row.gaps?.length) console.log(`      gaps: ${row.gaps.join("; ")}`);
+  if (row.outcome === "review" && reference) console.log(`      reference: ${reference}`);
+}
+
+/** The pass and review counts per kind, as printed and saved. */
+function summarize(rows: Row[]) {
+  const count = (kind: Row["kind"], outcome: Outcome) => {
+    const of = rows.filter((r) => r.kind === kind);
+    return `${of.filter((r) => r.outcome === outcome).length}/${of.length}`;
+  };
+  return {
+    questions: count("question", "pass"),
+    questionsReview: count("question", "review"),
+    followUps: count("follow-up", "pass"),
+    followUpsReview: count("follow-up", "review"),
+    outOfScopeDeclined: count("out-of-scope", "pass"),
+    outOfScopeReview: count("out-of-scope", "review"),
+  };
+}
+
+function printSummary(summary: ReturnType<typeof summarize>) {
+  console.log(`
+questions: expected section cited, no gaps:     ${summary.questions}
+questions with gaps (review above):             ${summary.questionsReview}
+follow-ups: expected section cited, no gaps:    ${summary.followUps}
+follow-ups with gaps (review above):            ${summary.followUpsReview}
+out-of-scope questions declined:                ${summary.outOfScopeDeclined}
+out-of-scope answered partially (review above): ${summary.outOfScopeReview}`);
 }
 
 async function answerEval(questions: EvalQuestion[], set: string) {
@@ -142,51 +195,76 @@ async function answerEval(questions: EvalQuestion[], set: string) {
   } catch {
     // fall through: ask() reports a missing key
   }
+  // Load the search model before any paid call: a failed download stops the run here, and a slow
+  // one doesn't turn the first question into a "search unavailable" failure.
+  await embed("warm-up");
   const rows: Row[] = [];
-  const run = async (id: string, kind: Row["kind"], question: string, expect: Expectation, history: { question: string; searchedFor: string }[] = []) => {
+  const run = async (id: string, kind: Row["kind"], question: string, expect: Expectation, reference?: string, history: { question: string; searchedFor: string }[] = []) => {
     const { response, trace } = await ask({ question, history });
-    const { outcome, citedSections } = grade(response, expect);
-    const row: Row = { id, kind, outcome, status: response.status, searchedFor: trace.searchedFor, citedSections, answer: answerText(response), trace };
+    const answered = {
+      status: response.status,
+      citedSections: citedSectionsOf(response),
+      answer: answerText(response),
+      gaps: response.status === "answered" ? response.gaps : [],
+    };
+    const row: Row = { id, kind, outcome: grade(answered, expect), searchedFor: trace.searchedFor, ...answered, trace };
     rows.push(row);
-    const mark = { pass: "pass", review: "REVIEW", fail: "FAIL" }[outcome].padEnd(6);
-    const uncited = response.status === "answered" ? `  uncited ${trace.uncitedChars ?? 0}` : "";
-    console.log(`${mark}  ${id.slice(0, 34).padEnd(34)} ${kind.padEnd(12)} ${response.status.padEnd(11)} ${(trace.ms.total / 1000).toFixed(1)}s${uncited}`);
-    if (outcome !== "pass") {
-      console.log(`      searched for: ${trace.searchedFor}\n      cited: ${citedSections.join(", ") || "—"}`);
-      if (response.status === "error") console.log(`      error: ${response.message}`);
-      if (outcome === "review") console.log(`      answer: ${row.answer.replace(/\n+/g, " ")}`);
-    }
+    printRow(row, reference);
+    if (response.status === "error") console.log(`      error: ${response.message}`);
     return trace;
   };
 
   console.log(`Answer eval — ${questions.length} questions + ${questions.filter((q) => q.followUp).length} follow-ups\n`);
   for (const q of questions) {
     const kind = q.expect === "not-covered" ? "out-of-scope" : "question";
-    const trace = await run(q.id, kind, q.question, q.expect);
+    const trace = await run(q.id, kind, q.question, q.expect, q.answer);
     if (q.followUp) {
-      await run(`${q.id} → follow-up`, "follow-up", q.followUp.question, q.followUp.expect, [{ question: q.question, searchedFor: trace.searchedFor }]);
+      await run(`${q.id} → follow-up`, "follow-up", q.followUp.question, q.followUp.expect, q.followUp.answer, [{ question: q.question, searchedFor: trace.searchedFor }]);
     }
   }
 
-  const summary = (kind: Row["kind"], outcome: Outcome = "pass") => {
-    const of = rows.filter((r) => r.kind === kind);
-    return `${of.filter((r) => r.outcome === outcome).length}/${of.length}`;
-  };
   const answered = rows.filter((r) => r.status === "answered");
   const input = rows.reduce((s, r) => s + (r.trace.usage?.input ?? 0), 0);
   const output = rows.reduce((s, r) => s + (r.trace.usage?.output ?? 0), 0);
   const cost = (input * PRICE.input + output * PRICE.output) / 1e6;
   const median = (xs: number[]) => xs.sort((a, b) => a - b)[Math.floor(xs.length / 2)] ?? 0;
 
-  console.log(`
-questions answered with an expected citation:  ${summary("question")}
-follow-ups (rewritten) answered correctly:      ${summary("follow-up")}
-out-of-scope questions declined:                ${summary("out-of-scope")}
-out-of-scope answered partially (review above): ${summary("out-of-scope", "review")}
-answers with any uncited text:                  ${answered.filter((r) => (r.trace.uncitedChars ?? 0) > 0).length}/${answered.length}
+  const summary = summarize(rows);
+  printSummary(summary);
+  console.log(`answers with any uncited text:                  ${answered.filter((r) => (r.trace.uncitedChars ?? 0) > 0).length}/${answered.length}
+gap re-search: ran / asked Claude again / answer replaced: ${rows.filter((r) => r.trace.research).length} / ${rows.filter((r) => ["used-second", "kept-first", "second-call-failed"].includes(r.trace.research?.outcome ?? "")).length} / ${rows.filter((r) => r.trace.research?.outcome === "used-second").length} of ${answered.length} answered
 median time per question:                       ${(median(rows.map((r) => r.trace.ms.total)) / 1000).toFixed(1)}s
 answer-model cost for this run:                 $${cost.toFixed(3)} (${input} in / ${output} out tokens)`);
-  await saveResults(`answers-${set}`, { summary: { questions: summary("question"), followUps: summary("follow-up"), outOfScopeDeclined: summary("out-of-scope"), outOfScopeReview: summary("out-of-scope", "review"), cost }, rows });
+  // A run with errors (no key, rate limits, an outage) measures the setup, not the answers.
+  const errors = rows.filter((r) => r.status === "error").length;
+  if (errors > 0) {
+    console.error(`\n${errors} question(s) ended in an error, so eval/results/answers-${set}.json was not overwritten.`);
+    process.exitCode = 1;
+    return;
+  }
+  await saveResults(`answers-${set}`, { summary: { ...summary, cost }, rows });
+}
+
+/** Grade the saved answers for a set again with the current rules. No API calls; nothing is written. */
+async function regrade(questions: EvalQuestion[], set: string) {
+  const file = `eval/results/answers-${set}.json`;
+  const saved = JSON.parse(await readFile(file, "utf8")) as { rows: Row[] };
+  const byId = new Map<string, { expect: Expectation; reference?: string }>();
+  for (const q of questions) {
+    byId.set(q.id, { expect: q.expect, reference: q.answer });
+    if (q.followUp) byId.set(`${q.id} → follow-up`, { expect: q.followUp.expect, reference: q.followUp.answer });
+  }
+
+  console.log(`Re-grading ${file} — ${saved.rows.length} saved answers\n`);
+  const rows: Row[] = [];
+  for (const row of saved.rows) {
+    const question = byId.get(row.id);
+    if (!question) throw new Error(`${row.id}: not in the question file`);
+    const regraded = { ...row, outcome: grade(row, question.expect) };
+    rows.push(regraded);
+    printRow(regraded, question.reference, row.outcome);
+  }
+  printSummary(summarize(rows));
 }
 
 async function saveResults(name: string, data: unknown) {
