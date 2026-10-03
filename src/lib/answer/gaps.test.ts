@@ -54,14 +54,72 @@ describe("findAbsenceClaims", () => {
   });
 
   it.each([
+    "The team names are missing from the passage, so I can't list which teams.", // from an eval run
+    "The passages say nothing about extra pay.",
+    "The handbook has nothing to say about relocation.",
+    "The handbook doesn't spell out who approves it.",
+    "The handbook doesn't lay out the steps.",
+    "The handbook doesn't spell this out.",
+    "The passages I've been given don't mention a relocation budget.",
+    "The passages I can see don't mention whether contractors qualify.",
+    "The handbook as excerpted here doesn't say whether contractors qualify.",
+    "The passages in the handbook don't say who approves it.",
+  ])("also finds %j", (sentence) => {
+    expect(findAbsenceClaims(sentence)).toEqual([sentence]);
+  });
+
+  // Uncited claims that got past the checker in the eval runs of 2026-10-03 (the first two were false),
+  // and wordings like them. They can also report a rule, so only uncited ones are taken out.
+  it.each([
+    "The handbook gives no single cutoff.",
+    "The handbook doesn't set a hard deadline, but it recommends starting early, at the concept stage in the coming soon menu.",
+    "The passages give no figure for it.",
+    "The handbook has no section on relocation.",
+    "The handbook sets out no process for this.",
+    "The handbook passages don't have a figure for it.",
+    "The handbook passages I have give no figure.",
+    "The handbook sets no limit on time off.",
+  ])("leaves %j to the citation check: removeAbsenceClaims takes it out of uncited text", (sentence) => {
+    expect(findAbsenceClaims(sentence)).toEqual([]);
+    expect(removeAbsenceClaims(sentence)).toEqual({ text: "", claims: [sentence], remarks: [] });
+  });
+
+  it.each([
     "The handbook says you don't need to give notice.",
     "You don't need approval, per the handbook.",
     "Book it in Deel.",
     "Nothing in your first week needs approval.",
     "It doesn't cover contractors.",
     "If the handbook is unclear, ask in #ask-max.",
-  ])("ignores %j", (sentence) => {
+    "The handbook says there is no formal checklist for progression.",
+    "The handbook says no approval is needed.",
+    "The handbook states no one needs sign-off.",
+    "The handbook explains that the plan has no cap.",
+    "Nothing is missing from your first-week checklist.",
+    // Found by an adversarial check of the 2026-10-03 change: the negation belongs to a new subject
+    // ("you", "PostHog"), or "no"/"nothing" is part of the rule, so each reports what the handbook says.
+    "The handbook makes clear you don't have to ask permission to take time off.",
+    "The handbook mentions you don't have to cram deals into the end of a quarter.",
+    "The handbook confirms PostHog doesn't offer additional discounts in exchange for a case study.",
+    "The handbook is clear PostHog doesn't offer discounts to customers paying monthly.",
+    "The handbook makes clear managers don't set tasks for small teams.",
+    "The handbook says nothing ships without your sign-off.",
+    "The handbook says nothing else is required beyond a message in Slack.",
+    "If something is missing from the handbook, open a pull request to add it.",
+    "The handbook lists no-meeting days as Tuesdays and Thursdays.",
+    "The handbook puts no more than six people on a small team.",
+    "The handbook has notes on relocation.",
+    "The handbook partially covers the cost of a coworking space.",
+    "Changes to the handbook don't have to go through review.",
+    "Anything you add to the handbook can't contain customer PII.",
+    "The handbook never lays blame on individuals for outages.",
+    "The handbook doesn't try to spell out which channel to use for every message.",
+    "The handbook gives no one a veto over the roadmap.",
+    "The handbook lists No Meeting Days as Tuesdays and Thursdays.",
+    "Yes, the handbook has no objections to side gigs.",
+  ])("ignores %j, even uncited", (sentence) => {
     expect(findAbsenceClaims(sentence)).toEqual([]);
+    expect(removeAbsenceClaims(sentence).text).toBe(sentence);
   });
 });
 
@@ -78,6 +136,15 @@ describe("absenceTopic", () => {
     ],
     ["The handbook doesn't say anything about other incentives.", "other incentives"],
     ["The handbook doesn't say who orders them.", "who orders them"], // question words carry meaning
+    ["The handbook gives no single cutoff.", "single cutoff"],
+    ["The passages say nothing about extra pay for on-call.", "extra pay for on-call"],
+    ["The handbook doesn't set a hard deadline, but it recommends starting early.", "a hard deadline"],
+    ["The handbook doesn't spell out who approves it.", "who approves it"],
+    ["The handbook doesn't spell this out for new hires.", "for new hires"],
+    ["The handbook has nothing to say about relocation.", "relocation"],
+    ["The team names are missing from the passage, so I can't list which teams.", "The team names"],
+    // Caught by an earlier wording ("I couldn't find"), so it keeps the topic it always had.
+    ["I couldn't find a hard deadline, and the handbook doesn't set one.", "I couldn't find a hard deadline, and the handbook doesn't set one"],
   ])("turns %j into a search phrase", (sentence, topic) => {
     expect(absenceTopic(sentence)).toBe(topic);
   });
@@ -118,6 +185,55 @@ describe("removeAbsenceClaims", () => {
     expect(removeAbsenceClaims("The passages say ", true).text).toBe("The handbook says ");
     // Not followed by cited text: an unfinished remark just goes.
     expect(removeAbsenceClaims("Ask HR. The passages only partly cover this").text).toBe("Ask HR. ");
+  });
+
+  it("removes the eval's missed openers, with the sentences that lean on them", () => {
+    // From the eval runs of 2026-10-03; each piece was followed by cited list items.
+    expect(
+      removeAbsenceClaims(
+        "The handbook gives no single cutoff. It leaves the call to the rep, who weighs a few factors when deciding whether a lead stays hands-on or goes self-serve.\n\n- ",
+      ),
+    ).toEqual({
+      text: "- ",
+      claims: ["The handbook gives no single cutoff."],
+      remarks: ["It leaves the call to the rep, who weighs a few factors when deciding whether a lead stays hands-on or goes self-serve."],
+    });
+    expect(
+      removeAbsenceClaims("The handbook's passages suggest the older data was not recovered, though they don't say this outright. Here is what they do say:\n\n- ").text,
+    ).toBe("- ");
+    expect(removeAbsenceClaims("The handbook only partly answers this. Ask HR.").text).toBe("Ask HR.");
+  });
+
+  it("keeps a lead-in that reports a handbook rule, so the cited text after it keeps its meaning", () => {
+    // Taken for a claim, this became "No. The handbook says " + "finish the review within a day…[1]".
+    const leadIn = "No. The handbook makes clear you don't have to ";
+    expect(removeAbsenceClaims(leadIn, true)).toEqual({ text: leadIn, claims: [], remarks: [] });
+  });
+
+  it("handles an unfinished lead-in into cited text as before the added wordings", () => {
+    // "The handbook says " + "limit on how much time off you take.[1]" would reverse it.
+    for (const leadIn of ["The handbook sets no ", "However, the handbook doesn't put ", "The handbook doesn't spell out "]) {
+      expect(removeAbsenceClaims(leadIn, true)).toEqual({ text: leadIn, claims: [], remarks: [] });
+    }
+    for (const leadIn of ["The handbook doesn't give a street address, but it says ", "The handbook doesn't say how long leave lasts, just that "]) {
+      expect(removeAbsenceClaims(leadIn, true)).toEqual({ text: "The handbook says ", claims: [leadIn.trim()], remarks: [] });
+    }
+  });
+
+  it("names the source in a pronoun lead-in whose sentence went, keeping the rest as written", () => {
+    // Kept as it was, "What it does say is that " would open the answer with nothing to refer to.
+    const cases = [
+      ["The handbook doesn't spell out the street address. What it does say is that ", "What the handbook does say is that "],
+      ["The handbook only partly answers this. It says ", "The handbook says "],
+      ["The handbook sets no fixed number. Instead, it says ", "Instead, the handbook says "],
+      ["The handbook's passages suggest the older data was not recovered. It only describes ", "The handbook only describes "],
+      ["The handbook gives no overall timeline. It does say that if the vendor is a subprocessor, ", "The handbook does say that if the vendor is a subprocessor, "],
+      ["The handbook sets no maximum. It doesn't put ", "The handbook doesn't put "],
+      ["The handbook has nothing on relocation. They only describe ", "The passages only describe "],
+      // Needn't refer back, so it stays.
+      ["The handbook sets no fixed rule for who decides. It's up to ", "It's up to "],
+    ];
+    for (const [leadIn, shown] of cases) expect(removeAbsenceClaims(leadIn, true).text).toBe(shown);
   });
 
   it("removes a pronoun sentence left dangling by a removed one, and only then", () => {
