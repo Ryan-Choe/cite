@@ -4,7 +4,7 @@ import path from "node:path";
 import type { Chunk } from "../chunk";
 
 /**
- * The search index on disk (committed to the repo, rebuilt by `npm run ingest`):
+ * The search index on disk (committed to the repo, rebuilt by `pnpm ingest`):
  *   data/index/chunks.json  — metadata + every chunk
  *   data/index/vectors.bin  — one embedding per chunk, same order, as raw little-endian float32
  */
@@ -41,7 +41,7 @@ export async function writeIndex(meta: IndexMeta, chunks: Chunk[], vectors: Floa
  * that doesn't belong to its chunks.
  */
 export async function readIndex(expected: IndexMeta["embedding"], dir = INDEX_DIR): Promise<{ file: IndexFile; vectors: Float32Array[] }> {
-  const rebuild = "Run `npm run ingest` to rebuild it.";
+  const rebuild = "Run `pnpm ingest` to rebuild it.";
   const file = JSON.parse(await readFile(path.join(dir, "chunks.json"), "utf8")) as IndexFile;
   if (file.version !== 2) throw new Error(`The search index was built by an older version of Cite. ${rebuild}`);
   const { model, dtype, dim } = file.embedding;
@@ -64,12 +64,12 @@ export async function readIndex(expected: IndexMeta["embedding"], dir = INDEX_DI
 
 /**
  * Warn if the PDF has changed since the index was built (e.g. someone dropped in a new
- * handbook without running `npm run ingest`): answers would come from the old text.
+ * handbook without running `pnpm ingest`): answers would come from the old text.
  */
 export async function warnIfStale(source: IndexMeta["source"]): Promise<void> {
   try {
     if (sha256(await readFile(path.join(process.cwd(), source.file))) !== source.sha256) {
-      console.warn(`[index] ${source.file} has changed since the index was built. Run \`npm run ingest\` to rebuild it.`);
+      console.warn(`[index] ${source.file} has changed since the index was built. Run \`pnpm ingest\` to rebuild it.`);
     }
   } catch {
     console.warn(`[index] Couldn't read ${source.file} to check the index is up to date.`);

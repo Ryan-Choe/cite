@@ -1,0 +1,8 @@
+# Dependency install scripts. None are needed: esbuild and unrs-resolver get their binaries from
+# platform packages, onnxruntime-node ships its CPU binaries (its script only downloads GPU ones),
+# and protobufjs's only checks versions.
+allowBuilds:
+  esbuild: false
+  onnxruntime-node: false
+  protobufjs: false
+  unrs-resolver: false

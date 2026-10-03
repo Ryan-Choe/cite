@@ -58,7 +58,7 @@ function reply(response: AskResponse): Response {
 
 /**
  * Each question spends the owner's API credit, so only the chat page on this machine may ask.
- * `npm run dev` listens on 127.0.0.1 only; checking Host also stops DNS rebinding (an attacker's
+ * `pnpm dev` listens on 127.0.0.1 only; checking Host also stops DNS rebinding (an attacker's
  * domain pointed at 127.0.0.1), and checking that Origin is this same origin stops other websites,
  * including other local servers, from posting here.
  */

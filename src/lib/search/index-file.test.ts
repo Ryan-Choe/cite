@@ -25,8 +25,8 @@ describe("readIndex", () => {
   });
 
   it("refuses an index built with another embedding model, whose vectors would be noise to search", async () => {
-    await expect(readIndex({ ...embedding, model: "other/model" }, dir)).rejects.toThrow(/built with test\/model.*npm run ingest/);
-    await expect(readIndex({ ...embedding, dtype: "fp32" }, dir)).rejects.toThrow(/npm run ingest/);
+    await expect(readIndex({ ...embedding, model: "other/model" }, dir)).rejects.toThrow(/built with test\/model.*pnpm ingest/);
+    await expect(readIndex({ ...embedding, dtype: "fp32" }, dir)).rejects.toThrow(/pnpm ingest/);
   });
 
   it("refuses a vectors file that doesn't belong to its chunks", async () => {

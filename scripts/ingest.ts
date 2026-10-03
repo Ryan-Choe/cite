@@ -1,5 +1,5 @@
 /**
- * npm run ingest — PDF → sections → chunks → embeddings → data/index/
+ * pnpm ingest — PDF → sections → chunks → embeddings → data/index/
  *
  * Also writes human-readable previews to .cache/ (git-ignored) for eyeballing the results.
  */

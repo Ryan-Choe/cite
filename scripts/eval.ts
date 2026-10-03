@@ -1,5 +1,5 @@
 /**
- * npm run eval [-- --answers | --regrade] [-- path/to/questions.json]
+ * pnpm eval [--answers | --regrade] [path/to/questions.json]
  *
  * Retrieval check (default, no API calls): for each answerable question, is the passage holding its
  * evidence quote among the top 12 (TOP_K)? Reported for semantic search alone and for the full search (with

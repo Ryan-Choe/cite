@@ -76,7 +76,7 @@ export function Chat({ apiKeyConfigured }: { apiKeyConfigured: boolean }) {
       {!apiKeyConfigured && (
         <div role="alert" className="mt-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100">
           <strong>Setup needed:</strong> add your Anthropic API key to <code>.env.local</code> as{" "}
-          <code>ANTHROPIC_API_KEY=…</code> (see <code>.env.example</code>), then restart <code>npm run dev</code>.
+          <code>ANTHROPIC_API_KEY=…</code> (see <code>.env.example</code>), then restart <code>pnpm dev</code>.
         </div>
       )}
 
@@ -328,7 +328,7 @@ async function postQuestion(question: string, history: { question: string; searc
       body: JSON.stringify({ question, history }),
     });
   } catch {
-    return { status: "error", code: "unavailable", message: "Couldn't reach the Cite server. Is `npm run dev` running?", retryable: true };
+    return { status: "error", code: "unavailable", message: "Couldn't reach the Cite server. Is `pnpm dev` running?", retryable: true };
   }
   // The server answered; if it isn't an AskResponse, it crashed before it could build one.
   const body: unknown = await res.json().catch(() => null);

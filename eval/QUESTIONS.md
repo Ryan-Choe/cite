@@ -21,7 +21,7 @@
 
 ## Finding the right answers
 
-- The only source used was the section text in `.cache/sections-preview.md`, the parsed handbook PDF with one line per paragraph and page tags. **The app's search was never run or read** while writing the questions. That means no `npm run search`, no `npm run eval`, no `src/lib/search/`, no vectors and no chunk preview.
+- The only source used was the section text in `.cache/sections-preview.md`, the parsed handbook PDF with one line per paragraph and page tags. **The app's search was never run or read** while writing the questions. That means no `pnpm run search`, no `pnpm eval`, no `src/lib/search/`, no vectors and no chunk preview.
 - After writing each question, we grepped the whole section file with several keywords and synonyms to find *other* sections that also answer it. A section went into `expect` only if it actually contains the answer, not if it merely mentions the topic. Each `evidence` quote was checked to appear word for word on the cited page of the first expected section.
 - Places where we had to make a judgement call:
   - `hogpatch-founder-access`: `brand/startups` lists "Access to HogPatch for the duration of their time in the batch" as a perk of the YC deal. That conflicts with `people/hogpatch` ("invite-only, … you can't apply"), so it was left out of `expect`. `people/hogpatch-operations` ("a handpicked group of YC founders") is included.
@@ -61,7 +61,7 @@ Each of these is close to something the handbook does cover, but asks for a deta
 
 ## Scoring (decided before the first run)
 
-- **Retrieval** (`npm run eval`): an answerable question passes if a chunk from any expected section is among the top 8 search results. *(Later changed: the check now counts only the chunk holding the question's evidence quote, because a section has a median of 10 chunks (13 on average) and the looser rule overstated recall. See [SEARCH.md](SEARCH.md).)*
-- **Answers** (`npm run eval -- --answers`): answerable questions and follow-ups pass if Cite answers with at least one citation from an expected section. Follow-ups are asked with their first question as conversation history, so they go through the rewriting step.
+- **Retrieval** (`pnpm eval`): an answerable question passes if a chunk from any expected section is among the top 8 search results. *(Later changed: the check now counts only the chunk holding the question's evidence quote, because a section has a median of 10 chunks (13 on average) and the looser rule overstated recall. See [SEARCH.md](SEARCH.md).)*
+- **Answers** (`pnpm eval --answers`): answerable questions and follow-ups pass if Cite answers with at least one citation from an expected section. Follow-ups are asked with their first question as conversation history, so they go through the rewriting step.
 - **Out-of-scope:** the question **passes** if Cite declines. If Cite gives a **partial answer** instead, the result is **review**. That is allowed by Cite's rules (cite what the handbook says, and state plainly what it doesn't), and all three out-of-scope questions sit right next to covered topics. A person reads each "review" answer to check it names the gap and doesn't invent the missing detail.
 - To reproduce the section draw, run `node eval/sample-sections.mjs`. It writes the same shuffled lists every time.

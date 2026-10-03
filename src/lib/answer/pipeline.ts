@@ -86,7 +86,7 @@ async function answer(question: string, history: NonNullable<AskRequest["history
     index = await getIndex();
   } catch (error) {
     console.error("[ask] couldn't load the search index:", error);
-    return askError("index_unavailable", "Couldn't load the search index in data/index/. The details are in the server log; `npm run ingest` rebuilds it.");
+    return askError("index_unavailable", "Couldn't load the search index in data/index/. The details are in the server log; `pnpm ingest` rebuilds it.");
   }
 
   const searchStarted = performance.now();

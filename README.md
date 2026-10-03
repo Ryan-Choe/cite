@@ -10,12 +10,12 @@ The handbook is PostHog's public handbook (`public/handbook.pdf`, printed 2026-0
 
 ## Quick start
 
-Requires Node.js 22+ and an [Anthropic API key](https://console.anthropic.com/).
+Requires Node.js 22+, [pnpm](https://pnpm.io/installation) and an [Anthropic API key](https://console.anthropic.com/).
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env.local   # then put your key after ANTHROPIC_API_KEY=
-npm run dev                  # open http://localhost:3000
+pnpm dev                     # open http://localhost:3000
 ```
 
 The search index is committed (`data/index/`), so there is no build step. The first question downloads a small embedding model (~35 MB, once, into `.cache/models/`), so it takes a few extra seconds.
@@ -26,7 +26,7 @@ The search index is committed (`data/index/`), so there is no build step. The fi
 question → [rewrite follow-up] → search → Claude (citations on) → grounding gate → [gap re-search] → answer + citation cards
 ```
 
-1. **Ingest (offline, `npm run ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, indentation gives list nesting, and each indentation's own right margin tells a wrapped line from a deliberate break (text in callout boxes wraps early). The 254 sections are split into 3,211 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded locally with arctic-embed-s, a small model trained for search.
+1. **Ingest (offline, `pnpm ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, indentation gives list nesting, and each indentation's own right margin tells a wrapped line from a deliberate break (text in callout boxes wraps early). The 254 sections are split into 3,211 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded locally with arctic-embed-s, a small model trained for search.
 2. **Follow-ups.** In a conversation, Claude Haiku 4.5 rewrites a follow-up such as "Is it paid?" into a standalone question ("Is the parental leave policy paid?"), shown in the UI as "Searched for: …". If the rewrite fails, the original question is used.
 3. **Search.** Semantic search finds the 12 chunks closest in meaning to the question, so paraphrases match ("ill" → "sick"). A keyword safety net covers what embeddings miss: if the question contains a word that appears in at most 3 chunks (`search_insights`, "Hedgehouse", an email address), keyword search (BM25) looks it up, and its best match takes the last slot unless semantic search already found it. Earlier versions merged the keyword and semantic rankings instead; [Evaluation](#evaluation) explains why that was dropped.
 4. **Answer with citations.** Claude Sonnet 5.5 answers using only those chunks, via Anthropic's citations feature. Each paragraph is a separate citable block, so every quote is an exact handbook paragraph with a known page.
@@ -39,14 +39,14 @@ The full design, with the alternatives considered and why they were rejected, is
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Run the app at http://localhost:3000 (this computer only) |
-| `npm run search -- "question"` | Show the top search results, their similarity to the question, and what the keyword safety net added (no API key needed) |
-| `npm run eval` | Retrieval eval (no API calls): is the passage holding the answer in the top 12, with and without the keyword safety net. Defaults to `eval/questions.json`; pass another set, e.g. `eval/search-dev.json` |
-| `npm run eval -- --answers` | Answer eval through the full pipeline (~20–25¢ per set). Add `eval/holdout.json` to run the held-out set |
-| `npm run eval -- --regrade` | Grade the saved answers again with the current rules (no API calls, writes nothing) |
-| `npm run ingest` | Rebuild `data/index/` from the PDF (~1 minute); previews go to `.cache/` |
-| `npm test` | Unit tests (layout parsing, chunking, keyword safety net, index checks, grounding gate, gaps, the ask pipeline and route, follow-up rewriting) |
-| `npm run typecheck` / `npm run lint` | Static checks |
+| `pnpm dev` | Run the app at http://localhost:3000 (this computer only) |
+| `pnpm run search "question"` | Show the top search results, their similarity to the question, and what the keyword safety net added (no API key needed) |
+| `pnpm eval` | Retrieval eval (no API calls): is the passage holding the answer in the top 12, with and without the keyword safety net. Defaults to `eval/questions.json`; pass another set, e.g. `eval/search-dev.json` |
+| `pnpm eval --answers` | Answer eval through the full pipeline (~20–25¢ per set). Add `eval/holdout.json` to run the held-out set |
+| `pnpm eval --regrade` | Grade the saved answers again with the current rules (no API calls, writes nothing) |
+| `pnpm ingest` | Rebuild `data/index/` from the PDF (~1 minute); previews go to `.cache/` |
+| `pnpm test` | Unit tests (layout parsing, chunking, keyword safety net, index checks, grounding gate, gaps, the ask pipeline and route, follow-up rewriting) |
+| `pnpm typecheck` / `pnpm lint` | Static checks |
 
 ## Configuration
 
@@ -116,12 +116,12 @@ Each column is a single run, so a one-question change is 10 points. Runs 1 and 2
 - The PDF is the source of truth, not the live posthog.com handbook, which has changed since it was printed.
 - Ingestion relies on this PDF's structure (each section starts with a title and a `contents/handbook/….md` path line). Other PDFs would need a generic fallback chunker.
 - The handbook is trusted content. The prompt tells Claude to treat excerpt text as reference material, but there are no stronger prompt-injection defenses.
-- Single user, on this computer: no auth, no persistence. The conversation lives in the browser and clears on refresh. Because every question spends the owner's API credit, `npm run dev` and `npm start` listen on 127.0.0.1 only, and `/api/ask` refuses requests from other websites (Origin), other host names (Host, which stops DNS rebinding), non-JSON bodies, and oversized ones. Running `next dev` without `-H 127.0.0.1` would expose the server to your network again.
+- Single user, on this computer: no auth, no persistence. The conversation lives in the browser and clears on refresh. Because every question spends the owner's API credit, `pnpm dev` and `pnpm start` listen on 127.0.0.1 only, and `/api/ask` refuses requests from other websites (Origin), other host names (Host, which stops DNS rebinding), non-JSON bodies, and oversized ones. Running `next dev` without `-H 127.0.0.1` would expose the server to your network again.
 
 ## Limitations
 
 - **Search misses some questions worded differently from the handbook** ("people recommending us" vs "word-of-mouth growth") and names made of common words ("Product for Engineers"). Across the eval sets, the passage with the answer is outside the top 12 for 19 of 116 questions. Cite then says "not found", which is safe but unhelpful, or the gap re-search finds it.
-- **Some answer text is uncited.** The gate requires at least one valid citation per answer, not one per sentence. In run 2, about 19 of 22 answers opened with an uncited sentence, so the grey "not cited" style marked the main answer. The prompt now asks for a cited first sentence, and the gate drops an uncited sentence that the cited one after it repeats; in runs 3, 4 and 5, 5 of 28, 5 of 29 and 5 of 29 answers opened with an uncited sentence (`npm run eval -- --answers` reports this). Framing lines ("What the handbook does cover:") stay uncited. The UI shows uncited text grey with a dotted underline, and the server log reports uncited characters per answer.
+- **Some answer text is uncited.** The gate requires at least one valid citation per answer, not one per sentence. In run 2, about 19 of 22 answers opened with an uncited sentence, so the grey "not cited" style marked the main answer. The prompt now asks for a cited first sentence, and the gate drops an uncited sentence that the cited one after it repeats; in runs 3, 4 and 5, 5 of 28, 5 of 29 and 5 of 29 answers opened with an uncited sentence (`pnpm eval --answers` reports this). Framing lines ("What the handbook does cover:") stay uncited. The UI shows uncited text grey with a dotted underline, and the server log reports uncited characters per answer.
 - **A gap may be wrong.** "Not found in the passages searched" means search didn't find it, not that the handbook lacks it. The gap re-search fills some gaps but not all: in the eval it found the passage with the answer for 3 of the 4 earlier false "the handbook doesn't say" answers, but not the fourth. When Claude still writes "the passages don't say X" despite the prompt, the sentence is dropped, since the gaps box already says what wasn't found. Other wordings ("the handbook doesn't say X") are left as written: uncited, they're shown grey and dotted as unsupported; a clause inside a cited sentence isn't marked; neither is searched again. Cite used to detect and remove every wording with patterns; that was dropped because English has too many wordings for patterns to cover, and blind graders rated answers without it the same as with it (21 of 30 correct, 2 false "doesn't say" each; [eval/results/regrade-blind-simplify.json](eval/results/regrade-blind-simplify.json)). Both false ones in the run without it began "The passages don't…", which is why that one wording is still dropped. The eval flags answers with a sentence that names the handbook or the passages next to a negation, for a person to check.
 - **Tables** whose cells wrap onto several lines come out jumbled in extraction. Single-line tables read correctly (cells are separated with `|`).
 - **Names and other link text** are missing from the PDF's text layer ("requests are handled by , , and on the team"), so "who handles X" questions often can't be answered.

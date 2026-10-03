@@ -8,7 +8,7 @@ import { env, pipeline, type FeatureExtractionPipeline } from "@huggingface/tran
  * No API key needed: the model (~35 MB) downloads from Hugging Face on first use and is cached
  * in .cache/models (git-ignored).
  *
- * The index records which model made its vectors; changing this means running `npm run ingest`.
+ * The index records which model made its vectors; changing this means running `pnpm ingest`.
  */
 export const EMBEDDING = {
   model: "Snowflake/snowflake-arctic-embed-s",

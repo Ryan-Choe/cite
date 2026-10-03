@@ -69,7 +69,7 @@ With the plain tokenizer, `html.to.design` split into "html" (in 3 chunks, so ra
 
 Int8 arctic-embed-s for semantic search, plus the rare-word safety net (at most 3 chunks, joined strings kept whole, no stemming, replacing slot 8). Full-precision arctic-embed-m found 2 more of the 64 blind questions, which is within noise, for a 13× bigger download and slower ingest and queries; its int8 version (3× the download) found the same 52.
 
-Current results, from `npm run eval -- eval/<set>.json`:
+Current results, from `pnpm eval eval/<set>.json`:
 
 | Set | Before | Now |
 |---|---|---|
@@ -85,4 +85,4 @@ After an independent review, two fixes went into the net, with no change to any 
 
 - Everything except the held-out set's first run was chosen on these questions.
 - This measures search only. Answers haven't been re-run with the new search (about 45¢ for sets A and B).
-- The comparison harness (model sweep, rerankers, net variants) was throwaway code and isn't committed; the chosen setup is what `npm run eval` measures.
+- The comparison harness (model sweep, rerankers, net variants) was throwaway code and isn't committed; the chosen setup is what `pnpm eval` measures.

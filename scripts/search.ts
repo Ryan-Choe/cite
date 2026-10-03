@@ -1,5 +1,5 @@
 /**
- * npm run search -- "how much vacation can I take?"
+ * pnpm run search "how much vacation can I take?"
  *
  * Debugging aid: shows the top results with their similarity to the question, the question's
  * rare words (if any), and which result the keyword safety net put in.
@@ -11,7 +11,7 @@ import { loadIndex, search } from "../src/lib/search/search";
 async function main() {
   const query = process.argv.slice(2).join(" ").trim();
   if (!query) {
-    console.error('Usage: npm run search -- "your question"');
+    console.error('Usage: pnpm run search "your question"');
     process.exit(1);
   }
 
