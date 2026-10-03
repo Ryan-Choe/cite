@@ -109,8 +109,6 @@ src/app/api/ask/route.ts         HTTP: local callers only, validation, status co
 src/app/chat.tsx                 chat UI
 ```
 
-Authorship: Ryan set the requirements and made every design decision in a structured design review (this doc). Claude Code wrote the code and tests and walked Ryan through each piece; Ryan chose to learn by reading and questioning working code rather than writing it line by line. See the README's "How I used AI" section.
-
 ## Build order (and cut line)
 
 Each step leaves a working app. If time runs short, cut from the bottom.

@@ -135,15 +135,3 @@ Each column is a single run, so a one-question change is 10 points. Runs 1 and 2
 2. **Grow the answer eval.** The search sets have 96 questions, but the answer eval still runs on sets A and B (20 answerable questions), so a one-question difference there is 5–10 points.
 3. **Check grounding per sentence.** For each uncited sentence that makes a claim, check with a cheap model call that it follows from the quotes cited next to it, and label the ones that pass "summary of [n]" instead of greying them. Dropping them instead would often drop the answer itself.
 4. **Hosting.** Deploy with auth and a spend cap. It was skipped because a public URL spends the owner's API credit, and the embedding runtime may exceed Vercel's function size limit.
-
-## How I used AI
-
-<!-- DRAFT written by Claude from the session history. Ryan: rewrite this in your own words before submitting. -->
-
-I built Cite with Claude Code as a pair programmer.
-
-- **Research before code.** Claude extracted and measured the PDF (1,076 pages, ~500k tokens), which ruled out sending the whole handbook per question. It also test-ran the TypeScript PDF and embedding libraries before I committed to a stack.
-- **Design review.** Claude interviewed me through every design decision in rounds, each with a recommendation. I made the calls: for example, multi-turn conversation (against its initial recommendation), refuse-and-point for out-of-scope questions, and opening the PDF at the cited page. The result is [docs/DESIGN.md](docs/DESIGN.md).
-- **Implementation.** Claude wrote the code and tests; I reviewed each piece through walkthroughs on real data. I initially planned to write the chunker, fusion function, prompt and grounding gate myself, then chose to learn them by reading and questioning working code, given the time budget.
-- **Verification.** Claude ran the code against the real PDF at each step and fixed what that surfaced. Examples: page headers leaking into the text, wrapped lines being split, false page-break joins, and a React effect that crashed the page.
-- **Evaluation without bias.** I asked for the eval questions to be written "unbiased". Claude had separate agents, which never saw the app's search, write them from randomly drawn sections, and kept a second set back until tuning was done. That held-out set caught that our first set overstated search quality.
