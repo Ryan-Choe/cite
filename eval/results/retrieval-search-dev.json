@@ -1,0 +1,296 @@
+{
+  "topK": 8,
+  "total": 40,
+  "hits": {
+    "semantic": 32,
+    "search": 32,
+    "section": 36
+  },
+  "keywordNet": {
+    "used": 4,
+    "addedAnswer": 0,
+    "pushedOutAnswer": 0
+  },
+  "rows": [
+    {
+      "id": "three-finger-rule-meaning",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "pitching-changes-billing",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "linkedin-job-title",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "mention-watching-customer-activity",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "postgres-ingestion-slowdown-cause",
+      "semanticRank": 69,
+      "searchRank": null,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "postmortem-call-invitees",
+      "semanticRank": 141,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "disciplinary-appeal-deadline",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "refund-request-deadline",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "sales-interview-demo-length",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "reply-speed-user-feedback",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "read-others-feedback-first",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "trial-extension-ask-in-return",
+      "semanticRank": 15,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "philosophy-club-just-listen",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "big-deal-definition",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "number-of-product-managers",
+      "semanticRank": 923,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "aws-cli-explicit-deny-error",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "senior-hire-process-length",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "oncall-shifts-calendar-sync",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "share-revenue-externally",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "losing-to-pendo",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "designer-interview-round-length",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "renewal-outreach-quiet-customer",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "cve-without-incident",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "revenue-month-attribution",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "quarterly-planning-meeting-length",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "recurring-report-requests",
+      "semanticRank": 108,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "flag-update-delay-root-cause",
+      "semanticRank": 15,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "exec-owner-clickhouse-team",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "partner-joining-offsite",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "yc-credits-for-baa",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "monthly-card-spending-limit",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "cross-sell-opp-minimum-mrr",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "public-incident-writeup-criteria",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "company-planning-horizon",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "ops-trial-day-task",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "support-zero-weeks-allocation",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "tech-interview-language-matters",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "churn-risk-review-day",
+      "semanticRank": 91,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "join-other-team-planning",
+      "semanticRank": 8,
+      "searchRank": 8,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "easiest-ai-integration-for-product",
+      "semanticRank": 193,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
+    }
+  ]
+}

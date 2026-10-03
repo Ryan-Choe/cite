@@ -18,17 +18,17 @@ cp .env.example .env.local   # then put your key after ANTHROPIC_API_KEY=
 npm run dev                  # open http://localhost:3000
 ```
 
-The search index is committed (`data/index/`), so there is no build step. The first question downloads a small embedding model (~90 MB, once, into `.cache/models/`), so it takes a few extra seconds.
+The search index is committed (`data/index/`), so there is no build step. The first question downloads a small embedding model (~35 MB, once, into `.cache/models/`), so it takes a few extra seconds.
 
 ## How it works
 
 ```
-question → [rewrite follow-up] → hybrid search → Claude (citations on) → grounding gate → [gap re-search] → answer + citation cards
+question → [rewrite follow-up] → search → Claude (citations on) → grounding gate → [gap re-search] → answer + citation cards
 ```
 
-1. **Ingest (offline, `npm run ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, indentation gives list nesting, and each indentation's own right margin tells a wrapped line from a deliberate break (text in callout boxes wraps early). The 254 sections are split into 3,211 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded with a local MiniLM model.
+1. **Ingest (offline, `npm run ingest`).** The PDF is parsed using its layout, not just its text: font size identifies section titles and sub-headings, line spacing separates paragraphs, indentation gives list nesting, and each indentation's own right margin tells a wrapped line from a deliberate break (text in callout boxes wraps early). The 254 sections are split into 3,211 chunks of up to 1,000 characters, never spanning two sub-headings. Each chunk is embedded locally with arctic-embed-s, a small model trained for search.
 2. **Follow-ups.** In a conversation, Claude Haiku 4.5 rewrites a follow-up such as "Is it paid?" into a standalone question ("Is the parental leave policy paid?"), shown in the UI as "Searched for: …". If the rewrite fails, the original question is used.
-3. **Hybrid search.** Keyword search (BM25) catches exact terms like "Deel" or "PTO". Semantic search (embeddings) catches paraphrases ("ill" → "sick"). The two rankings are merged with weighted Reciprocal Rank Fusion, with keyword search at half weight (see [Evaluation](#evaluation)), and the top 8 chunks go to Claude.
+3. **Search.** Semantic search finds the 8 chunks closest in meaning to the question, so paraphrases match ("ill" → "sick"). A keyword safety net covers what embeddings miss: if the question contains a word that appears in at most 3 chunks (`search_insights`, "Hedgehouse", an email address), keyword search (BM25) looks it up, and its best match takes the 8th slot unless semantic search already found it. Earlier versions merged the keyword and semantic rankings instead; [Evaluation](#evaluation) explains why that was dropped.
 4. **Answer with citations.** Claude Sonnet 5.5 answers using only those chunks, via Anthropic's citations feature. Each paragraph is a separate citable block, so every quote is an exact handbook paragraph with a known page.
 5. **Grounding gate.** Each citation is checked against the text we sent. An answer with no valid citations is never shown as an answer; it becomes "Not found in the passages searched", with the closest sections listed. Answer text without a citation is shown grey and dotted.
 6. **Gap re-search.** Claude sees 8 passages, not the whole handbook, so it can't know what the handbook *doesn't* say. Instead of writing "the handbook doesn't say X", it lists X as a gap. Cite searches each gap on its own and, if that finds passages Claude hasn't seen, asks Claude again with them added. Gaps that remain are shown as "Not found in the passages searched", with a note that the handbook may still cover them.
@@ -40,12 +40,12 @@ The full design, with the alternatives considered and why they were rejected, is
 | Command | What it does |
 |---|---|
 | `npm run dev` | Run the app at http://localhost:3000 (this computer only) |
-| `npm run search -- "question"` | Show the top search results and where each retriever ranked them (no API key needed) |
-| `npm run eval` | Retrieval eval (no API calls): hit@8 for keyword, semantic and hybrid search over `eval/questions.json` |
+| `npm run search -- "question"` | Show the top search results, their similarity to the question, and what the keyword safety net added (no API key needed) |
+| `npm run eval` | Retrieval eval (no API calls): is the passage holding the answer in the top 8, with and without the keyword safety net. Defaults to `eval/questions.json`; pass another set, e.g. `eval/search-dev.json` |
 | `npm run eval -- --answers` | Answer eval through the full pipeline (~20–25¢ per set). Add `eval/holdout.json` to run the held-out set |
 | `npm run eval -- --regrade` | Grade the saved answers again with the current rules (no API calls, writes nothing) |
 | `npm run ingest` | Rebuild `data/index/` from the PDF (~1 minute); previews go to `.cache/` |
-| `npm test` | Unit tests (layout parsing, chunking, rank fusion, grounding gate, gaps, the ask pipeline and route, follow-up rewriting) |
+| `npm test` | Unit tests (layout parsing, chunking, keyword safety net, index checks, grounding gate, gaps, the ask pipeline and route, follow-up rewriting) |
 | `npm run typecheck` / `npm run lint` | Static checks |
 
 ## Configuration
@@ -58,25 +58,30 @@ The full design, with the alternatives considered and why they were rejected, is
 
 ## Evaluation
 
-There are two blind question sets, each written by a separate agent that never saw the app's search or any results:
+There are five blind question sets, each written by separate agents that never saw the app's search or any results:
 - **Set A** ([eval/questions.json](eval/questions.json)): 10 answerable questions, 3 follow-ups, 3 out-of-scope.
 - **Set B** ([eval/holdout.json](eval/holdout.json)): 10 answerable questions, 2 follow-ups, 2 out-of-scope.
+- **Search sets**, written for choosing the search method ([eval/SEARCH.md](eval/SEARCH.md)): a tuning set ([eval/search-dev.json](eval/search-dev.json), 40 questions), a held-out set for the final check ([eval/search-holdout.json](eval/search-holdout.json), 24), and a set where each question hinges on a rare exact name such as `search_insights` or `/kudos` ([eval/search-exact.json](eval/search-exact.json), 32).
 
 How the questions were made:
 - **Sections drawn at random.** A seeded shuffle ([eval/sample-sections.mjs](eval/sample-sections.mjs)) picked the sections. Half come from the people/company policy pages, half from anywhere in the handbook.
-- **Phrased like an employee.** Questions use an employee's own words, not the handbook's, which makes keyword matching harder.
+- **Phrased like an employee.** Sets A and B, and about two-thirds of the search tuning and held-out questions, use an employee's own words, not the handbook's, which makes keyword matching harder. The rest name a term an employee would know ("Brex", "incident.io"); the exact-name set uses rare handbook strings on purpose.
 - **Answer locations found by text search.** The ground truth comes from grep over the parsed text, not from the app.
 
-Each set was committed before its first run. Set A was used for tuning. Set B was written after tuning and run once, so its "before" numbers below are the honest held-out measure. The gap re-search was designed after reading set B's failures, so set B's "now" numbers aren't held out; a new set C would be. Method notes: [eval/QUESTIONS.md](eval/QUESTIONS.md), [eval/HOLDOUT.md](eval/HOLDOUT.md).
+Sets A and B were each committed before their first run; the search sets were written, and checked against the text, before any search ran on them. Set A was used for tuning. Set B was written after tuning and run once, so its "before" numbers below are the honest held-out measure. The gap re-search was designed after reading set B's failures, so set B's "now" numbers aren't held out. Method notes: [eval/QUESTIONS.md](eval/QUESTIONS.md), [eval/HOLDOUT.md](eval/HOLDOUT.md), [eval/SEARCH.md](eval/SEARCH.md).
 
-**Retrieval** (is a chunk from the right section in the top 8?):
+**Retrieval** (is the passage holding the answer in the top 8?). A chunk from the right section isn't enough: sections have a median of 10 chunks (13 on average), and the older section-level check credited set A with 9/10 when the answer itself was in the top 8 for 6.
 
-| | keyword | semantic | hybrid |
+| | MiniLM + keyword merge (before) | arctic-embed-s (int8) | **+ keyword safety net (now)** |
 |---|---|---|---|
-| Set A, equal-weight fusion (first run) | 6/10 | 9/10 | 7/10 |
-| Set A, keyword at half weight (tuned) | 6/10 | 9/10 | 9/10 |
-| **Set B, held out** (keyword at half weight) | 5/10 | 6/10 | **6/10** |
-| Set B, equal-weight fusion (measured afterwards, for comparison) | 5/10 | 6/10 | 6/10 |
+| Set A (10) | 6 | 8 | **8** |
+| Set B (10) | 3 | 4 | **4** |
+| Search tuning set (40) | 28 | 32 | **32** |
+| Search held-out set (24) | 18 | 20 | **20** |
+| Exact-name set (32) | 22 | 27 | **30** |
+| **All 116** | 77 (66%) | 91 (78%) | **94 (81%)** |
+
+The held-out set's first and only blind run compared four finalists: the old search found 18 of 24, full-precision arctic-embed-s 19. The int8 version shipped here was chosen afterwards, for its size, and scores 20.
 
 **Answers** (full pipeline). The automated check only asks whether an answer cites the right section, so the "correct" rows come from blind re-grades against each question's reference answer and the handbook text. The graders were two separate Claude agents that saw neither the automated grades nor this README; they agreed on every row, both before the gap re-search was added ([eval/results/regrade-blind.json](eval/results/regrade-blind.json), answers from commit 91f2d69) and after it ([eval/results/regrade-blind-gaps.json](eval/results/regrade-blind-gaps.json)):
 
@@ -90,18 +95,15 @@ Each set was committed before its first run. Set A was used for tuning. Set B wa
 | Out-of-scope: declined | 2/3 | 1/3 | 1/2 | 1/2 |
 | Out-of-scope: partial answer that names the gap | 1/3 | 2/3 | 1/2 | 1/2 |
 
-"Before" is the tuned pipeline (set A's first run cited the right section for 7/10). "Now" adds the gap re-search; each column is a single run, so a one-question change is 10 points. Both answer runs used the index from before the parser fixes (3,205 chunks); with the fixed index, the retrieval results above are unchanged.
+"Before" is the tuned pipeline (set A's first run cited the right section for 7/10). "Now" adds the gap re-search; each column is a single run, so a one-question change is 10 points. Both answer runs used the old search (MiniLM with the keyword merge) and the index from before the parser fixes (3,205 chunks); they haven't been re-run with the new search.
 
 **What the eval showed:**
 - **Not every failure was safe.** Before the gap re-search, in 4 of the 25 answerable questions and follow-ups, search missed the passage with the answer, and Claude turned "not in my passages" into "the handbook doesn't say". It told the employee the handbook doesn't say a side gig needs approval (it says to get an exec's sign-off, p966), names no special reviewer for PRs that change a GitHub Actions workflow (they need a security-team review, p128), and doesn't say how support tickets are split (p1052). The automated check passed all four, because it only looked at which section was cited.
 - **The gap re-search fixed three of them.** In the new run, no answer says the handbook lacks something it has. In all three repaired answers (both side-gig answers and the support split), the passage with the answer was not in the first 8 search results; searching Claude's own gap phrases ("approval or disclosure process for side gigs or freelance work") found it, and Claude's second answer used it. The fourth, the PR-review rule, sits in a post-mortem's list of changes that no search finds; it is now a safe miss, listed as "not found in the passages searched". One answer got worse: the logs follow-up now opens with "The handbook doesn't show that the older data was recovered", a hedge the absence detector doesn't catch, so both graders scored it partially correct.
-- **Search recall is the bottleneck.** On set B, four questions were missed by every retriever, in two ways:
-  - **Vocabulary gaps:** three questions use different words from the handbook. "Share of customers from people recommending us" vs "word of mouth"; "rubric to move up" vs "career progression"; "get a company-wide app approved" vs "adding tools".
-  - **No phrase matching:** "who runs Product for Engineers?" names the newsletter exactly, but every one of those words appears all over an engineering handbook, and BM25 scores words independently. Chunks about "product" and "engineers" outrank the one sentence that answers it.
-
-  Set A's 9/10 overstated recall, which is why set B exists.
-- **Equal-weight fusion hurt.** Keyword search ranks chunks that share only common words ("work", "posthog") highly, and at equal weight that pushed correct semantic results out of the top 8. Halving keyword search's weight fixed that on set A (7 → 9/10). On set B it made no difference (6/10 either way), so the gain is real but modest. With the new weighting, hybrid search was never worse than either retriever alone.
-- **Retrieval hits are section-level.** A "hit" can be a different chunk of the right section. For example, "who started PostHog" retrieved the 2024 entry of the company timeline, not the founding entry, and Claude correctly declined. The automated answer check is section-level too, so only reading the answers against the reference (the blind re-grade) catches a wrong answer that cites the right section. To help with that, the eval now sends every answer that names a gap to a person, with the reference answer printed next to it.
+- **Search recall was the bottleneck, and section-level hits hid how much.** The first search used MiniLM, a general-purpose embedding model, merged with keyword search. Counting only the passage that holds the answer, it found 77 of 116. Across 9 embedding models, rerankers and fusion settings ([eval/SEARCH.md](eval/SEARCH.md)), the clearest gain came from a model trained for search: arctic-embed-s (int8, 35 MB) found 91, and ranked the answer first for 36 of the 64 blind search questions, against 20.
+- **Merging keyword and semantic rankings hurt.** With Reciprocal Rank Fusion, a chunk only semantic search found, even at #1, lost to chunks both searches ranked mid-list, and at the tuned half weight a chunk only keyword search found could never reach the top 8. (Under the stricter check, the old equal-weight merge actually did better than the tuned half weight, 82 vs 77 of 116, mostly on exact names: tuning on set A's 10 questions didn't hold up.) With full-precision arctic-embed-s, merging keyword search in at weights from 0.1 to 1 gained at most one top-8 hit (on 60 questions) and lowered #1 hits at every weight (27 → 15–25). The narrow safety net that replaced it acted on 20 of 116 questions, added the answer for 3 exact-name questions, and pushed no correct passage out.
+- **What search still misses:** questions worded differently from the handbook ("people recommending us" vs "word-of-mouth growth", "a rubric to move up" vs "a formal career progression framework"), names made of common words ("Product for Engineers"), and facts mentioned in passing in a passage about something else ("our product managers (we have four today)"). The held-out search set shows the limits honestly: in its one blind run, top-8 hits rose only from 18 to 19 of 24; most of the gain there is in ranking.
+- **Answer checks are section-level.** The automated answer check only asks whether an answer cites the right section, so only reading the answers against the reference (the blind re-grade) catches a wrong answer that cites the right section. For example, "who started PostHog" once retrieved the 2024 entry of the company timeline, not the founding entry, and Claude correctly declined. To help with that, the eval sends every answer that names a gap to a person, with the reference answer printed next to it.
 - **Partial answers to out-of-scope questions** cite what *is* there and list the rest as gaps ("on-call compensation or time off in lieu for weekend on-call"). An early version added uncited advice ("…is probably the place to ask"); the prompt forbids it, and uncited text is now shown grey.
 - **Cost and speed:** about 1.5¢ per question on average (Sonnet 5.5; $0.24 for set A, $0.20 for set B). Most answers take one Claude call: about 1.1¢ and 2–3 s (median). The gap re-search ran on 8 of 22 answered questions and asked Claude again each time; those answers took about 2.6–3¢ and 6–7 s. Follow-ups add about 1 s for the rewrite.
 
@@ -114,7 +116,7 @@ Each set was committed before its first run. Set A was used for tuning. Set B wa
 
 ## Limitations
 
-- **Search misses questions worded differently from the handbook** ("chip in" vs "budgetary support"). It also misses names made of common words ("Product for Engineers"), because keyword search has no phrase matching. On the held-out set, 4/10 questions failed this way. Cite then says "not covered", which is safe but unhelpful.
+- **Search misses some questions worded differently from the handbook** ("people recommending us" vs "word-of-mouth growth") and names made of common words ("Product for Engineers"). Across the eval sets, the passage with the answer is outside the top 8 for 22 of 116 questions. Cite then says "not found", which is safe but unhelpful, or the gap re-search finds it.
 - **Some answer text is uncited.** The gate requires at least one valid citation per answer, not one per sentence, so framing lines ("What the handbook does cover:") and the occasional summary sentence carry no marker. The UI shows that text grey with a dotted underline, and the server log reports uncited characters per answer.
 - **A gap may be wrong.** "Not found in the passages searched" means search didn't find it, not that the handbook lacks it. The gap re-search fills some gaps but not all: in the eval it found the passage with the answer for 3 of the 4 earlier false "the handbook doesn't say" answers, but not the fourth. The detector for such sentences also misses some wordings ("the handbook doesn't show…"), and a clause inside a *cited* sentence stays in the answer (taking it out would take cited text with it); both are searched again only if detected, and the eval sends detected ones to review.
 - **Tables** whose cells wrap onto several lines come out jumbled in extraction. Single-line tables read correctly (cells are separated with `|`).
@@ -125,8 +127,8 @@ Each set was committed before its first run. Set A was used for tuning. Set B wa
 
 ## Next steps
 
-1. **Improve search recall.** Rewrite *every* question (not just follow-ups) into handbook-style search terms before searching. Add phrase matching for quoted or capitalized names. Try a stronger embedding model or a reranker. Measure against a new held-out set C, since set B has now been seen.
-2. **Grow the eval** to ~50 questions, so a one-question difference stops being 10 percentage points.
+1. **Improve search recall further.** Rewrite *every* question (not just follow-ups) into handbook-style search terms before searching (Haiku, ~0.1¢ and ~1 s per question); this targets the remaining vocabulary gaps. Re-run the answer eval with the new search (~45¢).
+2. **Grow the answer eval.** The search sets have 96 questions, but the answer eval still runs on sets A and B (20 answerable questions), so a one-question difference there is 5–10 points.
 3. **Check grounding per sentence.** Require a citation on every sentence that makes a claim, and drop or re-check the rest, instead of only greying them.
 4. **Hosting.** Deploy with auth and a spend cap. It was skipped because a public URL spends the owner's API credit, and the embedding runtime may exceed Vercel's function size limit.
 

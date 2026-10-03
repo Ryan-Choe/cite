@@ -1,0 +1,392 @@
+[
+ {
+  "id": "tower-governor-blocked-traffic",
+  "question": "why did tower-governor end up blocking almost everyone?",
+  "term": "tower-governor",
+  "termKind": "third-party library name (Rust rate limiting middleware)",
+  "expect": [
+   "company/post-mortems/2025-10-21-feature-flags-recurring-outages"
+  ],
+  "answer": "It saw all traffic as coming from one IP (the load balancer) instead of real client IPs, so nearly all requests got 429 errors.",
+  "evidence": "p109: The tower-governor library (our Rust rate limiting middleware) saw all traffic as coming from a single IP (our load balancer)",
+  "pool": "policy"
+ },
+ {
+  "id": "ghosting-sequence-first-email",
+  "question": "what do i send first in the john barrows ghosting sequence?",
+  "term": "John Barrows Ghosting Sequence",
+  "termKind": "named sales technique",
+  "expect": [
+   "growth/sales/getting-people-to-talk-to-you"
+  ],
+  "answer": "After 2 weeks of silence, reply-all on the latest thread with subject \"Still interested?\", asking if they're still looking; end \"Let me know either way.\"",
+  "evidence": "p585: reply-all to the latest email thread. Change the subject to: \"Still interested?\"",
+  "pool": "other"
+ },
+ {
+  "id": "security-internal-email-use",
+  "question": "when would i send something to security-internal@posthog.com?",
+  "term": "security-internal@posthog.com",
+  "termKind": "email alias",
+  "expect": [
+   "company/security"
+  ],
+  "answer": "When reporting phishing: after you post a screenshot in #phishing-attempts, the security team may ask you to forward the email there for inspection.",
+  "evidence": "p147: You may be asked to forward the email to security-internal@posthog.com for further inspection.",
+  "pool": "policy"
+ },
+ {
+  "id": "bookhog-meeting-day",
+  "question": "what day of the week does bookhog usually happen on?",
+  "term": "BookHog",
+  "termKind": "internal event/meeting name",
+  "expect": [
+   "getting-started/meetings"
+  ],
+  "answer": "Usually on Fridays. It's one of the extracurricular-type meetings that tend to end up on that day.",
+  "evidence": "p427: Friday - extracurricular type meetings like BookHog often end up here!",
+  "pool": "other"
+ },
+ {
+  "id": "post-termination-certificate-required",
+  "question": "do i really need to sign a post-termination certificate?",
+  "term": "post-termination certificate",
+  "termKind": "document name (HR form)",
+  "expect": [
+   "people/offboarding"
+  ],
+  "answer": "Only to get payments beyond your final day. Without it (or a separation agreement or release), PostHog pays only what statute and contract require.",
+  "evidence": "p949: We ask departing team members to sign a post-termination certificate, separation agreement or release in order to receive payments",
+  "pool": "policy"
+ },
+ {
+  "id": "exa-ai-vs-chatgpt",
+  "question": "why would i use exa.ai over chatgpt for research?",
+  "term": "exa.ai",
+  "termKind": "third-party tool name",
+  "expect": [
+   "content/newsletter-tips"
+  ],
+  "answer": "It's an AI search engine that's better at surfacing real examples. ChatGPT tends to give plausible-sounding examples that are made up.",
+  "evidence": "p174: exa.ai — an AI search engine that's much better than ChatGPT for surfacing real examples",
+  "pool": "other"
+ },
+ {
+  "id": "bookhog-book-expenses",
+  "question": "can i expense the books for BookHog?",
+  "term": "BookHog",
+  "termKind": "event/program name (book club)",
+  "expect": [
+   "people/training"
+  ],
+  "answer": "Yes. You can spend your books budget (up to $50/month, no approval needed) on the books for BookHog, the monthly book club.",
+  "evidence": "p986: Additionally, we host a monthly book club called BookHog, and the budget can be used for those books as well.",
+  "pool": "policy"
+ },
+ {
+  "id": "technical-csm-account-count",
+  "question": "how many accounts does a technical customer success manager look after?",
+  "term": "Technical Customer Success Manager",
+  "termKind": "job title / role name",
+  "expect": [
+   "cs-and-onboarding/lifecycle-csm",
+   "cs-and-onboarding/how-we-use-automation",
+   "cs-and-onboarding/new-hire-onboarding",
+   "growth/sales/team-leads"
+  ],
+  "answer": "Around 30 accounts in their book of business.",
+  "evidence": "p237: you are assigned a book of business with ~30 accounts to work with",
+  "pool": "other"
+ },
+ {
+  "id": "hedgehouse-for-new-starter",
+  "question": "can i take a new starter to the hedgehouse for their first week?",
+  "term": "Hedgehouse",
+  "termKind": "company location / property name",
+  "expect": [
+   "people/onboarding",
+   "company/offsites"
+  ],
+  "answer": "Yes. Team leads are encouraged to consider the Hedgehouse for in-person onboarding, and everyone should have their own bedroom.",
+  "evidence": "p952: We encourage team leads to consider the Hedgehouse as a location for in-person onboarding.",
+  "pool": "policy"
+ },
+ {
+  "id": "search-insights-tool-replaced",
+  "question": "do we still have a search_insights tool in posthog ai?",
+  "term": "search_insights",
+  "termKind": "agent tool name",
+  "expect": [
+   "engineering/ai/architecture"
+  ],
+  "answer": "No. It and search_docs were replaced by one unified search tool. You pass kind=insights (or kind=docs) to choose what to search.",
+  "evidence": "p265: search existing insights (kind=insights), or search other resources as we add them. This replaced having separate search_docs and search_insights tools.",
+  "pool": "other"
+ },
+ {
+  "id": "unconscious-bias-training-required",
+  "question": "is there unconscious bias training i have to take?",
+  "term": "unconscious bias training",
+  "termKind": "program/training name",
+  "expect": [
+   "company/grown-ups"
+  ],
+  "answer": "No. PostHog doesn't do it: its applicant data shows under-represented groups gain no advantage or disadvantage from hiring, and the training's effectiveness is debatable.",
+  "evidence": "p71: Unconscious bias training. Our applicant data shows that under-represented groups are no more or less advantaged by our hiring process",
+  "pool": "policy"
+ },
+ {
+  "id": "dribbble-design-portfolio",
+  "question": "what's on our dribbble?",
+  "term": "Dribbble",
+  "termKind": "third-party site/tool name",
+  "expect": [
+   "brand/process"
+  ],
+  "answer": "PostHog's design portfolio.",
+  "evidence": "p19: You can find PostHog's design portfolio on Dribbble... or just have a look around!",
+  "pool": "other"
+ },
+ {
+  "id": "kudos-command-visibility",
+  "question": "if i send someone a /kudos can the rest of the channel see it?",
+  "term": "/kudos",
+  "termKind": "Slack slash command",
+  "expect": [
+   "company/kudos"
+  ],
+  "answer": "No. Nobody else in the chat can see it; the person will likely see themselves recognised at Monday All-Hands.",
+  "evidence": "p72: The kudos gift won't be visible in the chat for anyone else",
+  "pool": "policy"
+ },
+ {
+  "id": "hogflix-demo-project-data",
+  "question": "does the hogflix demo project already have data in it?",
+  "term": "HogFlix",
+  "termKind": "demo project name",
+  "expect": [
+   "cs-and-onboarding/new-hire-onboarding",
+   "onboarding/new-hire-onboarding"
+  ],
+  "answer": "Yes. It's already populated with data, so you can use it to work through the product curriculum for self-led training and demo practice.",
+  "evidence": "p243: You can work through this with the HogFlix Demo App project which is already populated with data.",
+  "pool": "other"
+ },
+ {
+  "id": "ashby-candidate-self-booking",
+  "question": "do candidates pick their own interview slots through Ashby?",
+  "term": "Ashby",
+  "termKind": "third-party tool name (applicant tracking system)",
+  "expect": [
+   "people/talent"
+  ],
+  "answer": "Yes, for the two stages between screening and SuperDay: talent partners rely on Ashby automation so candidates book directly in calendars.",
+  "evidence": "p978: we rely on automation from Ashby to allow candidates to book directly in calendars.",
+  "pool": "policy"
+ },
+ {
+  "id": "html-to-design-usage",
+  "question": "what do we use html.to.design for?",
+  "term": "html.to.design",
+  "termKind": "third-party tool name",
+  "expect": [
+   "brand/designing-posthog-website"
+  ],
+  "answer": "Exporting product screenshots in light and dark mode, for a single central place for product screenshots.",
+  "evidence": "p4: a singular place for product screenshots, which are exported in light and dark mode using html.to.design.",
+  "pool": "other"
+ },
+ {
+  "id": "devrel-superday-repo-setup",
+  "question": "do i have to set up my own repo for the devrel superday?",
+  "term": "DevRel SuperDay",
+  "termKind": "interview stage / program name",
+  "expect": [
+   "people/hiring-process/devrel-hiring"
+  ],
+  "answer": "No. PostHog creates and sets up a private GitHub repo for you, and you hand in code plus a README there.",
+  "evidence": "p916: GitHub repo with code and README (we'll create and setup a private repo)",
+  "pool": "policy"
+ },
+ {
+  "id": "cta-after-customer-raise",
+  "question": "can i put a CTA in my first message to a customer who just raised money?",
+  "term": "CTA",
+  "termKind": "acronym",
+  "expect": [
+   "growth/sales/communications-templates-fundraising"
+  ],
+  "answer": "No. The same-day message should only congratulate them, with no CTA. Follow up with something relevant about 3–4 weeks later.",
+  "evidence": "p515: Day-of: Congratulatory message (no CTA).",
+  "pool": "other"
+ },
+ {
+  "id": "vestwell-401k-match",
+  "question": "does posthog put anything into my Vestwell account?",
+  "term": "Vestwell",
+  "termKind": "third-party provider name (401k administrator)",
+  "expect": [
+   "people/benefits"
+  ],
+  "answer": "Yes. Vestwell manages the US 401k plan, and PostHog matches contributions up to 4%.",
+  "evidence": "p900: In the US, our 401k plan is managed by Vestwell and we match up to 4%.",
+  "pool": "policy"
+ },
+ {
+  "id": "alsoasked-free-tier-limit",
+  "question": "how many searches a day do i get on alsoasked for free?",
+  "term": "AlsoAsked",
+  "termKind": "third-party tool name",
+  "expect": [
+   "content/seo-guide"
+  ],
+  "answer": "Three searches per day on AlsoAsked's free tier.",
+  "evidence": "p192: A useful little tool with a decent free tier – 3 searches per day.",
+  "pool": "other"
+ },
+ {
+  "id": "talent-folks-become-interviewer",
+  "question": "i want to start interviewing candidates, do i just ask @talent-folks?",
+  "term": "@talent-folks",
+  "termKind": "Slack user group handle",
+  "expect": [
+   "people/hiring-process/engineering-hiring"
+  ],
+  "answer": "Yes. Tag @talent-folks in the #team-talent Slack channel and a Talent Partner will onboard you, but not during your first 90 days.",
+  "evidence": "p920: you can request so by contacting the talent team using the @talent-folks handle in Slack in the #team-talent channel",
+  "pool": "policy"
+ },
+ {
+  "id": "hogspy-extension-purpose",
+  "question": "what can i use hogspy for?",
+  "term": "HogSpy",
+  "termKind": "internal browser extension / tool name",
+  "expect": [
+   "onboarding/onboarding-conversations-playbook"
+  ],
+  "answer": "It's an extension for auditing a customer's implementation of identify, feature flags and experiments. It complements Metabase analysis when preparing for calls.",
+  "evidence": "p881: You can supplement Metabase analysis with the HogSpy extension to audit the implementation of identify, flags, and experiments.",
+  "pool": "other"
+ },
+ {
+  "id": "loud-noises-font-usage",
+  "question": "what am i supposed to use the Loud Noises font for?",
+  "term": "Loud Noises",
+  "termKind": "font/typeface name",
+  "expect": [
+   "company/brand-assets",
+   "brand/style-guide"
+  ],
+  "answer": "Only for quotes in hedgehog artwork, such as a sign a hedgehog is holding or anywhere hedgehogs are saying something. Always uppercase.",
+  "evidence": "p42: Loud Noises is used for quotes in hedgehog artwork.",
+  "pool": "policy"
+ },
+ {
+  "id": "phrocs-tool-purpose",
+  "question": "what's phrocs and what would i use it for?",
+  "term": "phrocs",
+  "termKind": "internal developer tool name",
+  "expect": [
+   "engineering/developer-experience"
+  ],
+  "answer": "A terminal UI (TUI) for local dev: managing local services, restarting them and viewing their logs.",
+  "evidence": "p300: phrocs TUI — manage local services, restart, view logs",
+  "pool": "other"
+ },
+ {
+  "id": "weave-data-visibility",
+  "question": "can my teammates see my weave data?",
+  "term": "Weave",
+  "termKind": "internal tool name (engineering stats)",
+  "expect": [
+   "company/management"
+  ],
+  "answer": "Yes. Engineers can log in to Weave and see their own stats and those of other engineers.",
+  "evidence": "p78: Engineers can log in to see their numbers and those of other engineers.",
+  "pool": "policy"
+ },
+ {
+  "id": "model-health-dashboard-metrics",
+  "question": "what metrics go on a model health dashboard?",
+  "term": "Model Health",
+  "termKind": "dashboard name",
+  "expect": [
+   "growth/use-case-selling/ai-llm-observability"
+  ],
+  "answer": "Latency, cost, error rates and quality scores.",
+  "evidence": "p731: Build a \"Model Health\" dashboard: latency, cost, error rates, quality scores",
+  "pool": "other"
+ },
+ {
+  "id": "pool-timed-out-error-cause",
+  "question": "what caused the 'pool timed out while waiting for an open connection' errors?",
+  "term": "pool timed out while waiting for an open connection",
+  "termKind": "error message",
+  "expect": [
+   "company/post-mortems/2025-09-29-flags-is-down"
+  ],
+  "answer": "A DB connection timeout cut from 1s to 300ms during heavy writer-database load from person ingestion, so pods couldn't connect (Sept 29, 2025 outage).",
+  "evidence": "p99: A database connection timeout reduction from 1 second to 300 milliseconds coincided with elevated load on our writer database",
+  "pool": "policy"
+ },
+ {
+  "id": "screen-studio-clips",
+  "question": "what am i supposed to use screen studio for in an article?",
+  "term": "Screen Studio",
+  "termKind": "third-party tool name",
+  "expect": [
+   "content/posthog-style-guide"
+  ],
+  "answer": "To record short clips as MP4s to add to your markdown, instead of uploading animated GIFs (which are large and lossy).",
+  "evidence": "p185: Do not upload animated GIFs. They're large and lossy. Instead, record short clips as MP4s using Screen Studio",
+  "pool": "other"
+ },
+ {
+  "id": "octobox-io-purpose",
+  "question": "what's octobox.io good for?",
+  "term": "octobox.io",
+  "termKind": "third-party tool name (website)",
+  "expect": [
+   "company/new-to-github"
+  ],
+  "answer": "Reading GitHub notifications in an email-like inbox in the browser. The guide's author prefers it to GitHub's slow /notifications page.",
+  "evidence": "p85: I have octobox.io set to my homepage in Chrome, so anytime I want to see my notifications",
+  "pool": "policy"
+ },
+ {
+  "id": "reporter-email-press-alias",
+  "question": "a reporter emailed me directly, do i forward it to press@posthog.com or answer it myself?",
+  "term": "press@posthog.com",
+  "termKind": "email alias",
+  "expect": [
+   "brand/press"
+  ],
+  "answer": "Forward it to press@posthog.com, including emails you get personally. Only Joe, James, Tim or Charles should speak to the press for PostHog.",
+  "evidence": "p16: Any press-related enquiries should be directed to press@posthog.com - this includes any emails you receive personally.",
+  "pool": "other"
+ },
+ {
+  "id": "shiphero-merch-role",
+  "question": "what does Shiphero do for us?",
+  "term": "Shiphero",
+  "termKind": "third-party tool/vendor name",
+  "expect": [
+   "company/merch-store"
+  ],
+  "answer": "It ships our merch. Micromerch does shipping in partnership with Shiphero, which automatically ships Shopify store orders to buyers in 200+ territories.",
+  "evidence": "p81: Shipping is also done through Micromerch (in partnership with Shiphero) - they can ship to over 200 territories worldwide:",
+  "pool": "policy"
+ },
+ {
+  "id": "gdr-excludes-expansion",
+  "question": "does gdr count expansion revenue?",
+  "term": "GDR",
+  "termKind": "metric name / acronym",
+  "expect": [
+   "growth/revops/retention-metrics"
+  ],
+  "answer": "No. GDR caps each customer's current revenue at their base-month amount, so it only measures downgrades and churn, not expansions.",
+  "evidence": "p475: GDR caps each customer's current revenue at their base month amount so it only measures downgrades and churn.",
+  "pool": "other"
+ }
+]

@@ -27,7 +27,7 @@ const monitors = chunk("spending-money#4", "Monitors are up to $500.");
 /** search() results by query; anything else finds only the laptops chunk. */
 function searchFinds(results: Record<string, Chunk[]>) {
   vi.mocked(search).mockImplementation(async (_index, query) =>
-    (results[query] ?? [laptops]).map((c) => ({ chunk: c, score: 1, keywordRank: 1, semanticRank: 1 })),
+    (results[query] ?? [laptops]).map((c) => ({ chunk: c, similarity: 1, via: "semantic" as const })),
   );
 }
 
@@ -156,7 +156,7 @@ describe("ask: gap re-search", () => {
   });
 
   it("keeps the first answer when the gap search itself fails", async () => {
-    vi.mocked(search).mockResolvedValueOnce([{ chunk: laptops, score: 1, keywordRank: 1, semanticRank: 1 }]).mockRejectedValueOnce(new Error("boom"));
+    vi.mocked(search).mockResolvedValueOnce([{ chunk: laptops, similarity: 1, via: "semantic" as const }]).mockRejectedValueOnce(new Error("boom"));
     vi.mocked(answerWithCitations).mockResolvedValueOnce(partialAnswer);
     const { response, trace } = await ask({ question: "laptop?" });
     expect(response).toMatchObject({ status: "answered", gaps: ["monitor budget"] });
@@ -166,7 +166,7 @@ describe("ask: gap re-search", () => {
 
   it("keeps the first answer when the gap search hangs", async () => {
     vi.useFakeTimers();
-    vi.mocked(search).mockResolvedValueOnce([{ chunk: laptops, score: 1, keywordRank: 1, semanticRank: 1 }]).mockReturnValueOnce(new Promise(() => {}));
+    vi.mocked(search).mockResolvedValueOnce([{ chunk: laptops, similarity: 1, via: "semantic" as const }]).mockReturnValueOnce(new Promise(() => {}));
     vi.mocked(answerWithCitations).mockResolvedValueOnce(partialAnswer);
     const asked = ask({ question: "laptop?" });
     await vi.advanceTimersByTimeAsync(45_000);

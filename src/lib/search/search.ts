@@ -1,114 +1,80 @@
-import MiniSearch from "minisearch";
-import { bodyText, type Chunk } from "../chunk";
-import { dot, embed } from "./embed";
-import { reciprocalRankFusion, type Fused } from "./fuse";
+import type { Chunk } from "../chunk";
+import { dot, EMBEDDING, embedQuery } from "./embed";
 import { readIndex, warnIfStale, type IndexFile } from "./index-file";
+import { buildKeywordIndex, rareWordMatch, withKeywordMatch, type KeywordIndex } from "./keyword";
 
-/** How many chunks the answer step gets, and how deep each retriever looks before fusing. */
+/** How many chunks the answer step gets. */
 export const TOP_K = 8;
-const CANDIDATES = 50;
-
-/**
- * Keyword search counts half as much as semantic search in the fusion. Employees paraphrase
- * ("freelance work" for "side gigs"), and on paraphrased questions BM25 ranks chunks that merely
- * share common words ("work", "paid", "posthog") near the top. At equal weight that noise pushed
- * correct chunks out of the top 8 (eval set A: hybrid 7/10 vs semantic-only 9/10). At half weight,
- * keyword search still lifts exact-term matches ("Deel", "BAA") but can't crowd out semantic hits.
- */
-export const KEYWORD_WEIGHT = 0.5;
-
-// Very common words carry no meaning for keyword search ("how", "do", "i", …). BM25 already
-// down-weights them, but dropping them keeps a question's filler from matching everything.
-const STOP_WORDS = new Set(
-  ("a an and are as at be but by can could do does for from had has have how i if in into is it its " +
-    "me my of on or our should so that the their them then there these they this to us was we were " +
-    "what when where which who why will with would you your").split(" "),
-);
 
 export interface HandbookIndex {
   source: IndexFile["source"];
   chunks: Chunk[];
   byId: Map<string, Chunk>;
   vectors: Float32Array[];
-  keyword: MiniSearch<{ id: string; title: string; body: string }>;
+  keyword: KeywordIndex;
 }
 
 export interface SearchHit {
   chunk: Chunk;
-  score: number; // fused RRF score
-  keywordRank: number | null; // 1-based position in each retriever's list, if it found this chunk
-  semanticRank: number | null;
+  /** Cosine similarity to the query, -1 to 1. */
+  similarity: number;
+  /** "keyword" if the keyword safety net put it in (the query shares a rare word with it). */
+  via: "semantic" | "keyword";
 }
 
 export async function loadIndex(dir?: string): Promise<HandbookIndex> {
-  const { file, vectors } = await readIndex(dir);
+  const { file, vectors } = await readIndex(EMBEDDING, dir);
   void warnIfStale(file.source); // runs in the background; only logs
-  const keyword = new MiniSearch<{ id: string; title: string; body: string }>({
-    fields: ["title", "body"],
-    processTerm: (term) => (STOP_WORDS.has(term.toLowerCase()) ? null : term.toLowerCase()),
-    searchOptions: { boost: { title: 2 } }, // a match in "Time off › Booking" says more than one in the body
-  });
-  keyword.addAll(file.chunks.map((c) => ({ id: c.id, title: c.title, body: bodyText(c) })));
   return {
     source: file.source,
     chunks: file.chunks,
     byId: new Map(file.chunks.map((c) => [c.id, c])),
     vectors,
-    keyword,
+    keyword: buildKeywordIndex(file.chunks),
   };
 }
 
-// Load once per process (and survive Next.js dev hot reloads), like the embedding model. A failed
-// load is forgotten, so the next question tries again instead of failing until a restart.
-const globalForIndex = globalThis as unknown as { citeIndex?: Promise<HandbookIndex> };
+// Load once per process (and survive Next.js dev hot reloads), like the embedding model, and keyed
+// by model the same way. A failed load is forgotten, so the next question tries again instead of
+// failing until a restart.
+const INDEX_KEY = `${EMBEDDING.model}@${EMBEDDING.dtype}`;
+const globalForIndex = globalThis as unknown as { citeIndexByModel?: { key: string; loading: Promise<HandbookIndex> } };
 export function getIndex(): Promise<HandbookIndex> {
-  if (!globalForIndex.citeIndex) {
-    const loading = loadIndex();
-    globalForIndex.citeIndex = loading;
-    loading.catch(() => {
-      if (globalForIndex.citeIndex === loading) globalForIndex.citeIndex = undefined;
-    });
-  }
-  return globalForIndex.citeIndex;
+  const cached = globalForIndex.citeIndexByModel;
+  if (cached?.key === INDEX_KEY) return cached.loading;
+  const entry = { key: INDEX_KEY, loading: loadIndex() };
+  globalForIndex.citeIndexByModel = entry;
+  entry.loading.catch(() => {
+    if (globalForIndex.citeIndexByModel === entry) globalForIndex.citeIndexByModel = undefined;
+  });
+  return entry.loading;
 }
 
-/** Chunk ids ranked by BM25 keyword relevance. */
-export function keywordRanking(index: HandbookIndex, query: string, limit = CANDIDATES): string[] {
-  return index.keyword
-    .search(query)
-    .slice(0, limit)
-    .map((r) => r.id as string);
-}
-
-/** Chunk ids ranked by cosine similarity to the query's embedding. */
-export function semanticRanking(index: HandbookIndex, queryVector: Float32Array, limit = CANDIDATES): string[] {
+/** Every chunk, most similar to the query vector first. With ~3,200 chunks, comparing against all of them takes a millisecond or two. */
+export function semanticRanking(index: HandbookIndex, queryVector: Float32Array): { id: string; similarity: number }[] {
   return index.chunks
     .map((chunk, i) => ({ id: chunk.id, similarity: dot(queryVector, index.vectors[i]) }))
-    .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, limit)
-    .map((r) => r.id);
+    .sort((a, b) => b.similarity - a.similarity);
 }
 
-/** Fuse the two rankings into the hybrid ranking (shared by search() and the eval). */
-export function hybridRanking(keyword: string[], semantic: string[]): Fused[] {
-  return reciprocalRankFusion([
-    { ids: keyword, weight: KEYWORD_WEIGHT },
-    { ids: semantic, weight: 1 },
-  ]);
-}
-
-/** Hybrid search: run both retrievers, fuse their rankings with weighted RRF, return the top chunks. */
+/**
+ * Search: the `limit` chunks closest in meaning to the query, except that the keyword safety net
+ * (see keyword.ts) can take the last slot when the query shares a rare word with a chunk that
+ * semantic search didn't rank that high.
+ */
 export async function search(index: HandbookIndex, query: string, limit = TOP_K): Promise<SearchHit[]> {
-  const keyword = keywordRanking(index, query);
-  const semantic = semanticRanking(index, await embed(query));
-  const rankOf = (list: string[], id: string) => (list.includes(id) ? list.indexOf(id) + 1 : null);
+  const ranked = semanticRanking(index, await embedQuery(query));
+  const similarity = new Map(ranked.map((r) => [r.id, r.similarity]));
+  const match = rareWordMatch(index.keyword, query);
+  const semanticTop = new Set(ranked.slice(0, limit).map((r) => r.id));
 
-  return hybridRanking(keyword, semantic)
-    .slice(0, limit)
-    .map(({ id, score }) => ({
-      chunk: index.byId.get(id)!,
-      score,
-      keywordRank: rankOf(keyword, id),
-      semanticRank: rankOf(semantic, id),
-    }));
+  return withKeywordMatch(
+    ranked.map((r) => r.id),
+    match,
+    limit,
+  ).map((id) => ({
+    chunk: index.byId.get(id)!,
+    similarity: similarity.get(id)!,
+    via: semanticTop.has(id) ? "semantic" : "keyword",
+  }));
 }

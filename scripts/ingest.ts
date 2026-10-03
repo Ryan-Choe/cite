@@ -9,7 +9,7 @@ import path from "node:path";
 import { bodyText, chunkSection, renderBlock, searchText, type Chunk } from "../src/lib/chunk";
 import { readSections } from "../src/lib/ingest/extract";
 import type { Section } from "../src/lib/ingest/types";
-import { EMBEDDING_DIM, EMBEDDING_MODEL, embed } from "../src/lib/search/embed";
+import { EMBEDDING, embedPassage } from "../src/lib/search/embed";
 import { INDEX_DIR, writeIndex } from "../src/lib/search/index-file";
 
 const PDF_PATH = "public/handbook.pdf";
@@ -28,20 +28,16 @@ async function main() {
   printChunkStats(chunks, sections.length);
 
   // One at a time: batching pads short chunks to the longest one, which was slower in testing.
-  console.log(`\nEmbedding ${chunks.length} chunks with ${EMBEDDING_MODEL}…`);
+  console.log(`\nEmbedding ${chunks.length} chunks with ${EMBEDDING.model} (${EMBEDDING.dtype})…`);
   const embedStarted = Date.now();
   const vectors: Float32Array[] = [];
   for (const chunk of chunks) {
-    vectors.push(await embed(searchText(chunk)));
+    vectors.push(await embedPassage(searchText(chunk)));
     if (vectors.length % 500 === 0) console.log(`  ${vectors.length}/${chunks.length}`);
   }
   console.log(`Embedded in ${((Date.now() - embedStarted) / 1000).toFixed(1)} s`);
 
-  await writeIndex(
-    { version: 1, source: { file: PDF_PATH, sha256, pageCount }, embedding: { model: EMBEDDING_MODEL, dim: EMBEDDING_DIM } },
-    chunks,
-    vectors,
-  );
+  await writeIndex({ version: 2, source: { file: PDF_PATH, sha256, pageCount }, embedding: EMBEDDING }, chunks, vectors);
   console.log(`\nWrote ${path.relative(process.cwd(), INDEX_DIR)}/ (${((Date.now() - started) / 1000).toFixed(1)} s total)`);
 }
 

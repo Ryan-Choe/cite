@@ -1,9 +1,10 @@
 /**
  * npm run eval [-- --answers | --regrade] [-- path/to/questions.json]
  *
- * Retrieval check (default, no API calls): for each answerable question, is a chunk from an
- * expected section among the top 8? Reported for keyword-only, semantic-only, and hybrid search,
- * so the value of combining them is measured rather than assumed.
+ * Retrieval check (default, no API calls): for each answerable question, is the passage holding its
+ * evidence quote among the top 8? Reported for semantic search alone and for the full search (with
+ * the keyword safety net), so the net's value is measured rather than assumed. The older,
+ * looser check (any chunk of an expected section in the top 8) is reported too.
  *
  * Answer check (--answers, calls Claude, ~1-2¢ per question): runs each question through the real
  * pipeline (rewrite → search → Claude → grounding gate → gap re-search). Answerable questions and
@@ -21,8 +22,9 @@ import path from "node:path";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
 import { findAbsenceClaims } from "../src/lib/answer/gaps";
 import type { AskResponse } from "../src/lib/answer/types";
-import { embed } from "../src/lib/search/embed";
-import { hybridRanking, keywordRanking, loadIndex, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
+import { searchText } from "../src/lib/chunk";
+import { embedQuery } from "../src/lib/search/embed";
+import { loadIndex, search, semanticRanking, TOP_K, type HandbookIndex } from "../src/lib/search/search";
 
 /** "people/time-off" matches contents/handbook/people/time-off.md. */
 type Expectation = string[] | "not-covered";
@@ -33,6 +35,8 @@ export interface EvalQuestion {
   expect: Expectation;
   /** The reference answer, printed next to answers that need a person to review them. */
   answer?: string;
+  /** "p<page>: <verbatim quote>" from the first expected section; the retrieval check looks for the chunk holding it. */
+  evidence?: string;
   /** A follow-up asked right after `question`, with it as conversation history. */
   followUp?: { question: string; expect: Expectation; answer?: string };
 }
@@ -67,45 +71,85 @@ function checkExpectations(index: HandbookIndex, questions: EvalQuestion[]) {
 
 // --- Retrieval eval ----------------------------------------------------------------------
 
-const METHODS = ["keyword", "semantic", "hybrid"] as const;
-type Method = (typeof METHODS)[number];
+const normalize = (text: string) => text.replace(/\s+/g, " ").trim();
 
-/** 1-based rank of the first chunk from an expected section within the top K, or null. */
-function firstHit(index: HandbookIndex, ranking: string[], expected: string[]): number | null {
-  const position = ranking
-    .slice(0, TOP_K)
-    .findIndex((id) => expected.some((e) => matchesSection(index.byId.get(id)!.sectionPath, e)));
-  return position === -1 ? null : position + 1;
+interface RetrievalRow {
+  id: string;
+  /** Rank of the passage holding the answer among all chunks, by semantic search alone. */
+  semanticRank: number | null;
+  /** Its rank in the final search results (with the keyword safety net), or null if not in the top 8. */
+  searchRank: number | null;
+  keywordNet: "added the answer" | "added another passage" | null;
+  /** The older, looser check: any chunk of an expected section in the top 8. */
+  sectionHit: boolean;
+}
+
+/**
+ * The chunks holding a question's evidence quote: the passage the answer has to come from. Any
+ * chunk of the right section isn't enough (a section has a median of 10 chunks), so this is the
+ * hit the retrieval check counts.
+ */
+function answerChunks(index: HandbookIndex, q: EvalQuestion): Set<string> {
+  const quote = /^p\d+: (.+)$/.exec(q.evidence ?? "")?.[1];
+  if (!quote) throw new Error(`${q.id}: needs an evidence quote ("p<page>: <quote>") for the retrieval check`);
+  const expected = q.expect as string[];
+  const found = index.chunks.filter(
+    (c) => expected.some((e) => matchesSection(c.sectionPath, e)) && normalize(searchText(c)).includes(normalize(quote)),
+  );
+  if (found.length === 0) throw new Error(`${q.id}: no chunk of an expected section contains the evidence quote`);
+  return new Set(found.map((c) => c.id));
 }
 
 async function retrievalEval(index: HandbookIndex, questions: EvalQuestion[], set: string) {
   const answerable = questions.filter((q) => q.expect !== "not-covered");
-  console.log(`Retrieval eval — ${answerable.length} answerable questions, hit@${TOP_K}\n`);
-  console.log(`${"question".padEnd(32)} ${METHODS.map((m) => m.padStart(9)).join(" ")}`);
+  const targets = new Map(answerable.map((q) => [q.id, answerChunks(index, q)])); // fail fast, before any embedding
+  console.log(`Retrieval eval — ${answerable.length} answerable questions: is the passage holding the answer in the top ${TOP_K}?\n`);
+  console.log(`${"question".padEnd(34)} ${"semantic".padStart(8)} ${"search".padStart(7)}  keyword safety net`);
 
-  const hits: Record<Method, number> = { keyword: 0, semantic: 0, hybrid: 0 };
-  const rows = [];
+  const rows: RetrievalRow[] = [];
   for (const q of answerable) {
-    const expected = q.expect as string[];
-    const keyword = keywordRanking(index, q.question);
-    const semantic = semanticRanking(index, await embed(q.question));
-    const hybrid = hybridRanking(keyword, semantic).map((f) => f.id);
-
-    const ranks: Record<Method, number | null> = {
-      keyword: firstHit(index, keyword, expected),
-      semantic: firstHit(index, semantic, expected),
-      hybrid: firstHit(index, hybrid, expected),
+    const target = targets.get(q.id)!;
+    const rankIn = (ids: string[]) => {
+      const i = ids.findIndex((id) => target.has(id));
+      return i === -1 ? null : i + 1;
     };
-    for (const m of METHODS) if (ranks[m] !== null) hits[m]++;
-    rows.push({ id: q.id, ...ranks });
-    const cells = METHODS.map((m) => (ranks[m] === null ? "miss" : `#${ranks[m]}`).padStart(9));
-    console.log(`${q.id.slice(0, 32).padEnd(32)} ${cells.join(" ")}`);
+    const semantic = semanticRanking(index, await embedQuery(q.question)).map((r) => r.id);
+    const hits = await search(index, q.question);
+    const added = hits.find((h) => h.via === "keyword")?.chunk.id;
+
+    const row: RetrievalRow = {
+      id: q.id,
+      semanticRank: rankIn(semantic),
+      searchRank: rankIn(hits.map((h) => h.chunk.id)),
+      keywordNet: added === undefined ? null : target.has(added) ? "added the answer" : "added another passage",
+      sectionHit: hits.some((h) => (q.expect as string[]).some((e) => matchesSection(h.chunk.sectionPath, e))),
+    };
+    rows.push(row);
+    console.log(
+      `${q.id.slice(0, 34).padEnd(34)} ${`#${row.semanticRank}`.padStart(8)} ${(row.searchRank ? `#${row.searchRank}` : "miss").padStart(7)}  ${row.keywordNet ?? ""}`,
+    );
   }
 
-  const pct = (n: number) => `${n}/${answerable.length}`.padStart(9);
-  console.log(`${"hit rate".padEnd(32)} ${METHODS.map((m) => pct(hits[m])).join(" ")}`);
-  console.log(`\n#N = rank of the first chunk from an expected section; miss = not in the top ${TOP_K}.`);
-  await saveResults(`retrieval-${set}`, { topK: TOP_K, total: answerable.length, hits, rows });
+  const count = (test: (row: RetrievalRow) => boolean) => rows.filter(test).length;
+  const semanticHit = (r: RetrievalRow) => r.semanticRank !== null && r.semanticRank <= TOP_K;
+  const summary = {
+    topK: TOP_K,
+    total: rows.length,
+    hits: { semantic: count(semanticHit), search: count((r) => r.searchRank !== null), section: count((r) => r.sectionHit) },
+    keywordNet: {
+      used: count((r) => r.keywordNet !== null),
+      addedAnswer: count((r) => r.keywordNet === "added the answer"),
+      pushedOutAnswer: count((r) => semanticHit(r) && r.searchRank === null),
+    },
+  };
+  const of = (n: number) => `${n}/${rows.length}`;
+  console.log(`
+answer passage in the top ${TOP_K}:  semantic search alone ${of(summary.hits.semantic)}, with the keyword safety net ${of(summary.hits.search)}
+keyword safety net used on ${summary.keywordNet.used}: added the answer ${summary.keywordNet.addedAnswer}, pushed the answer out ${summary.keywordNet.pushedOutAnswer}
+any chunk of an expected section in the top ${TOP_K} (the older, looser check): ${of(summary.hits.section)}
+
+#N = rank of the passage holding the answer (semantic: among all chunks); miss = not in the top ${TOP_K}.`);
+  await saveResults(`retrieval-${set}`, { ...summary, rows });
 }
 
 // --- Answer eval -------------------------------------------------------------------------
@@ -197,7 +241,7 @@ async function answerEval(questions: EvalQuestion[], set: string) {
   }
   // Load the search model before any paid call: a failed download stops the run here, and a slow
   // one doesn't turn the first question into a "search unavailable" failure.
-  await embed("warm-up");
+  await embedQuery("warm-up");
   const rows: Row[] = [];
   const run = async (id: string, kind: Row["kind"], question: string, expect: Expectation, reference?: string, history: { question: string; searchedFor: string }[] = []) => {
     const { response, trace } = await ask({ question, history });

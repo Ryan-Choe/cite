@@ -61,7 +61,7 @@ Each of these is close to something the handbook does cover, but asks for a deta
 
 ## Scoring (decided before the first run)
 
-- **Retrieval** (`npm run eval`): an answerable question passes if a chunk from any expected section is among the top 8 search results.
+- **Retrieval** (`npm run eval`): an answerable question passes if a chunk from any expected section is among the top 8 search results. *(Later changed: the check now counts only the chunk holding the question's evidence quote, because a section has a median of 10 chunks (13 on average) and the looser rule overstated recall. See [SEARCH.md](SEARCH.md).)*
 - **Answers** (`npm run eval -- --answers`): answerable questions and follow-ups pass if Cite answers with at least one citation from an expected section. Follow-ups are asked with their first question as conversation history, so they go through the rewriting step.
 - **Out-of-scope:** the question **passes** if Cite declines. If Cite gives a **partial answer** instead, the result is **review**. That is allowed by Cite's rules (cite what the handbook says, and state plainly what it doesn't), and all three out-of-scope questions sit right next to covered topics. A person reads each "review" answer to check it names the gap and doesn't invent the missing detail.
 - To reproduce the section draw, run `node eval/sample-sections.mjs`. It writes the same shuffled lists every time.

@@ -1,0 +1,268 @@
+[
+ {
+  "id": "when-to-use-here",
+  "question": "when is it ok to use @here or @channel in slack?",
+  "expect": [
+   "company/communication"
+  ],
+  "answer": "Only for urgent or time-sensitive posts that need everyone in the channel's immediate attention, e.g. a last-minute meeting link change or urgent outage help.",
+  "evidence": "p52: @channel or @here mentions should be reserved for urgent or time-sensitive posts that require immediate attention",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "product-cost-alert-threshold",
+  "question": "how big a week-to-week jump in my product's total infra spend should set off an alert?",
+  "expect": [
+   "product/per-product-cost-margin-analysis"
+  ],
+  "answer": "Alert when total product cost changes by more than 15% week over week. For individual components the threshold is more than 25%.",
+  "evidence": "p996: Total product cost: alert if week-over-week change > 15%",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "engineer-on-two-teams",
+  "question": "as an engineer can i be on two product teams at the same time?",
+  "expect": [
+   "company/small-teams"
+  ],
+  "answer": "No. Product engineers should never be in more than one team because it undermines ownership. Only supporting roles like PMs and designers can span teams.",
+  "evidence": "p152: product engineers should never be in more than one team because this acts against proper ownership.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "blog-header-image-size",
+  "question": "what size should the main image at the top of a blog post be?",
+  "expect": [
+   "marketing/exporting-blog-post-image",
+   "content/newsletter"
+  ],
+  "answer": "1200x630 pixels, the Open Graph size. That's roughly double display size, so it looks crisp on HiDPI screens.",
+  "evidence": "p825: Open Graph images are 1200x630, so we stick with those dimensions to keep this simple.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "marketing-superday-work-published",
+  "question": "if a marketing candidate writes something during their superday, do we publish it?",
+  "expect": [
+   "people/hiring-process/marketing-hiring"
+  ],
+  "answer": "No. The SuperDay task is usually real marketing work, like creating content or talking to customers, but the work isn't actually published.",
+  "evidence": "p934: creating a piece of content or talking to customers, though we don't actually publish the work",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "posthog-ai-default-billing-cap",
+  "question": "what's the default spending cap on posthog ai for customers?",
+  "expect": [
+   "onboarding/metabase-account-analysis"
+  ],
+  "answer": "$150 by default. The data warehouse's default limit is $500.",
+  "evidence": "p864: The default limit for the data warehouse is $500, and $150 for PostHog AI",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "quarterly-meetup-travel-budget",
+  "question": "how much can i spend each quarter on trips to hang out and work with teammates in person?",
+  "expect": [
+   "company/culture"
+  ],
+  "answer": "Everyone has a $1,500 quarterly travel budget for ad-hoc meetups.",
+  "evidence": "p59: Everyone also has a $1,500 quarterly travel budget for ad-hoc meetups.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "linkedin-links-in-posts",
+  "question": "should i put the link directly in my linkedin post?",
+  "expect": [
+   "content/linkedin"
+  ],
+  "answer": "No. The algorithm penalises direct links. Say \"link in comments\" and add it about 6 hours later, or include an image.",
+  "evidence": "p162: The algorithm hates direct posts to links.",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "secret-master-plan-endgame",
+  "question": "what's the end goal of posthog's secret master plan?",
+  "expect": [
+   "why-does-posthog-exist"
+  ],
+  "answer": "Ship every tool and all the data engineering teams need, use it to speed up the ship-observe-iterate cycle, then eventually automate that entire cycle.",
+  "evidence": "p1071: Eventually, automate the entire cycle",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "replay-postgres-storage",
+  "question": "do regular session recordings get saved in postgres?",
+  "expect": [
+   "engineering/session-replay/session-replay-architecture"
+  ],
+  "answer": "No. Only pinned or persisted (LTS) recordings are written to PostgreSQL. Regular recordings live in ClickHouse's session_replay_events table, with the data in S3.",
+  "evidence": "p406: Regular session recordings (not pinned/persisted) do NOT write to PostgreSQL - they only exist in ClickHouse session_replay_events table",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "new-product-starting-headcount",
+  "question": "how many people usually get put on a brand new product at the start?",
+  "expect": [
+   "people/finance",
+   "making-users-happy"
+  ],
+  "answer": "Just 1 or 2 people. We don't spin up a whole team on day one.",
+  "evidence": "p908: New products start with just 1 or 2 people - we don't spin up a whole team on day 1.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "unlabeled-pr-review-comment",
+  "question": "a reviewer left a comment on my pr with no tag in front of it, do i have to fix it before i merge?",
+  "expect": [
+   "engineering/how-we-review"
+  ],
+  "answer": "No. A comment without a prefix counts as a suggestion, so it's your call. Only 'blocking:' comments must be fixed before merge.",
+  "evidence": "p322: If a comment doesn't have a prefix, assume it's a suggestion.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "pm-first-week-calls",
+  "question": "just started as a pm, how many customer calls should i set up in my first week?",
+  "expect": [
+   "people/ramp-up/product-manager"
+  ],
+  "answer": "Arrange and host at least 2 customer calls, set up through customer success at first, to get feedback on ongoing projects.",
+  "evidence": "p963: Arrange and host 2+ calls (through customer success initially) and get feedback from customers about ongoing projects",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "product-update-call-timing",
+  "question": "what time of day should i run the monthly product update call for the sales and CS folks?",
+  "expect": [
+   "growth/sales/product-enablement"
+  ],
+  "answer": "Ideally 8–10 AM Pacific, so as many people as possible can join live. Make sure it is recorded.",
+  "evidence": "p644: 8-10 AM Pacific time is an ideal slot here",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "engineers-in-marketing-team",
+  "question": "why are there engineers working in marketing?",
+  "expect": [
+   "how-we-get-users"
+  ],
+  "answer": "We hire full-stack developers into marketing so tutorials, docs and posts can cover the full technical depth they need.",
+  "evidence": "p805: We even hire full-stack developers into our marketing team to make sure we can cover the full depth",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "buying-from-yc-startups",
+  "question": "a yc startup reached out trying to sell us their product, should we actually buy it?",
+  "expect": [
+   "strategy/brand"
+  ],
+  "answer": "Take them seriously and buy it if it's genuinely valuable and safe to do so. Otherwise, give them direct feedback.",
+  "evidence": "p1035: if a YC company reaches out, take them seriously and buy their product",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "engineering-superday-pay",
+  "question": "how much do we pay eng candidates for the superday?",
+  "expect": [
+   "people/hiring-process/engineering-superday"
+  ],
+  "answer": "$1,000 USD for the paid full day of work.",
+  "evidence": "p922: The SuperDay is a paid full day of work ($1,000 USD).",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "popup-announcement-flag-tag",
+  "question": "i'm putting up a popup inside the product to announce a feature, do i need to do anything with the feature flag behind it?",
+  "expect": [
+   "brand/in-app"
+  ],
+  "answer": "Yes. Add the Marketing tag to the feature flag that powers the prompt, so others can track which in-app messages are being shown.",
+  "evidence": "p11: Add the Marketing tag to the feature flag used to power your in-app prompt",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "engineer-stuck-before-asking",
+  "question": "i'm an engineer, how long should i try to figure something out myself before asking someone for help?",
+  "expect": [
+   "help"
+  ],
+  "answer": "Try on your own for at least 1 hour, but don't stay totally stuck for more than 2 hours before asking for help.",
+  "evidence": "p801: for at least 1 hour, but don't remain totally stuck on something for more than 2 hours",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "tam-lead-routing-cap",
+  "question": "how many accounts can an account manager have before we stop sending them new leads?",
+  "expect": [
+   "growth/sales/team-leads"
+  ],
+  "answer": "Once a TAM reaches 15 managed customers or $1.5m ARR, stop generating new product-led leads for them, and flag it to Simon.",
+  "evidence": "p685: Once a TAM has hit 15 managed customers or ARR of $1.5m, we should stop generating new product-led leads",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "new-product-fit-customer-count",
+  "question": "how many paying customers does a new product need before we say it's found its fit?",
+  "expect": [
+   "making-users-happy"
+  ],
+  "answer": "Five delighted, paying customers. That's the bar for product-market fit within PostHog's platform.",
+  "evidence": "p810: working with customers until we have five delighted, paying customers.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "new-account-growth-approach",
+  "question": "i just got handed a brand new account. which approach to growing it should i start with in the first few months?",
+  "expect": [
+   "growth/sales/expansion-strategies"
+  ],
+  "answer": "Go deeper: help the existing team adopt more products. For a new account's first 90 days, the handbook says always start there.",
+  "evidence": "p582: New account, first 90 days | Go deeper (always start here)",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "hogpatch-parking",
+  "question": "is there parking at hogpatch if i drive in?",
+  "expect": [
+   "people/hogpatch-operations"
+  ],
+  "answer": "Yes. The building's garage fits 4–5 cars and is for employees only. Ask for a fob, or tell Judy beforehand for a one-off visit.",
+  "evidence": "p942: We have a garage in the building that allows up to 4–5 cars max.",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "stop-automated-onboarding-followup",
+  "question": "how do i stop vitally from sending the automated second onboarding email to a customer i'm already chatting with?",
+  "expect": [
+   "onboarding/onboarding-tracking"
+  ],
+  "answer": "Switch the account to the Onboarding Completed status. That blocks the second outreach, though the graduation email will still send.",
+  "evidence": "p895: To stop the automation, you can flip the account to the Onboarding Completed status.",
+  "pool": "other",
+  "style": "known-term"
+ }
+]

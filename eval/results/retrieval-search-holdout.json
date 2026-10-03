@@ -1,0 +1,184 @@
+{
+  "topK": 8,
+  "total": 24,
+  "hits": {
+    "semantic": 20,
+    "search": 20,
+    "section": 21
+  },
+  "keywordNet": {
+    "used": 5,
+    "addedAnswer": 0,
+    "pushedOutAnswer": 0
+  },
+  "rows": [
+    {
+      "id": "when-to-use-here",
+      "semanticRank": 3,
+      "searchRank": 3,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "product-cost-alert-threshold",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "engineer-on-two-teams",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "blog-header-image-size",
+      "semanticRank": 3,
+      "searchRank": 3,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "marketing-superday-work-published",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "posthog-ai-default-billing-cap",
+      "semanticRank": 3,
+      "searchRank": 3,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "quarterly-meetup-travel-budget",
+      "semanticRank": 11,
+      "searchRank": null,
+      "keywordNet": "added another passage",
+      "sectionHit": false
+    },
+    {
+      "id": "linkedin-links-in-posts",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "secret-master-plan-endgame",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "replay-postgres-storage",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "new-product-starting-headcount",
+      "semanticRank": 724,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "unlabeled-pr-review-comment",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "pm-first-week-calls",
+      "semanticRank": 51,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "product-update-call-timing",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "engineers-in-marketing-team",
+      "semanticRank": 6,
+      "searchRank": 6,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "buying-from-yc-startups",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "engineering-superday-pay",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "popup-announcement-flag-tag",
+      "semanticRank": 46,
+      "searchRank": null,
+      "keywordNet": "added another passage",
+      "sectionHit": false
+    },
+    {
+      "id": "engineer-stuck-before-asking",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "tam-lead-routing-cap",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "new-product-fit-customer-count",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "new-account-growth-approach",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "hogpatch-parking",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "stop-automated-onboarding-followup",
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
+    }
+  ]
+}

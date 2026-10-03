@@ -29,7 +29,7 @@ export interface AskTrace {
 
 type ResearchOutcome = "failed" | "no-new-passages" | "second-call-failed" | "kept-first" | "used-second";
 
-/** How long a question waits for search. The first search after a fresh clone downloads the ~90 MB model. */
+/** How long a question waits for search. The first search after a fresh clone downloads the ~35 MB model. */
 const SEARCH_WAIT_MS = 45_000;
 /** The gap re-search searches at most this many gaps, and adds at most this many passages in total. */
 const MAX_GAP_QUERIES = 3;
@@ -89,10 +89,10 @@ async function answer(question: string, history: NonNullable<AskRequest["history
   } catch (error) {
     console.error("[ask] search failed:", error);
     return error instanceof TimeoutError
-      ? askError("search_unavailable", "The search model is still loading (the first question downloads about 90 MB). Try again in a minute.", true)
+      ? askError("search_unavailable", "The search model is still loading (the first question downloads about 35 MB). Try again in a minute.", true)
       : askError(
           "search_unavailable",
-          "Couldn't load the search model. The first question downloads it from Hugging Face (about 90 MB), so check your internet connection and try again. The details are in the server log.",
+          "Couldn't load the search model. The first question downloads it from Hugging Face (about 35 MB), so check your internet connection and try again. The details are in the server log.",
           true,
         );
   } finally {

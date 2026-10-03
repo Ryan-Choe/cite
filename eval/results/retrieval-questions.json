@@ -2,70 +2,85 @@
   "topK": 8,
   "total": 10,
   "hits": {
-    "keyword": 6,
-    "semantic": 9,
-    "hybrid": 9
+    "semantic": 8,
+    "search": 8,
+    "section": 10
+  },
+  "keywordNet": {
+    "used": 2,
+    "addedAnswer": 0,
+    "pushedOutAnswer": 0
   },
   "rows": [
     {
       "id": "freelance-work-allowed",
-      "keyword": null,
-      "semantic": 3,
-      "hybrid": 6
+      "semanticRank": 3,
+      "searchRank": 3,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "who-founded-posthog",
-      "keyword": null,
-      "semantic": 7,
-      "hybrid": 8
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "contract-feature-deadline",
-      "keyword": 2,
-      "semantic": 3,
-      "hybrid": 1
+      "semanticRank": 6,
+      "searchRank": 6,
+      "keywordNet": "added another passage",
+      "sectionHit": true
     },
     {
       "id": "hogpatch-founder-access",
-      "keyword": 1,
-      "semantic": 1,
-      "hybrid": 1
+      "semanticRank": 6,
+      "searchRank": 6,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "logs-data-loss-cause",
-      "keyword": 1,
-      "semantic": 1,
-      "hybrid": 1
+      "semanticRank": 38,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "product-intent-timing",
-      "keyword": 1,
-      "semantic": 1,
-      "hybrid": 1
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "onsite-visit-threshold",
-      "keyword": 5,
-      "semantic": 2,
-      "hybrid": 1
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "meetup-sponsorship-amount",
-      "keyword": null,
-      "semantic": null,
-      "hybrid": null
+      "semanticRank": 3,
+      "searchRank": 3,
+      "keywordNet": "added another passage",
+      "sectionHit": true
     },
     {
       "id": "salesforce-org-ids",
-      "keyword": 1,
-      "semantic": 1,
-      "hybrid": 1
+      "semanticRank": 2,
+      "searchRank": 2,
+      "keywordNet": null,
+      "sectionHit": true
     },
     {
       "id": "customer-site-debug-mode",
-      "keyword": null,
-      "semantic": 1,
-      "hybrid": 3
+      "semanticRank": 22,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": true
     }
   ]
 }

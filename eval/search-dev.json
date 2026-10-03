@@ -1,0 +1,446 @@
+[
+ {
+  "id": "three-finger-rule-meaning",
+  "question": "someone mentioned the three finger rule in a meeting, what is it?",
+  "expect": [
+   "company/lore"
+  ],
+  "answer": "If someone holds up three fingers while you're talking, it means you're not being concise enough. It's rarely used because it's awkward.",
+  "evidence": "p74: if someone holds up three fingers while you're talking, it means you aren't being concise enough.",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "pitching-changes-billing",
+  "question": "now that we pitch customers on solving their problems instead of selling individual products, does that change how they get billed?",
+  "expect": [
+   "growth/use-case-selling/use-case-selling"
+  ],
+  "answer": "No. Billing, metering and packaging stay the same. Only how we talk about it, organize around it and measure adoption changes.",
+  "evidence": "p798: Billing, metering, and packaging don't change. What changes is how we talk about it, how we organize around it",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "linkedin-job-title",
+  "question": "what should i put as my job title on linkedin?",
+  "expect": [
+   "wide-company"
+  ],
+  "answer": "Say clearly what you focus on, not how senior you are. For example \"Product Analytics Engineer at PostHog\", not \"Senior Engineer\".",
+  "evidence": "p1073: put your title somewhere like LinkedIn, please just say as clearly as you can what you are focused on.",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "mention-watching-customer-activity",
+  "question": "if i can see a customer clicking around in the product, is it ok to tell them that when i reach out?",
+  "expect": [
+   "growth/sales/user-event-streams"
+  ],
+  "answer": "No. Use the activity to time your outreach and check in naturally, without revealing that you're monitoring what they do.",
+  "evidence": "p693: If you notice someone's activity suggests they need help, check in naturally without revealing you're monitoring their every move.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "postgres-ingestion-slowdown-cause",
+  "question": "why did postgres grind event ingestion to a halt on us cloud back in nov 2025?",
+  "expect": [
+   "company/post-mortems/2025-11-15-persons-db-migration"
+  ],
+  "answer": "Postgres TOAST OID exhaustion: the Persons table's large property values nearly used up the ~4 billion OIDs, so each write needed massive disk reads.",
+  "evidence": "p120: We Identified TOAST OID exhaustion as the root cause",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "postmortem-call-invitees",
+  "question": "after a big outage, who do i need to invite to the review meeting?",
+  "expect": [
+   "engineering/operations/post-mortems"
+  ],
+  "answer": "Invite engineering@posthog.com plus any key stakeholders related to the incident.",
+  "evidence": "p333: Schedule the call – Invite engineering@posthog.com and any key stakeholders related to the incident",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "disciplinary-appeal-deadline",
+  "question": "i got a written warning that i think is unfair, how long do i have to challenge it?",
+  "expect": [
+   "people/grievances"
+  ],
+  "answer": "You can appeal within 2 weeks of getting the outcome, if you can show how part of the investigation materially affected it.",
+  "evidence": "p912: Appeals must be submitted within 2 weeks of receiving the outcome.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "refund-request-deadline",
+  "question": "how long after a customer gets charged can they still ask for their money back?",
+  "expect": [
+   "growth/sales/refunds"
+  ],
+  "answer": "The refund request has to be made within 30 days of the billing date.",
+  "evidence": "p652: The request is made within 30 days of the billing date.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "sales-interview-demo-length",
+  "question": "when we interview sales people, how long are they supposed to pitch their current product for?",
+  "expect": [
+   "people/hiring-process/sales-cs-hiring"
+  ],
+  "answer": "About 20 minutes demoing their current product to a mock prospect, then 10 minutes of Q&A, within a roughly 45-minute team lead interview.",
+  "evidence": "p939: aim to present and demo your product for 20 minutes with 10 minutes of questions and answers",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "reply-speed-user-feedback",
+  "question": "i'm an engineer and a user just messaged me back about my feature, how quickly should i reply?",
+  "expect": [
+   "engineering/product-engineering"
+  ],
+  "answer": "Ideally within a minute or two while you're top of mind, which gets about 20x the response rate. Responses drop off hugely after 30+ minutes.",
+  "evidence": "p393: you are likely to get 20x the response rate. That means within a minute or two of receiving a message.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "read-others-feedback-first",
+  "question": "should i check what the other interviewers said about a candidate before writing my own feedback?",
+  "expect": [
+   "people/hiring-process/how-to-interview"
+  ],
+  "answer": "No. Do your final write-up before reading anyone else's feedback, so you aren't biased by what colleagues think.",
+  "evidence": "p932: When you do your final write up on a candidate, do this ahead of reading the feedback from others.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "trial-extension-ask-in-return",
+  "question": "a prospect wants a few more weeks to test us out before buying — should i get anything from them in exchange?",
+  "expect": [
+   "growth/sales/running-trials"
+  ],
+  "answer": "Yes. For extra trial time (7–30 days), ask for something back: stakeholder intros, starting procurement, a verbal commitment, or weekly check-ins.",
+  "evidence": "p669: When considering granting extra time (7-30 days), we should ask for something in return.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "philosophy-club-just-listen",
+  "question": "can i join philosophy club just to listen without talking?",
+  "expect": [
+   "people/philosophy-club"
+  ],
+  "answer": "No. The only rule is no observers: if you join a session, you're expected to take part.",
+  "evidence": "p962: The only rule is no observers - if you join a session, you should expect to take part.",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "big-deal-definition",
+  "question": "what makes a customer deal count as a really big one for us? is it just the dollar size, or do things like a long procurement process matter too?",
+  "expect": [
+   "growth/sales/overview"
+  ],
+  "answer": "When it has most of these: over $250k/year, a 3+ month procurement process, requests for new features, and multiple stakeholders who aren't all engineers.",
+  "evidence": "p642: The deal is larger than $250k/year",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "number-of-product-managers",
+  "question": "how many pms do we actually have?",
+  "expect": [
+   "world-class-engineering"
+  ],
+  "answer": "Four product managers. Engineers decide what to build, and the PMs coach them if they need help.",
+  "evidence": "p1075: our product managers (we have four today) will give you coaching.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "aws-cli-explicit-deny-error",
+  "question": "aws cli keeps telling me i'm not authorized 'with an explicit deny', what am i doing wrong?",
+  "expect": [
+   "engineering/cloud-providers"
+  ],
+  "answer": "It's likely because MFA is enforced. Get a temporary session token with aws sts get-session-token using your MFA device, then export those credentials.",
+  "evidence": "p296: likely is due to the fact that we force Multi-Factor Authentication (MFA). Follow this guide to use a session token.",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "senior-hire-process-length",
+  "question": "when we're recruiting for a really senior role, how many days should the whole interview process take?",
+  "expect": [
+   "people/hiring-process/exec-hiring"
+  ],
+  "answer": "We aim to finish within 5 working days, if the candidate is available, with the offer going out on day 5.",
+  "evidence": "p929: we aim to finish the process within 5 working days (assuming the candidate has availability)",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "oncall-shifts-calendar-sync",
+  "question": "how do i get my incident.io on-call shifts into google calendar?",
+  "expect": [
+   "engineering/operations/on-call-rotation"
+  ],
+  "answer": "In incident.io's schedules section, click Sync calendar, copy the webcal feed link, then add it in Google Calendar as a calendar from URL.",
+  "evidence": "p330: select Sync calendar at the top right and copy the link for the webcal feed",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "share-revenue-externally",
+  "question": "is it ok to tell people outside the company how much revenue we're making?",
+  "expect": [
+   "values",
+   "help",
+   "company/communication"
+  ],
+  "answer": "No. Company financials like revenue, ACV and burn rate are strictly confidential externally; only what's in a public press release is fine.",
+  "evidence": "p1063: company financials is strictly confidential and should not be shared externally, including our current revenue numbers",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "losing-to-pendo",
+  "question": "when do we tend to lose out to pendo?",
+  "expect": [
+   "growth/use-case-selling/product-intelligence"
+  ],
+  "answer": "With non-technical product teams who want a simpler, more opinionated UX. Pendo also has more mature in-app guides and stronger enterprise PM workflow features.",
+  "evidence": "p785: We're weaker against Hotjar/Pendo for non-technical product teams who want a simpler, more opinionated UX.",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "designer-interview-round-length",
+  "question": "how long is the main interview round for designers after the culture chat?",
+  "expect": [
+   "people/hiring-process/design-hiring"
+  ],
+  "answer": "Up to 90 minutes in total, in two parts: product and design thinking with Cory and teammates, then a deep-dive presentation of their portfolio.",
+  "evidence": "p913: The technical interview round is a 2-part interview, lasting up to 90 minutes in total.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "renewal-outreach-quiet-customer",
+  "question": "one of my customers barely talks to us and their contract is up soon, how far ahead should i start the renewal chat?",
+  "expect": [
+   "cs-and-onboarding/renewals"
+  ],
+  "answer": "For quiet customers, start about 3 months before the renewal date. For customers you're in frequent contact with, start at least 2 months before.",
+  "evidence": "p252: For customers who are quiet, start renewal discussions 3 months out to allow more time for re-engagement.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "cve-without-incident",
+  "question": "i need to put out a CVE for a vulnerability but there's no incident open, what do i do?",
+  "expect": [
+   "company/security-advisories"
+  ],
+  "answer": "Declare an incident first. Advisory and CVE updates should only happen as part of an incident and follow the usual incident process.",
+  "evidence": "p141: If you need to issue an advisory or CVE and an incident is not declared, you should declare one.",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "revenue-month-attribution",
+  "question": "if a customer's billing period runs from mid-march to mid-april, which month does that revenue get counted in?",
+  "expect": [
+   "engineering/revenue-and-forecasting"
+  ],
+  "answer": "April. Revenue goes to the month in which the invoice period ends.",
+  "evidence": "p395: Revenue is attributed to a given month based on the end-date of the invoice period.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "quarterly-planning-meeting-length",
+  "question": "how long is the team planning meeting for next quarter supposed to last?",
+  "expect": [
+   "company/goal-setting"
+  ],
+  "answer": "One hour max if everyone preps beforehand, spending roughly 20% reviewing last quarter and 80% on next quarter's goals.",
+  "evidence": "p65: If you prep properly (see below), planning meetings should take 1 hour max.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "recurring-report-requests",
+  "question": "if i keep needing the same revenue numbers, can i just ask someone to pull the report for me each time?",
+  "expect": [
+   "growth/revops/overview"
+  ],
+  "answer": "No. RevOps doesn't want to run reports for people. If you regularly need data, they'll teach you how to get it yourself.",
+  "evidence": "p473: Running reports for people: If someone regularly needs data, we should teach them how to get it themselves.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "flag-update-delay-root-cause",
+  "question": "why were flag edits not showing up in the sdks for a few days in early feb 2026?",
+  "expect": [
+   "company/post-mortems/2026-02-06-feature-flags-cache-degradation"
+  ],
+  "answer": "Internal test automation left months of excess test data, so cache-update tasks exceeded the 8GB worker memory limit and workers were OOM-killed.",
+  "evidence": "p133: The root cause was an internal test automation system that had accumulated excessive test data over several months",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "exec-owner-clickhouse-team",
+  "question": "who on the exec team is responsible for the clickhouse team?",
+  "expect": [
+   "exec/responsibilities"
+  ],
+  "answer": "Ben White. He also covers Infrastructure, Ingestion, Feature Flags, Security and several other teams.",
+  "evidence": "p423: Ben White | Batch Exports, Infrastructure, Workflows, Ingestion, Error Tracking, ClickHouse",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "partner-joining-offsite",
+  "question": "can my partner come along on the team offsite trip?",
+  "expect": [
+   "company/offsites"
+  ],
+  "answer": "No. Partners and family can't join during the offsite or onboarding dates, but you can add holiday before or after for them to join.",
+  "evidence": "p94: we don't allow partners or family to join you for the dates that the offsite / onboarding takes place",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "yc-credits-for-baa",
+  "question": "can YC companies use their posthog credits to cover a BAA?",
+  "expect": [
+   "brand/startups"
+  ],
+  "answer": "Yes. YC teams can use credits for a BAA under the Boost plan. Regular startup program teams cannot.",
+  "evidence": "p22: YC teams: ✅ Can use credits for a BAA under the Boost plan.",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "monthly-card-spending-limit",
+  "question": "what's my monthly spending limit on brex?",
+  "expect": [
+   "people/spending-money"
+  ],
+  "answer": "$5,000 per month (your User Limit). Request an increase in Brex if you need more.",
+  "evidence": "p967: You'll be assigned a single User Limit of $5,000 per month in Brex",
+  "pool": "policy",
+  "style": "known-term"
+ },
+ {
+  "id": "cross-sell-opp-minimum-mrr",
+  "question": "is there a minimum mrr before i should log a cross-sell opp in salesforce?",
+  "expect": [
+   "growth/cross-selling/tracking-cross-sells"
+  ],
+  "answer": "Yes. Expected MRR on the new product must be at least $100/month, for a customer already paying for another product that you're actively selling to.",
+  "evidence": "p454: Expected MRR on the new product is ≥$100/month",
+  "pool": "other",
+  "style": "known-term"
+ },
+ {
+  "id": "public-incident-writeup-criteria",
+  "question": "which incidents get a public writeup instead of just an internal one?",
+  "expect": [
+   "company/post-mortems/index",
+   "engineering/operations/post-mortems"
+  ],
+  "answer": "Incidents that permanently affect user data (e.g. data loss), directly disrupt customers' services (e.g. SDK bugs), or cause extended unavailability. Minor incidents stay internal.",
+  "evidence": "p140: We publish a public post-mortem when an incident results in permanent impact on user data (such as data loss)",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "company-planning-horizon",
+  "question": "how far into the future does the company actually plan?",
+  "expect": [
+   "exec/annual-planning"
+  ],
+  "answer": "No more than 12 months, apart from very high-level financial forecasting. The 12-month plans are rolling and updated at least every three months.",
+  "evidence": "p420: Besides very high level financial forecasting, we don't plan out any further than 12 months",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "ops-trial-day-task",
+  "question": "i'm helping hire for the ops team, what kind of task does the candidate get on their paid trial day?",
+  "expect": [
+   "people/hiring-process/operations-hiring"
+  ],
+  "answer": "Real PostHog ops work, like sourcing candidates or planning an offsite. Every candidate gets the same task so they can be compared.",
+  "evidence": "p936: It will typically involve doing actual PostHog work, e.g. sourcing candidates or planning an offsite.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "support-zero-weeks-allocation",
+  "question": "i'm on the support team, how much time per quarter do i get off the ticket queue to work on my goals?",
+  "expect": [
+   "support/support-zero"
+  ],
+  "answer": "Two support zero weeks per quarter (10 working days), usually one in each half of the quarter.",
+  "evidence": "p1058: Each support team member is given an allocation of 2 support zero weeks in each quarter (i.e. 10 working days).",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "tech-interview-language-matters",
+  "question": "does it matter what programming language a candidate knows for the engineering tech interview?",
+  "expect": [
+   "people/hiring-process/engineering-tech-screen"
+  ],
+  "answer": "No. Specific language or framework expertise isn't a concern; they assess how the candidate reasons about systems, whatever stack they've used.",
+  "evidence": "p928: Specific language or framework expertise. We care about your ability to reason about systems, regardless of which stack you've used.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "churn-risk-review-day",
+  "question": "what day does customer success go over the accounts that might churn?",
+  "expect": [
+   "cs-and-onboarding/how-we-work"
+  ],
+  "answer": "Wednesday, at the weekly account review standup for at-risk accounts. Sprint planning is on Monday.",
+  "evidence": "p233: we do an account review standup on Wednesday to discuss any at-risk accounts.",
+  "pool": "other",
+  "style": "paraphrased"
+ },
+ {
+  "id": "join-other-team-planning",
+  "question": "am i allowed to sit in on another team's planning meeting?",
+  "expect": [
+   "company/sprints",
+   "getting-started/meetings"
+  ],
+  "answer": "Yes, anyone can attend another small team's sprint, but you need a specific reason to be there and should stay a non-speaking observer.",
+  "evidence": "p155: Anyone can attend a specific small team's sprints. However, all attendees should have a specific reason to be there.",
+  "pool": "policy",
+  "style": "paraphrased"
+ },
+ {
+  "id": "easiest-ai-integration-for-product",
+  "question": "what's the least amount of work way for my team to hook our product into posthog's ai stuff?",
+  "expect": [
+   "engineering/ai/team-structure"
+  ],
+  "answer": "Expose your product's APIs to agents through the MCP server. That is the lowest-effort integration option.",
+  "evidence": "p291: The most obvious and lowest-effort vector. Expose your product's APIs through the MCP server",
+  "pool": "other",
+  "style": "paraphrased"
+ }
+]

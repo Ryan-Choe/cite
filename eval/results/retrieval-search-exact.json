@@ -1,0 +1,240 @@
+{
+  "topK": 8,
+  "total": 32,
+  "hits": {
+    "semantic": 27,
+    "search": 30,
+    "section": 31
+  },
+  "keywordNet": {
+    "used": 8,
+    "addedAnswer": 3,
+    "pushedOutAnswer": 0
+  },
+  "rows": [
+    {
+      "id": "tower-governor-blocked-traffic",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "ghosting-sequence-first-email",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "security-internal-email-use",
+      "semanticRank": 10,
+      "searchRank": 8,
+      "keywordNet": "added the answer",
+      "sectionHit": true
+    },
+    {
+      "id": "bookhog-meeting-day",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "post-termination-certificate-required",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "exa-ai-vs-chatgpt",
+      "semanticRank": 6,
+      "searchRank": 6,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "bookhog-book-expenses",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "technical-csm-account-count",
+      "semanticRank": 4,
+      "searchRank": 4,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "hedgehouse-for-new-starter",
+      "semanticRank": 46,
+      "searchRank": 8,
+      "keywordNet": "added the answer",
+      "sectionHit": true
+    },
+    {
+      "id": "search-insights-tool-replaced",
+      "semanticRank": 46,
+      "searchRank": 8,
+      "keywordNet": "added the answer",
+      "sectionHit": true
+    },
+    {
+      "id": "unconscious-bias-training-required",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "dribbble-design-portfolio",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "kudos-command-visibility",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "hogflix-demo-project-data",
+      "semanticRank": 4,
+      "searchRank": 4,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "ashby-candidate-self-booking",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "html-to-design-usage",
+      "semanticRank": 8,
+      "searchRank": 8,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "devrel-superday-repo-setup",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "cta-after-customer-raise",
+      "semanticRank": 11,
+      "searchRank": null,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "vestwell-401k-match",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "alsoasked-free-tier-limit",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "talent-folks-become-interviewer",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "hogspy-extension-purpose",
+      "semanticRank": 7,
+      "searchRank": 7,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "loud-noises-font-usage",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "phrocs-tool-purpose",
+      "semanticRank": 5,
+      "searchRank": 5,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "weave-data-visibility",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "model-health-dashboard-metrics",
+      "semanticRank": 21,
+      "searchRank": null,
+      "keywordNet": null,
+      "sectionHit": false
+    },
+    {
+      "id": "pool-timed-out-error-cause",
+      "semanticRank": 4,
+      "searchRank": 4,
+      "keywordNet": "added another passage",
+      "sectionHit": true
+    },
+    {
+      "id": "screen-studio-clips",
+      "semanticRank": 4,
+      "searchRank": 4,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "octobox-io-purpose",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "reporter-email-press-alias",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "shiphero-merch-role",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    },
+    {
+      "id": "gdr-excludes-expansion",
+      "semanticRank": 1,
+      "searchRank": 1,
+      "keywordNet": null,
+      "sectionHit": true
+    }
+  ]
+}
