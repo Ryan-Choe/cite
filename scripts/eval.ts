@@ -10,7 +10,8 @@
  * pipeline (rewrite → search → Claude → grounding gate → gap re-search). Answerable questions and
  * follow-ups pass if they cite an expected section and name no gaps. An answer that names a gap is
  * marked "review": search may have missed the passage that covers it, so the gap may be false, and
- * a person checks it against the reference answer (printed alongside). Out-of-scope questions pass
+ * a person checks it against the reference answer (printed alongside). So is one with a sentence
+ * that may say the handbook lacks something. Out-of-scope questions pass
  * if declined; a partial answer is also marked "review". Every answer is printed. Results are
  * written to eval/results/<mode>-<set>.json.
  *
@@ -20,7 +21,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ask, type AskTrace } from "../src/lib/answer/pipeline";
-import { findAbsenceClaims } from "../src/lib/answer/gaps";
 import type { AnswerPart, AskResponse } from "../src/lib/answer/types";
 import { isUncitedClaim } from "../src/lib/answer/uncited";
 import { searchText } from "../src/lib/chunk";
@@ -178,14 +178,24 @@ interface Row {
 /**
  * Pass, review or fail for one answer. An answerable question passes only if it cites an expected
  * section and names no gaps. A gap may be false (search can miss the passage that covers it), so an
- * answer that names one, or still claims the handbook doesn't say something, goes to a person.
+ * answer that names one goes to a person, and so does one that may say the handbook lacks something.
  */
 function grade(row: Pick<Row, "status" | "citedSections" | "answer" | "gaps">, expect: Expectation): Outcome {
   if (expect === "not-covered") return row.status === "not-covered" ? "pass" : row.status === "answered" ? "review" : "fail";
   const cited = row.citedSections.some((path) => expect.some((e) => matchesSection(`contents/handbook/${path}.md`, e)));
   if (!cited) return "fail";
-  const claimsAbsence = findAbsenceClaims(row.answer.replace(/\[\d+\]/g, "")).length > 0;
-  return (row.gaps ?? []).length > 0 || claimsAbsence ? "review" : "pass";
+  return (row.gaps ?? []).length > 0 || mayClaimAbsence(row.answer) ? "review" : "pass";
+}
+
+// A sentence naming the handbook or the passages, then a negation, unless it's reporting what the
+// handbook says ("The handbook says you don't need…"). A rough flag for a person to check, not a verdict.
+const MAY_CLAIM_ABSENCE = /\b(?:handbook|passages?|excerpts?)\b(?!['’]s)(?!\s+(?:says|states|notes|explains|adds)\b)[^.!?\n]{0,40}?(?:\b(?:not|no|never|nothing|none)\b|n['’]t\b)/i;
+
+function mayClaimAbsence(answer: string): boolean {
+  return answer
+    .replace(/\[\d+\]/g, "")
+    .split(/(?<=[.!?])\s+|\n+/)
+    .some((sentence) => MAY_CLAIM_ABSENCE.test(sentence));
 }
 
 function citedSectionsOf(response: AskResponse): string[] {

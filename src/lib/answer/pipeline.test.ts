@@ -120,15 +120,6 @@ describe("ask: gap re-search", () => {
     expect(trace.usage).toEqual({ input: 200, output: 20 }); // both calls
   });
 
-  it("re-searches an absence claim that slips past the prompt, by its topic, and shows it as a gap", async () => {
-    vi.mocked(answerWithCitations).mockResolvedValueOnce(
-      reply([{ text: "Laptops are provided.", cites: { doc: 0, text: "Laptops are provided." } }, { text: " The handbook doesn't say who orders replacement laptops." }]),
-    );
-    const { response } = await ask({ question: "laptop?" });
-    expect(search).toHaveBeenCalledWith(expect.anything(), "who orders replacement laptops");
-    expect(response).toMatchObject({ status: "answered", gaps: ["who orders replacement laptops"], parts: [{ text: "Laptops are provided." }] });
-  });
-
   it("keeps the first answer, gaps and all, when the re-search finds nothing new", async () => {
     vi.mocked(answerWithCitations).mockResolvedValueOnce(partialAnswer);
     const { response, trace } = await ask({ question: "laptop?" });

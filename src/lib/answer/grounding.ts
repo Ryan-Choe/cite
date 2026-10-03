@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import type { Chunk } from "../chunk";
-import { absenceTopic, dedupeGaps, extractGapLines, findAbsenceClaims, isSearchable, meaningfulWords, removeAbsenceClaims } from "./gaps";
+import { dedupeGaps, extractGapLines, meaningfulWords } from "./gaps";
 import { NOT_COVERED, type DocumentSource } from "./prompt";
 import type { AnswerPart, AskResult, Citation, SectionLink } from "./types";
 
@@ -10,33 +10,61 @@ export interface GateOutcome {
   droppedCitations: number;
   /** Characters of answer text with no citation attached (whitespace and punctuation excluded). */
   uncitedChars: number;
-  /**
-   * The gaps to show: Claude's "GAP: …" lines or, if it wrote none, the topics of the uncited absence
-   * claims taken out of the answer; near-duplicates merged. (The pipeline searches both kinds.)
-   */
+  /** The gaps to show: Claude's "GAP: …" lines, near-duplicates merged. */
   gaps: string[];
-  /** Every sentence claiming the handbook doesn't say something (the prompt forbids them), removed or not. */
-  absenceClaims: string[];
   /** Every "GAP: …" line Claude wrote, before near-duplicates are merged for display: all of them are searched. */
   gapLines: string[];
   /** The chunks the valid citations point into. */
   citedChunks: string[];
-  /** Uncited remarks about the passages themselves ("The passages only partly cover this."), removed. */
-  sourceRemarks: string[];
   /** Uncited sentences dropped because the cited sentence right after them says the same thing. */
   restatements: number;
+  /** Uncited sentences about "the passages" dropped from the reply (see dropPassageRemarks). */
+  passageRemarks: number;
   /** Why the answer was withheld, if it was. */
   notCoveredReason?: "model-said-not-covered" | "only-gaps" | "no-citations";
 }
 
 const CLOSEST_SECTIONS = 3;
 
+// "The passages" is Claude's word for what it was given, which the employee never sees.
+const ABOUT_PASSAGES = /^(?:the|these|those)\s+(?:passages?|excerpts?)\b/i;
+const REFERS_BACK = /^(?:they|these|those)\b/i;
+// A sentence end ("." "!" "?") or a line break, captured so that split() keeps it: sentence, break, sentence, …
+const SENTENCE_BREAK = /((?<=[.!?])\s+|\n+)/;
+
+/**
+ * Drop the sentences of an uncited run that are about "the passages" ("The passages don't give a
+ * street address."), and one right after that refers back to them ("They only describe how the survey
+ * works."). They're about what Cite showed Claude, not the handbook, and in the eval they were where
+ * a false "the handbook doesn't say" turned up; the gaps box already says what wasn't found. Only
+ * finished sentences: an unfinished lead-in into cited text ("The passages say ") stays.
+ */
+function dropPassageRemarks(text: string): { text: string; dropped: number } {
+  const pieces = text.split(SENTENCE_BREAK);
+  let rest = "";
+  let dropped = 0;
+  let droppedPrevious = false;
+  for (let i = 0; i < pieces.length; i += 2) {
+    const sentence = pieces[i];
+    const trimmed = sentence.trim();
+    if (/[.!?]$/.test(trimmed) && (ABOUT_PASSAGES.test(trimmed) || (droppedPrevious && REFERS_BACK.test(trimmed)))) {
+      rest += sentence.match(/^\s*/)![0]; // the sentence goes with the break after it
+      dropped++;
+      droppedPrevious = true;
+    } else {
+      rest += sentence + (pieces[i + 1] ?? "");
+      if (trimmed !== "") droppedPrevious = false;
+    }
+  }
+  return { text: rest, dropped };
+}
+
 /**
  * The grounding gate. Turns Claude's reply into what the user sees, enforcing one rule:
  * an answer with no valid citations is never shown as an answer — it becomes "not covered",
- * with the closest sections search found. Gaps Claude lists ("GAP: …"), and uncited sentences
- * claiming the handbook doesn't say something, are moved out of the answer text, to be searched
- * again and shown separately: Claude can't know what the rest of the handbook says.
+ * with the closest sections search found. Gaps Claude lists ("GAP: …") are moved out of the
+ * answer text, to be searched again and shown separately: Claude can't know what the rest of the
+ * handbook says. Uncited remarks about "the passages" are dropped (see dropPassageRemarks).
  *
  * Every citation is checked, not trusted: it must point at real blocks we sent, and its
  * cited_text must match those blocks' text.
@@ -50,14 +78,12 @@ export function applyGroundingGate(
   const markerFor = new Map<string, number>(); // same cited range → same [n]
   const parts: AnswerPart[] = [];
   const gapLines: string[] = [];
-  const claimTopics: string[] = [];
-  const removedClaims: string[] = [];
-  const sourceRemarks: string[] = [];
   const citedChunks = new Set<string>();
   let droppedCitations = 0;
+  let passageRemarks = 0;
 
   const textBlocks = content.filter((block) => block.type === "text"); // skip thinking blocks and anything else
-  textBlocks.forEach((block, b) => {
+  textBlocks.forEach((block) => {
     const markers: number[] = [];
     for (const raw of block.citations ?? []) {
       const citation = resolveCitation(raw, sources);
@@ -74,24 +100,12 @@ export function applyGroundingGate(
       }
       if (!markers.includes(n)) markers.push(n);
     }
-    // Gaps are shown apart from the answer, so take their lines out of its text. So are uncited
-    // claims that the handbook doesn't say something (shown as text, they read as facts), and
-    // uncited remarks about the passages (the gaps box already says what's missing).
+    // Gaps are shown apart from the answer, so take their lines out of its text, and uncited remarks
+    // about the passages with them.
     const withoutGaps = extractGapLines(block.text);
-    const leadsIntoCitation = (textBlocks[b + 1]?.citations?.length ?? 0) > 0;
-    const withoutClaims =
-      markers.length === 0
-        ? removeAbsenceClaims(withoutGaps.text, leadsIntoCitation)
-        : { text: withoutGaps.text, claims: [], remarks: [] };
     gapLines.push(...withoutGaps.gaps);
-    sourceRemarks.push(...withoutClaims.remarks);
-    for (const claim of withoutClaims.claims) {
-      removedClaims.push(claim);
-      const topic = absenceTopic(claim);
-      if (isSearchable(topic)) claimTopics.push(topic);
-    }
-
-    const text = withoutClaims.text;
+    const { text, dropped } = markers.length === 0 ? dropPassageRemarks(withoutGaps.text) : { text: withoutGaps.text, dropped: 0 };
+    passageRemarks += dropped;
     const emptied = text.trim() === "" && block.text.trim() !== "" && markers.length === 0;
     // Keep a block that only separates two cited ones; if removal emptied it, keep its line break or space.
     if (!emptied) parts.push({ text, citations: markers });
@@ -106,21 +120,18 @@ export function applyGroundingGate(
   if (last) last.text = last.text.trimEnd();
 
   const text = parts.map((p) => p.text).join("").trim();
-  const absenceClaims = [...removedClaims, ...findAbsenceClaims(text)];
   const uncitedChars = parts
     .filter((p) => p.citations.length === 0)
     .reduce((sum, p) => sum + p.text.replace(/[^\p{L}\p{N}]/gu, "").length, 0);
-  // Claude's own gap lines say what's missing; a removed claim's topic often repeats one of them.
-  const gapList = dedupeGaps(gapLines.length > 0 ? gapLines : claimTopics);
+  const gapList = dedupeGaps(gapLines);
   const removed = {
     droppedCitations,
     uncitedChars,
     gaps: gapList,
     gapLines: [...new Set(gapLines)],
     citedChunks: [...citedChunks],
-    absenceClaims,
-    sourceRemarks,
     restatements,
+    passageRemarks,
   };
   const notCovered = (reason: GateOutcome["notCoveredReason"]): GateOutcome => ({
     result: { status: "not-covered", closest: closestSections(sources.map((s) => s.chunk)), searchedFor, alsoSearchedFor: [] },
@@ -128,7 +139,9 @@ export function applyGroundingGate(
     notCoveredReason: reason,
   });
 
-  if (text.startsWith(NOT_COVERED)) return notCovered("model-said-not-covered");
+  // Claude said so, even if it wrote a line before the marker (an answer with citations is still an answer).
+  const saidNotCovered = text.startsWith(NOT_COVERED) || (citations.length === 0 && new RegExp(`^\\s*${NOT_COVERED}\\b`, "m").test(text));
+  if (saidNotCovered) return notCovered("model-said-not-covered");
   if (text === "") return notCovered(gapList.length > 0 ? "only-gaps" : "model-said-not-covered");
   if (citations.length === 0) return notCovered("no-citations");
   return { result: { status: "answered", parts, citations, gaps: gapList, searchedFor }, ...removed };

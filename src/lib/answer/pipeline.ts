@@ -1,7 +1,7 @@
 import type { Chunk } from "../chunk";
 import { getIndex, search, type HandbookIndex, type SearchHit } from "../search/search";
 import { answerWithCitations, ANSWER_MODEL, hasApiKey, toAskError } from "./claude";
-import { absenceTopic, isSearchable } from "./gaps";
+import { isSearchable } from "./gaps";
 import { applyGroundingGate, closestSections, type GateOutcome } from "./grounding";
 import { buildDocuments } from "./prompt";
 import { rewriteFollowUp } from "./rewrite";
@@ -18,9 +18,10 @@ export interface AskTrace {
   citations?: number;
   droppedCitations?: number;
   uncitedChars?: number;
-  /** Uncited remarks about the passages, and uncited sentences repeated by the cited one after them, removed from the reply. */
-  sourceRemarks?: number;
+  /** Uncited sentences repeated by the cited one after them, removed from the reply. */
   restatements?: number;
+  /** Uncited sentences about "the passages", removed from the reply. */
+  passageRemarks?: number;
   /** Gaps in the final reply, shown as "not found in the passages searched". */
   gaps?: number;
   /**
@@ -114,8 +115,8 @@ async function answer(question: string, history: NonNullable<AskRequest["history
   if (gate.result.status === "answered") trace.citations = gate.result.citations.length;
   trace.droppedCitations = gate.droppedCitations;
   trace.uncitedChars = gate.uncitedChars;
-  trace.sourceRemarks = gate.sourceRemarks.length;
   trace.restatements = gate.restatements;
+  trace.passageRemarks = gate.passageRemarks;
   trace.notCoveredReason = gate.notCoveredReason;
   trace.gaps = gate.gaps.length;
   trace.model = gate.model;
@@ -177,8 +178,7 @@ async function answerGaps(
   first: Answer,
   trace: AskTrace,
 ): Promise<Answer | null> {
-  // Absence claims left inside cited sentences get the same second look as the gaps.
-  const queries = [...new Set([...first.gapLines, ...first.absenceClaims.map(absenceTopic)])]
+  const queries = [...new Set(first.gapLines)]
     .filter(isSearchable)
     .slice(0, MAX_GAP_QUERIES);
   if (queries.length === 0) return null;

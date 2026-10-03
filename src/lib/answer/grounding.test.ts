@@ -180,50 +180,97 @@ describe("gaps", () => {
     expect(outcome.gaps).toEqual(["stock price"]);
   });
 
-  it("takes an uncited 'the handbook doesn't say' sentence out of the answer and lists its topic as a gap", () => {
+  it("leaves uncited text as Claude wrote it (the UI shows it as unsupported), taking out only gap lines", () => {
     const outcome = applyGroundingGate(
       reply(
         { text: "Laptops are provided.", citations: [laptops] },
-        { text: " The handbook doesn't say who orders replacement laptops, so you can ask anyone. Ask IT." },
+        { text: " The handbook doesn't say who orders replacement laptops. Ask IT.\nGAP: laptop replacement process" },
       ),
       sources,
       "q",
     );
     expect(outcome.result).toMatchObject({
       status: "answered",
-      gaps: ["who orders replacement laptops"],
-      parts: [{ text: "Laptops are provided." }, { text: " Ask IT." }],
+      gaps: ["laptop replacement process"],
+      parts: [{ text: "Laptops are provided." }, { text: " The handbook doesn't say who orders replacement laptops. Ask IT." }],
     });
-    expect(outcome.absenceClaims).toEqual(["The handbook doesn't say who orders replacement laptops, so you can ask anyone."]);
   });
-
-  it("drops a vague absence claim without listing an unsearchable gap", () => {
-    const outcome = applyGroundingGate(reply({ text: "Yes.", citations: [laptops] }, { text: " The handbook doesn't say." }), sources, "q");
-    expect(outcome.result).toMatchObject({ status: "answered", gaps: [], parts: [{ text: "Yes." }] });
-  });
-
-  it("leaves an absence claim inside a cited block in place (it would take cited text with it)", () => {
-    const outcome = applyGroundingGate(reply({ text: "Laptops are provided; the handbook doesn't say which model.", citations: [laptops] }), sources, "q");
-    expect(outcome.result).toMatchObject({ parts: [{ text: "Laptops are provided; the handbook doesn't say which model." }], gaps: [] });
-    expect(outcome.absenceClaims).toHaveLength(1); // still searched again by the pipeline
-  });
-
-  it("keeps the separators between cited blocks, and replaces a removed sentence with one", () => {
+  it("keeps the separators between cited blocks, and keeps a gap-only block's line break", () => {
     const monitors = cite(0, 0, 1, "We offer unlimited time off.");
     const { result } = applyGroundingGate(
       reply(
         { text: "Laptops are provided.", citations: [laptops] },
         { text: "\n\n" },
         { text: "Time off is unlimited.", citations: [monitors] },
-        { text: " The passages don't mention monitor budgets. " },
+        { text: "\nGAP: monitor budgets\n" },
         { text: "Really.", citations: [laptops] },
       ),
       sources,
       "q",
     );
     expect(result.status === "answered" && result.parts.map((p) => p.text).join("|")).toBe(
-      "Laptops are provided.|\n\n|Time off is unlimited.| |Really.",
+      "Laptops are provided.|\n\n|Time off is unlimited.|\n\n|Really.",
     );
+  });
+
+  it("drops uncited sentences about the passages, and one right after that refers back to them", () => {
+    const outcome = applyGroundingGate(
+      reply(
+        { text: "Laptops are provided.", citations: [laptops] },
+        { text: " The passages don't give the latest scores. They only describe how the survey works. Ask People & Ops." },
+      ),
+      sources,
+      "q",
+    );
+    expect(outcome.result).toMatchObject({ status: "answered", parts: [{ text: "Laptops are provided." }, { text: " Ask People & Ops." }] });
+    expect(outcome.passageRemarks).toBe(2);
+  });
+
+  it("keeps other uncited text, an unfinished lead-in about the passages, and cited text that mentions them", () => {
+    const { result, passageRemarks } = applyGroundingGate(
+      reply(
+        { text: "The handbook doesn't say who approves it. They decide case by case. The passages say " },
+        { text: "Laptops are provided.", citations: [laptops] },
+        { text: " The passages also cover monitors.", citations: [laptops] },
+      ),
+      sources,
+      "q",
+    );
+    expect(result.status === "answered" && result.parts.map((p) => p.text).join("|")).toBe(
+      "The handbook doesn't say who approves it. They decide case by case. The passages say |Laptops are provided.| The passages also cover monitors.",
+    );
+    expect(passageRemarks).toBe(0);
+  });
+
+  it("keeps a separator when dropping a remark empties its block", () => {
+    const { result } = applyGroundingGate(
+      reply({ text: "Laptops are provided.", citations: [laptops] }, { text: "\nThe passages don't mention monitors.\n" }, { text: "Really.", citations: [laptops] }),
+      sources,
+      "q",
+    );
+    expect(result.status === "answered" && result.parts.map((p) => p.text).join("|")).toBe("Laptops are provided.|\n\n|Really.");
+  });
+
+  it("keeps a gap-only block's space when it has no line break", () => {
+    const { result } = applyGroundingGate(
+      reply({ text: "Laptops are provided.", citations: [laptops] }, { text: "GAP: monitor budgets" }, { text: "Really.", citations: [laptops] }),
+      sources,
+      "q",
+    );
+    expect(result.status === "answered" && result.parts.map((p) => p.text).join("|")).toBe("Laptops are provided.| |Really.");
+  });
+
+  it("treats a reply of uncited prose as not covered, with no gaps to show", () => {
+    const outcome = applyGroundingGate(reply({ text: "The handbook doesn't say who approves it." }), sources, "q");
+    expect(outcome.result.status).toBe("not-covered");
+    expect(outcome.notCoveredReason).toBe("no-citations");
+    expect(outcome.gaps).toEqual([]);
+  });
+
+  it("reads NOT_COVERED after a line Claude wrote first", () => {
+    const outcome = applyGroundingGate(reply({ text: "The passages don't answer this.\nNOT_COVERED\nGAP: chair refunds" }), sources, "q");
+    expect(outcome.notCoveredReason).toBe("model-said-not-covered");
+    expect(outcome.gaps).toEqual(["chair refunds"]);
   });
 
   it("treats NOT_COVERED with gap lines as not covered, and reports the gaps to search", () => {
@@ -231,19 +278,6 @@ describe("gaps", () => {
     expect(outcome.notCoveredReason).toBe("model-said-not-covered");
     expect(outcome.result.status).toBe("not-covered");
     expect(outcome.gaps).toEqual(["annual leave allowance", "booking time off"]);
-  });
-
-  it("shows Claude's gap lines, not the topics of absence claims it also wrote (they're still searched)", () => {
-    const outcome = applyGroundingGate(
-      reply(
-        { text: "Laptops are provided.", citations: [cite(1, 0, 1, "Laptops are provided.")] },
-        { text: " The handbook doesn't say who pays for monitors.\nGAP: monitor budget" },
-      ),
-      sources,
-      "q",
-    );
-    expect(outcome.gaps).toEqual(["monitor budget"]);
-    expect(outcome.absenceClaims).toEqual(["The handbook doesn't say who pays for monitors."]);
   });
 
   it("drops an uncited sentence that the cited one after it repeats, but keeps a short verdict", () => {
@@ -293,19 +327,6 @@ describe("gaps", () => {
       "q",
     );
     expect(outcome.restatements).toBe(0);
-  });
-
-  it("removes uncited remarks about the passages", () => {
-    const outcome = applyGroundingGate(
-      reply(
-        { text: "The passages only partly cover this. " },
-        { text: "Laptops are provided.", citations: [cite(1, 0, 1, "Laptops are provided.")] },
-      ),
-      sources,
-      "q",
-    );
-    expect(outcome.sourceRemarks).toEqual(["The passages only partly cover this."]);
-    expect(outcome.result.status === "answered" && outcome.result.parts.map((p) => p.text).join("|")).toBe("Laptops are provided.");
   });
 });
 
